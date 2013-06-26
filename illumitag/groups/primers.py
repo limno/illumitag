@@ -1,0 +1,140 @@
+# Built-in modules #
+import sys, os
+
+# Internal modules #
+from common import AutoPaths, moving_average, Color
+from chimeras import UchimeRef, UchimeDenovo, ChimerasSlayer, Perseus
+from fasta.single import FASTQ
+from fasta.other import Aligned
+
+# Third party modules #
+import sh
+#from shell_command import shell_output
+
+# Constants #
+home = os.environ['HOME'] + '/'
+chimera_ref_path = home + 'ILLUMITAQ/dataset1/raw/database/silvagold.fasta'
+chimera_ref_path = home + 'ILLUMITAQ/combined-qiime/info/microbiomeutil-r20110519.fasta'
+
+###############################################################################
+class PrimerGroup(object):
+    """A bunch of sequences all having the same type of primer outcome
+    (and assembly outcome)"""
+
+    all_paths = """
+    /orig.fastq
+    /n_filtered.fastq
+    /qual_filtered.fastq
+    /len_filtered.fastq
+    /aligned.fasta
+    """
+
+    def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
+    def __len__(self): return len(self.orig_reads)
+
+    def __init__(self, groups_dir, parent):
+        # Save parent #
+        self.parent = parent
+        # Auto paths #
+        if not groups_dir.endswith('/') : groups_dir = groups_dir + '/'
+        self.base_dir = groups_dir + self.short_name + '/'
+        self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Fasta class #
+        Fasta_Class = self.parent.orig_reads.__class__
+        # Original reads #
+        self.orig_reads = Fasta_Class(self.p.orig_fastq, barcodes=parent.barcodes)
+        # N bases filtered #
+        self.n_filtered = Fasta_Class(self.p.n_filtered, barcodes=parent.barcodes)
+        # Quality filtered #
+        if self.parent == 'assembled':
+            self.qual_filtered = FASTQ(self.p.qual_filtered, barcodes=parent.barcodes)
+            self.len_filtered = FASTQ(self.p.len_filtered_fastq, barcodes=parent.barcodes)
+            self.aligned = Aligned(self.p.aligned, self.qual_filtered, barcodes=parent.barcodes)
+
+    def fastqc(self):
+        sh.fastqc(self.orig_reads.path, '-q')
+        os.remove(os.path.splitext(self.orig_reads.path)[0] + '_fastqc.zip')
+
+    def n_filter(self):
+        def no_n_iterator(reads):
+            for read in reads:
+                if 'N' in read: continue
+                yield read
+        self.n_filtered.write(no_n_iterator(self.orig_reads))
+
+    def qual_filter(self):
+        def good_qual_iterator(reads, threshold=5, windowsize=10):
+            for read in reads:
+                averaged = moving_average(read.letter_annotations["phred_quality"], windowsize)
+                if any([value < threshold for value in averaged]): continue
+                yield read
+        self.qual_filtered.write(good_qual_iterator(self.n_filtered))
+
+    def len_filter(self):
+        def good_len_iterator(reads, max_overlap=100):
+            min_length = 250 + 250 - max_overlap
+            for read in reads:
+                if len(read) < min_length: continue
+                yield read
+        self.len_filtered.write(good_len_iterator(self.qual_filtered))
+
+    def create(self): self.orig_reads.create()
+    def add_read(self, read): self.orig_reads.add_read(read)
+    def close(self): self.orig_reads.close()
+
+###############################################################################
+class GoodPrimers(PrimerGroup):
+    """Both primers found at right place"""
+    short_name = 'good_primers'
+
+    all_paths = PrimerGroup.all_paths + """
+    /len_filtered.fasta
+    /chimeras_ref/
+    /chimeras_denovo/
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Super #
+        PrimerGroup.__init__(self, *args, **kwargs)
+        # Chimeras #
+        self.uchime_ref = UchimeRef(self.p.len_filtered_fasta, self.p.chimeras_ref_dir, self)
+        self.uchime_denovo = UchimeDenovo(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
+        self.chimeras_slayer = ChimerasSlayer(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
+        self.chimeras_slayer = Perseus(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
+
+    def check_chimeras(self):
+        # Only assembled sequences #
+        if self.parent != 'assembled': return
+        # Check empty #
+        if not self.len_filtered:
+            print Color.l_ylw + 'No chimeras to check for %s (empty set)' % (self,) + Color.end
+            sys.stdout.flush()
+            return
+        # Convert #
+        message = "----> Converting %s of pool %i to FASTA"
+        print Color.l_ylw + message % (self.parent.parent.short_name, self.parent.parent.pool.num) + Color.end
+        sys.stdout.flush()
+        self.len_filtered.to_fasta(self.p.len_filtered_fasta)
+        # Call #
+        self.uchime_ref.check()
+        self.uchime_denovo.check()
+
+#-----------------------------------------------------------------------------#
+class WrongPrimers(PrimerGroup):
+    """Both found but at the wrong place"""
+    short_name = 'wrong_primers'
+
+#-----------------------------------------------------------------------------#
+class OnlyFwdPrimers(PrimerGroup):
+    """Only the forward primer seen"""
+    short_name = 'only_fwd_primers'
+
+#-----------------------------------------------------------------------------#
+class OnlyRevPrimers(PrimerGroup):
+    """Only the reverse primer seen"""
+    short_name = 'only_rev_primers'
+
+#-----------------------------------------------------------------------------#
+class NoPrimers(PrimerGroup):
+    """No primers found"""
+    short_name = 'no_primers'

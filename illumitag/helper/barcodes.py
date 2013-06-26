@@ -1,0 +1,48 @@
+# Built-in modules #
+
+# Third party modules #
+
+# Constants #
+
+###############################################################################
+class BarcodeMatch(object):
+    """Given a 7 nucleotide sequence and a collection of samples,
+    will find the match if it exists"""
+
+    def __nonzero__(self): return bool(self.set)
+    def __str__(self): return self.set + str(self.index)
+
+    def __init__(self, bar, samples):
+        # Attributes #
+        self.bar = bar
+        # Default values #
+        index_A, index_B = -1, -1
+        self.set, self.sample = None, None
+        # Search #
+        try: index_A = samples.bars_A.index(bar)
+        except ValueError: pass
+        try: index_B = samples.bars_B.index(bar)
+        except ValueError: pass
+        # Record #
+        if index_A is not -1:
+            self.set = "A"
+            self.sample = samples[index_A]
+        if index_B is not -1:
+            self.set = "B"
+            self.sample = samples[index_B]
+
+###############################################################################
+class ReadWithBarcodes(object):
+    def __init__(self, read, samples):
+        self.read = read
+        self.first = BarcodeMatch(read.seq.tostring()[0:7], samples)
+        self.last = BarcodeMatch(read.reverse_complement().seq.tostring()[0:7], samples)
+
+###############################################################################
+class ReadPairWithBarcode(object):
+    def __init__(self, fwd, rev, samples):
+        self.fwd = fwd
+        self.rev = rev
+        fwd_m = BarcodeMatch(fwd.seq.tostring()[0:7], samples)
+        rev_m = BarcodeMatch(rev.seq.tostring()[0:7], samples)
+        self.matches = [m for m in (fwd_m,rev_m) if m]
