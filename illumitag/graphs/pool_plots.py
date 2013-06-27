@@ -4,9 +4,9 @@ from __future__ import division
 # Built-in modules #
 
 # Internal modules #
-from util import save_plot
-from common import flatten
-from graphs import Graph
+from illumitag.common import flatten
+from illumitag.graphs import Graph
+from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
 
 # Third party modules #
 import matplotlib, pandas
@@ -17,7 +17,7 @@ from statsmodels.formula.api import ols
 import statsmodels.graphics as smgraphics
 
 # Constants #
-__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MissmatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter']
+__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MissmatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter', 'UchimeRefBar', 'UchimeDenovoBar']
 
 ################################################################################
 class BarcodeHist(Graph):
@@ -26,7 +26,7 @@ class BarcodeHist(Graph):
 
     def plot(self):
         # Data #
-        self.frame = pandas.Series(self.parent.good_barcodes.breakdown.values(), index=self.parent.barcodes.names)
+        self.frame = pandas.Series(self.parent.good_barcodes.breakdown.values(), index=self.parent.samples.bar_names)
         # Plot #
         fig = pyplot.figure()
         axes = self.frame.plot(kind='bar', color='gray')
@@ -46,7 +46,7 @@ class ReadsThatPassHist(Graph):
     def plot(self):
         # Data #
         columns = ["After barcode check", "After processing"]
-        rows = self.parent.barcodes.names
+        rows = self.parent.samples.bar_names
         data = zip(self.parent.good_barcodes.breakdown.values(), self.parent.quality_reads.good_barcodes_breakdown.values())
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
@@ -57,7 +57,7 @@ class ReadsThatPassHist(Graph):
         axes.set_ylabel('Number of paired reads')
         axes.yaxis.grid(True)
         # Save it #
-        save_plot(fig, axes, sep=('y'), bottom=0.12)
+        self.save_plot(fig, axes, sep=('y'), bottom=0.12)
         self.frame.to_csv(self.csv_path)
 
 ################################################################################
@@ -68,8 +68,8 @@ class SalvageHist(Graph):
     def plot(self):
         # Data #
         columns = [g.doc for g in self.parent]
-        rows = [name + side for name in self.parent.barcodes.names for side in ('A','B')]
-        data = [[g.counter[name + side] for g in self.parent.groups] for name in self.parent.barcodes.names for side in ('A','B')]
+        rows = [name + side for name in self.parent.samples.bar_names for side in ('A','B')]
+        data = [[g.counter[name + side] for g in self.parent.outcomes] for name in self.parent.samples.bar_names for side in ('A','B')]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
         fig = pyplot.figure()
@@ -79,7 +79,7 @@ class SalvageHist(Graph):
         axes.set_ylabel('Number of single reads')
         axes.yaxis.grid(True)
         # Save it #
-        save_plot(fig, axes, sep=('y'), bottom=0.12)
+        self.save_plot(fig, axes, sep=('y'), bottom=0.12)
         self.frame.to_csv(self.csv_path)
 
 ################################################################################
@@ -92,7 +92,7 @@ class MissmatchReg(Graph):
         matched = []
         missmatched = []
         names = []
-        for first_bar, second_bar in self.parent.samples.all_diff_pairs:
+        for first_bar, second_bar in self.parent.samples.all_bar_pairs:
             if frozenset((first_bar, second_bar)) not in self.parent.bad_barcodes.set_counter: continue
             names.append(first_bar[7:] + '-' + second_bar[7:])
             matched.append(self.parent.good_barcodes.counter[first_bar] / len(self.parent.good_barcodes))
@@ -104,7 +104,7 @@ class MissmatchReg(Graph):
         # Plot #
         fig = smgraphics.regressionplots.plot_fit(self.reg, 1)
         axes = pyplot.gca()
-        smgraphics.regressionplots.abline_plot(model_results=self.parent.missmatch_reg, ax=axes, color='red')
+        smgraphics.regressionplots.abline_plot(model_results=self.reg, ax=axes, color='red')
         axes.set_title('Barcode abundance against missmatched barcode abundance for every barcode pair')
         axes.set_xlabel('Fraction of matched barcode against all matched')
         axes.set_ylabel('Fraction of missmatched barcode against all missmatched')
@@ -126,7 +126,7 @@ class MissmatchReg(Graph):
                                                 textcoords = 'offset points', ha = 'center', va = 'bottom',
                                                 bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
         # Save it #
-        save_plot(fig, axes)
+        self.save_plot(fig, axes)
         matplotlib.rc('text', usetex=False)
 
 ################################################################################
@@ -137,7 +137,7 @@ class PrimerCounts(Graph):
     def plot(self):
         # Data #
         rows = flatten([(bg.doc + '\n and they assembled', bg.doc + '\n and they are unassembled') for bg in self.parent])
-        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.groups]
+        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.children]
         data = flatten([([len(pg) for pg in bg.assembled],[len(pg) for pg in bg.unassembled]) for bg in self.parent])
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
@@ -160,11 +160,11 @@ class ReadsWithN(Graph):
 
     def plot(self):
         # Data #
-        rows = flatten([(bg.doc + '\n and they assembled', bg.doc + '\n and they are unassembled') for bg in self.parent.groups])
-        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.groups]
+        rows = flatten([(bg.doc + '\n and they assembled', bg.doc + '\n and they are unassembled') for bg in self.parent.outcomes])
+        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.children]
         percentage = lambda x,y: 100-(len(x)/len(y))*100 if len(y) != 0 else 0
-        data_ass = [[percentage(pg.n_filtered, pg.orig_reads) for pg in bg.assembled] for bg in self.parent.groups]
-        data_unass = [[percentage(pg.n_filtered, pg.orig_reads) for pg in bg.unassembled] for bg in self.parent.groups]
+        data_ass = [[percentage(pg.n_filtered, pg.orig_reads) for pg in bg.assembled] for bg in self.parent.outcomes]
+        data_unass = [[percentage(pg.n_filtered, pg.orig_reads) for pg in bg.unassembled] for bg in self.parent.outcomes]
         data = flatten(zip(data_ass,data_unass))
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
@@ -177,7 +177,7 @@ class ReadsWithN(Graph):
         axes.set_xlabel('Percentage of paired reads with "N" (stacked)')
         axes.xaxis.grid(True)
         # Save it #
-        save_plot(fig, axes, left=0.15, sep=('x'))
+        self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
 
 ################################################################################
@@ -188,7 +188,7 @@ class QualityFilter(Graph):
     def plot(self):
         # Data #
         rows = [bg.doc + '\n and they assembled' for bg in self.parent]
-        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.groups]
+        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.children]
         percentage = lambda x,y: 100-(len(x)/len(y))*100 if len(y) != 0 else 0
         data = [[percentage(pg.qual_filtered, pg.n_filtered) for pg in bg.assembled] for bg in self.parent]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
@@ -202,7 +202,7 @@ class QualityFilter(Graph):
         axes.set_xlabel('Percentage of assembled reads with bad PHRED scores (stacked)')
         axes.xaxis.grid(True)
         # Save it #
-        save_plot(fig, axes, left=0.15, sep=('x'))
+        self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
 
 ################################################################################
@@ -213,7 +213,7 @@ class LenFilter(Graph):
     def plot(self):
         # Data #
         rows = [bg.doc + '\n and they assembled' for bg in self.parent]
-        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.groups]
+        columns = [pg.__doc__ for pg in self.parent.good_barcodes.assembled.children]
         percentage = lambda x,y: 100-(len(x)/len(y))*100 if len(y) != 0 else 0
         data = [[percentage(pg.len_filtered, pg.qual_filtered) for pg in bg.assembled] for bg in self.parent]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
@@ -227,5 +227,51 @@ class LenFilter(Graph):
         axes.set_xlabel('Percentage of assembled reads that were too short (stacked)')
         axes.xaxis.grid(True)
         # Save it #
-        save_plot(fig, axes, left=0.15, sep=('x'))
+        self.save_plot(fig, axes, left=0.15, sep=('x'))
+        self.frame.to_csv(self.csv_path)
+
+################################################################################
+class UchimeRefBar(Graph):
+    """Lorem"""
+    short_name = "uchime_ref"
+
+    def plot(self):
+        # Data #
+        rows = [bg.doc + '\n and they assembled\n and the primer was found' for bg in self.parent.outcomes]
+        data = [bg.assembled.good_primers.uchime_ref.percent for bg in self.parent.outcomes]
+        self.frame = pandas.Series(data, index=rows)
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.plot(kind='barh')
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_title(UchimeRef.title % self.parent.num)
+        fig.suptitle("Downsampled to %i" % UchimeRef.downto)
+        axes.set_xlabel('Percentage of sequences identified as chimeras after quality filtering')
+        axes.yaxis.grid(False)
+        # Save it #
+        self.save_plot(fig, axes, left=0.15)
+        self.frame.to_csv(self.csv_path)
+
+################################################################################
+class UchimeDenovoBar(Graph):
+    """Lorem"""
+    short_name = "uchime_denovo"
+
+    def plot(self):
+        # Data #
+        rows = [bg.doc + '\n and they assembled\n and the primer was found' for bg in self.parent.outcomes]
+        data = [bg.assembled.good_primers.uchime_denovo.percent for bg in self.parent.outcomes]
+        self.frame = pandas.Series(data, index=rows)
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.plot(kind='barh')
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_title(UchimeDenovo.title % self.parent.num)
+        fig.suptitle("Downsampled to %i" % UchimeDenovo.downto)
+        axes.set_xlabel('Percentage of sequences identified as chimeras after quality filtering')
+        axes.yaxis.grid(False)
+        # Save it #
+        self.save_plot(fig, axes, left=0.15)
         self.frame.to_csv(self.csv_path)

@@ -71,7 +71,7 @@ class OTUs(JobRunner):
 
     def __init__(self, base_dir, orig_reads, procedure):
         # Paths #
-        if not base_dir.endswith('/') : base_dir = base_dir + '/'
+        if not base_dir.endswith('/') : base_dir += '/'
         self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Attributes #
@@ -373,7 +373,7 @@ class SubsampledOTUs(OTUs):
 
     def __init__(self, base_dir, base_otu, procedure):
         # Paths #
-        if not base_dir.endswith('/') : base_dir = base_dir + '/'
+        if not base_dir.endswith('/') : base_dir += '/'
         self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Attributes #

@@ -3,8 +3,8 @@ import os, sys, gzip
 from itertools import izip
 
 # Internal modules #
-from common import property_cached
-from helper.barcodes import ReadPairWithBarcode
+from illumitag.common import property_cached
+from illumitag.helper.barcodes import ReadPairWithBarcode
 
 # Third party modules #
 import sh
@@ -17,15 +17,16 @@ class PairedFASTQ(object):
 
     def __len__(self): return self.count
     def __iter__(self): return self.parse()
-    def __repr__(self): return '<%s object on "%s">' % (self.__class__.__name__, self.path)
+    def __repr__(self): return '<%s object on "%s">' % (self.__class__.__name__, self.fwd_path)
 
-    def __init__(self, fwd_path, rev_path, samples=None, primers=None):
+    def __init__(self, fwd_path, rev_path, parent):
         # Basic #
         self.fwd_path = fwd_path
         self.rev_path = rev_path
         # Extra #
-        self.samples = samples
-        self.primers = primers
+        self.pool, self.parent = parent, parent
+        self.samples = parent.samples
+        self.primers = parent.primers
 
     @property_cached
     def count(self):

@@ -2,10 +2,9 @@
 import sys, os
 
 # Internal modules #
-from common import AutoPaths, moving_average, Color
-from chimeras import UchimeRef, UchimeDenovo, ChimerasSlayer, Perseus
-from fasta.single import FASTQ
-from fasta.other import Aligned
+from illumitag.common import AutoPaths, moving_average, Color
+from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
+from illumitag.fasta.single import FASTQ, FASTA, BarcodedFASTQ
 
 # Third party modules #
 import sh
@@ -20,36 +19,38 @@ chimera_ref_path = home + 'ILLUMITAQ/combined-qiime/info/microbiomeutil-r2011051
 class PrimerGroup(object):
     """A bunch of sequences all having the same type of primer outcome
     (and assembly outcome)"""
+    short_name = 'primers_group'
 
     all_paths = """
     /orig.fastq
     /n_filtered.fastq
     /qual_filtered.fastq
     /len_filtered.fastq
-    /aligned.fasta
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.orig_reads)
 
-    def __init__(self, groups_dir, parent):
+    def __init__(self, parent):
         # Save parent #
         self.parent = parent
+        self.samples = parent.samples
         # Auto paths #
-        if not groups_dir.endswith('/') : groups_dir = groups_dir + '/'
-        self.base_dir = groups_dir + self.short_name + '/'
+        self.base_dir = parent.p.groups_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Fasta class #
-        Fasta_Class = self.parent.orig_reads.__class__
-        # Original reads #
-        self.orig_reads = Fasta_Class(self.p.orig_fastq, barcodes=parent.barcodes)
-        # N bases filtered #
-        self.n_filtered = Fasta_Class(self.p.n_filtered, barcodes=parent.barcodes)
+        # More #
+        if self.parent == 'assembled': FASTCLASS = FASTQ
+        else:                          FASTCLASS = FASTA
+        self.orig_reads = FASTCLASS(self.p.orig_fastq, samples=self.samples)
+        self.n_filtered = FASTCLASS(self.p.n_filtered, samples=self.samples)
         # Quality filtered #
         if self.parent == 'assembled':
-            self.qual_filtered = FASTQ(self.p.qual_filtered, barcodes=parent.barcodes)
-            self.len_filtered = FASTQ(self.p.len_filtered_fastq, barcodes=parent.barcodes)
-            self.aligned = Aligned(self.p.aligned, self.qual_filtered, barcodes=parent.barcodes)
+            self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)
+            self.len_filtered = BarcodedFASTQ(self.p.len_filtered_fastq, samples=self.samples)
+        # Extra #
+        self.load()
+
+    def load(self): pass
 
     def fastqc(self):
         sh.fastqc(self.orig_reads.path, '-q')
@@ -93,28 +94,23 @@ class GoodPrimers(PrimerGroup):
     /chimeras_denovo/
     """
 
-    def __init__(self, *args, **kwargs):
-        # Super #
-        PrimerGroup.__init__(self, *args, **kwargs)
-        # Chimeras #
+    def load(self):
         self.uchime_ref = UchimeRef(self.p.len_filtered_fasta, self.p.chimeras_ref_dir, self)
         self.uchime_denovo = UchimeDenovo(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
-        self.chimeras_slayer = ChimerasSlayer(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
-        self.chimeras_slayer = Perseus(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
 
     def check_chimeras(self):
         # Only assembled sequences #
         if self.parent != 'assembled': return
-        # Check empty #
-        if not self.len_filtered:
-            print Color.l_ylw + 'No chimeras to check for %s (empty set)' % (self,) + Color.end
-            sys.stdout.flush()
-            return
         # Convert #
         message = "----> Converting %s of pool %i to FASTA"
         print Color.l_ylw + message % (self.parent.parent.short_name, self.parent.parent.pool.num) + Color.end
         sys.stdout.flush()
         self.len_filtered.to_fasta(self.p.len_filtered_fasta)
+        # Check empty #
+        if not self.len_filtered:
+            print Color.l_ylw + 'No chimeras to check for %s (empty set)' % (self,) + Color.end
+            sys.stdout.flush()
+            return
         # Call #
         self.uchime_ref.check()
         self.uchime_denovo.check()

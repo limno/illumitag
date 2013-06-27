@@ -12,4 +12,5 @@ setup(
       classifiers      = ['Topic :: Scientific/Engineering :: Bio-Informatics'],
       packages         = ['illumitag'],
       scripts          = ['scripts/illumitag'],
+      requires         = ['biopython', 'matplotlib', 'threadpool', 'sh', 'patsy', 'pandas', 'statsmodels', 'fastqident', 'rpy2'],
 )

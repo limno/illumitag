@@ -12,8 +12,8 @@ class Run(object):
     /
     """
 
-    def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
-    def __iter__(self): return iter(self.groups)
+    def __repr__(self): return '<%s object number %i>' % (self.__class__.__name__, self.num)
+    def __iter__(self): return iter(self.pools)
     def __len__(self): return self.count
     def __getitem__(self, key): return self.samples[key]
 
@@ -26,3 +26,6 @@ class Run(object):
     def __init__(self, num, pools):
         self.num = num
         self.pools = pools
+
+    def load(self):
+        for p in self.pools: p.load()

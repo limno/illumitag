@@ -24,8 +24,10 @@ class TwoPrimers(object):
         self.name = self.info['name']
         self.fwd_name = self.info['forward']['name']
         self.rev_name = self.info['reverse']['name']
-        self.fwd_str = ['forward']['sequence']
-        self.rev_str = ['reverse']['sequence']
+        self.fwd_str = self.info['forward']['sequence']
+        self.rev_str = self.info['reverse']['sequence']
+        self.fwd_len = len(self.fwd_str)
+        self.rev_len = len(self.rev_str)
 
     def load(self):
         self.fwd_seq = Seq(self.fwd_str, IUPAC.ambiguous_dna)

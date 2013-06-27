@@ -1,14 +1,12 @@
 # Built-in modules #
-import os, gzip, re
-from collections import Counter, OrderedDict
+import os
 
 # Internal modules #
-from common import property_cached, replace_extension, isubsample, Color
-from util import BarcodeMatch
+from illumitag.common import replace_extension
+from illumitag.fasta.single import FASTA
 
 # Third party modules #
 import sh, shutil
-from Bio import SeqIO
 
 #-----------------------------------------------------------------------------#
 class QualFile(FASTA):

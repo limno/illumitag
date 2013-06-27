@@ -5,21 +5,18 @@ from __future__ import division
 import sys, os, time
 
 # Internal modules #
-from illumitaq.common import AutoPaths, JobRunner, Color
-from fasta_single import FASTA, FASTAwithSizes
-from sop.mothur import process_log_file
-from util import save_plot
+from illumitag.common import AutoPaths, Color
+from illumitag.fasta.single import FASTA, SizesFASTA
 
 # Third party modules #
-import sh, pandas
-from matplotlib import pyplot
+import sh
 
 # Constants #
 home = os.environ['HOME'] + '/'
 chimera_ref_path = home + 'glob/16s/microbiomeutil-r20110519.fasta'
 
 ################################################################################
-class ChimerasChecker(JobRunner):
+class ChimerasChecker(object):
 
     all_paths = """
     /subsampled.fasta
@@ -37,14 +34,13 @@ class ChimerasChecker(JobRunner):
         self.fasta = FASTA(fasta_path)
         self.parent = parent
         # Auto paths #
-        if not base_dir.endswith('/') : base_dir = base_dir + '/'
         self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Files #
-        self.derep_cluster = FASTAwithSizes(self.p.derep_cluster)
-        self.cluster_99 = FASTAwithSizes(self.p.cluster_99)
-        self.positive = FASTAwithSizes(self.p.positive)
-        self.negative = FASTAwithSizes(self.p.negative)
+        self.derep_cluster = SizesFASTA(self.p.derep_cluster)
+        self.cluster_99 = SizesFASTA(self.p.cluster_99)
+        self.positive = SizesFASTA(self.p.positive)
+        self.negative = SizesFASTA(self.p.negative)
         self.subsampled = FASTA(self.p.subsampled)
 
     def clean(self):
@@ -60,28 +56,8 @@ class ChimerasChecker(JobRunner):
         if not self.fasta: return -1
         return (len(self.positive) / len(self.subsampled)) * 100.0
 
-    @classmethod
-    def plot(cls, pool):
-        # Data #
-        rows = [bg.doc + '\n and they assembled\n and the primer was found' for bg in pool.groups]
-        data = [getattr(bg.assembled.good_primers, cls.short_name).percent for bg in pool.groups]
-        series = pandas.Series(data, index=rows)
-        # Plot #
-        fig = pyplot.figure()
-        axes = series.plot(kind='barh')
-        fig = pyplot.gcf()
-        # Other #
-        axes.set_title(cls.title % pool.num)
-        fig.suptitle("Downsampled to %i" % cls.downto)
-        axes.set_xlabel('Percentage of sequences identified as chimeras after quality filtering')
-        axes.yaxis.grid(False)
-        # Save it #
-        save_plot(fig, axes, getattr(pool.p, cls.short_name + '_pdf'), left=0.15)
-        series.to_csv(getattr(pool.p, cls.short_name + '_csv'))
-
 ################################################################################
 class UchimeRef(ChimerasChecker):
-    short_name = "uchime_ref"
     title = "UCHIME algorithm for downsampled pool %i (in reference mode)"
     downto = 100000
 
@@ -105,7 +81,6 @@ class UchimeRef(ChimerasChecker):
 
 ################################################################################
 class UchimeDenovo(ChimerasChecker):
-    short_name = "uchime_denovo"
     downto = 50000
     title = "UCHIME algorithm for downsampled pool %i (in denovo mode)"
 
@@ -143,8 +118,8 @@ class Mothur(ChimerasChecker):
 
     def check(self):
         start_time = time.asctime()
-        sh.mothur("#chimera.uchime(fasta=%s, count=%s, dereplicate=t, processors=8)" %
-                 (self.p.len_filtered_fasta, self.latest_count))
+        sh.mothur("#chimera.uchime(fasta=%s, dereplicate=t, processors=8)" %
+                 (self.p.len_filtered_fasta))
         process_log_file('mothur.chimera.uchime.logfile', self.p.orig_dir, start_time)
         #reads.uchime.pick.count_table
         #reads.uchime.chimeras

@@ -3,9 +3,10 @@ import re
 from collections import Counter
 
 # Internal modules #
-from common import property_cached, AutoPaths, tail, flatten, reverse_compl_with_name
-from fasta.single import FASTQ, FASTA
-from primer import GoodPrimers, WrongPrimers, OnlyFwdPrimers, OnlyRevPrimers, NoPrimers
+from primers import GoodPrimers, WrongPrimers, OnlyFwdPrimers, OnlyRevPrimers, NoPrimers
+from illumitag.common import property_cached, AutoPaths, tail, flatten, reverse_compl_with_name
+from illumitag.fasta.single import FASTQ, FASTA
+from illumitag.helper.barcodes import bar_len
 
 # Third party modules #
 from Bio import SeqIO
@@ -37,11 +38,11 @@ class AssembleGroup(object):
         for g in self.children: g.create()
         for r in self.flipped_reads.parse_primers():
             if r.fwd_pos and r.rev_pos:
-                if r.fwd_pos == 7 and r.rev_pos == -7: self.good_primers.add_read(r)
-                else:                                  self.wrong_primers.add_read(r)
-            elif r.fwd_pos:                            self.only_fwd_primers.add_read(r)
-            elif r.rev_pos:                            self.only_rev_primers.add_read(r)
-            else:                                      self.no_primers.add_read(r)
+                if r.fwd_pos == bar_len and r.rev_pos == -bar_len: self.good_primers.add_read(r.read)
+                else:                                              self.wrong_primers.add_read(r.read)
+            elif r.fwd_pos:                                        self.only_fwd_primers.add_read(r.read)
+            elif r.rev_pos:                                        self.only_rev_primers.add_read(r.read)
+            else:                                                  self.no_primers.add_read(r.read)
         for g in self.children: g.close()
 
     @property
@@ -78,6 +79,7 @@ class Assembled(AssembleGroup, FASTQ):
     def __init__(self, parent):
         # Save parent #
         self.parent, self.outcome = parent, parent
+        self.samples = parent.samples
         # Auto paths #
         self.base_dir = self.outcome.p.assembled_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
@@ -94,7 +96,7 @@ class Assembled(AssembleGroup, FASTQ):
         result['distrib'] = re.findall('^thread[0-99]\tSTAT\tOVERLAPS\t(.+)$', result['raw'], re.M)
         result['distrib'] = map(int, result['distrib'][0].split())
         result['lengths'] = flatten([[i+1]*v for i,v in enumerate(result['distrib'])])
-        result['noalign'] = int(re.findall('^thread[0-99]\tSTAT\tNOALGN\t(.+)$', result['raw'], re.M)[0])
+        result['noalign'] = int(re.findall('\tSTAT\tNOALGN\t(.+)$', result['raw'], re.M)[0])
         return result
 
     def flip_reads(self):
@@ -120,6 +122,7 @@ class Unassembled(AssembleGroup, FASTA):
     def __init__(self, parent):
         # Save parent #
         self.parent, self.outcome = parent, parent
+        self.samples = parent.samples
         # Auto paths #
         self.base_dir = self.outcome.p.unassembled_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)

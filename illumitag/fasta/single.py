@@ -3,8 +3,9 @@ import os, gzip, re
 from collections import Counter, OrderedDict
 
 # Internal modules #
-from common import property_cached, isubsample, Color
-from helper.barcodes import ReadWithBarcodes, ReadWithPrimers
+from illumitag.common import property_cached, isubsample, Color
+from illumitag.helper.barcodes import ReadWithBarcodes
+from illumitag.helper.primers import ReadWithPrimers
 
 # Third party modules #
 import sh, shutil
@@ -81,15 +82,9 @@ class FASTA(object):
     def parse_primers(self):
         return (ReadWithPrimers(r, self.primers) for r in self.parse())
 
-    @property_cached
-    def barcode_counter(self):
-        return Counter((m.name for read in self.parse_barcodes() for m in (read.first, read.last)))
-
-    @property_cached
-    def good_barcodes_breakdown(self):
-        return OrderedDict([(name, self.barcode_counter[name + 'A']) for name in self.barcodes.names])
-
-    def subsample(self, down_to, new_path):
+    def subsample(self, down_to, new_path=None):
+        # Auto path #
+        if not new_path: new_path = self.p.subsample
         # Check size #
         if down_to > len(self):
             message = "Can't subsample %s down to %i. Only down to %i."
@@ -129,3 +124,15 @@ class SizesFASTA(FASTA):
         get_size = lambda x: int(re.findall("size=([0-9]+)", x)[0])
         sizes = (get_size(r.description) for r in self)
         return sum(sizes)
+
+#-----------------------------------------------------------------------------#
+class BarcodedFASTQ(FASTQ):
+    """A Fastq with barcodes still attached"""
+
+    @property_cached
+    def barcode_counter(self):
+        return Counter((str(m) for read in self.parse_barcodes() for m in read.matches))
+
+    @property_cached
+    def good_barcodes_breakdown(self):
+        return OrderedDict([(name, self.barcode_counter[name + 'A']) for name in self.samples.bar_names])

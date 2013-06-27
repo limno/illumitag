@@ -5,12 +5,19 @@ from __future__ import division
 import os, re, glob, random, collections
 
 # Third party modules #
-import numpy
+import sh, numpy
 
 # Expositions #
 from color import Color
 from autopaths import AutoPaths
 from tmpstuff import TmpFile
+
+################################################################################
+def get_git_tag(directory):
+    if os.path.exists(directory + '/.git'):
+        return sh.git("--git-dir=" + directory + '/.git', "describe", "--tags", "--dirty", "--always").strip('\n')
+    else:
+        return None
 
 ################################################################################
 def reverse_compl_with_name(old_seq):
@@ -94,12 +101,12 @@ def tail(path, window=20):
     with open(path, 'r') as f:
         BUFSIZ = 1024
         f.seek(0, 2)
-        bytes = f.tell()
+        num_bytes = f.tell()
         size = window + 1
         block = -1
         data = []
-        while size > 0 and bytes > 0:
-            if bytes - BUFSIZ > 0:
+        while size > 0 and num_bytes > 0:
+            if num_bytes - BUFSIZ > 0:
                 # Seek back one whole BUFSIZ
                 f.seek(block * BUFSIZ, 2)
                 # Read BUFFER
@@ -108,10 +115,10 @@ def tail(path, window=20):
                 # File too small, start from beginning
                 f.seek(0,0)
                 # Only read what was not read
-                data.insert(0, f.read(bytes))
+                data.insert(0, f.read(num_bytes))
             linesFound = data[0].count('\n')
             size -= linesFound
-            bytes -= BUFSIZ
+            num_bytes -= BUFSIZ
             block -= 1
         return '\n'.join(''.join(data).splitlines()[-window:])
 

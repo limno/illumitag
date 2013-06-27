@@ -11,3 +11,4 @@
 # IDE #
 *.sublime-project
 *.sublime-workspace
+.idea

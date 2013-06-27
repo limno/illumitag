@@ -1,9 +1,9 @@
 # Built-in modules #
 
 # Internal modules #
-from common import AutoPaths, isubsample
-from fasta.single import FASTQ, FASTA
-from fasta.other import GroupFile
+from illumitag.common import AutoPaths, isubsample
+from illumitag.fasta.single import FASTQ, FASTA
+from illumitag.fasta.other import GroupFile
 
 # Third party modules #
 
@@ -31,15 +31,15 @@ class Samples(object):
         # Barcodes #
         self.bars_A = [s.fwd_str for s in self]
         self.bars_B = [s.rev_str for s in self]
-        # Barcode names #
-        self.bar_names = ['barcode' + s.num for s in self]
+        # Barcode names #
+        self.bar_names = ['barcode%i' % s.num for s in self]
         self.bar_sided_names = [name + side for name in self.bar_names for side in ('A','B')]
         self.bar_names_a = [name + 'A' for name in self.bar_names]
         self.bar_names_b = [name + 'B' for name in self.bar_names]
-        self.bar_all_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
+        self.all_bar_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
 
 ###############################################################################
-class Sample(FASTA):
+class Sample(FASTQ):
     """All sequences with the same barcode pair grouped together"""
 
     all_paths = """
@@ -49,6 +49,9 @@ class Sample(FASTA):
     /mothur/groups.tsv
     """
 
+    def __repr__(self): return '<%s object for pool %s>' % (self.__class__.__name__, self.parent.id_name)
+    def __str__(self): return self.bar_name
+
     def __init__(self, info, parent):
         # Save attributes #
         self.info = info
@@ -56,13 +59,13 @@ class Sample(FASTA):
         self.pool = parent.pool
         # Basic #
         self.short_name = info['name']
-        self.group_name = bool(info['group'])
-        self.num = bool(info['num'])
+        self.group_name = info['group']
+        self.num = int(info['num'])
         self.used = bool(info['used'])
-        self.fwd_str = bool(info['fwd'])
-        self.rev_str = bool(info['rev'])
+        self.fwd_str = info['fwd']
+        self.rev_str = info['rev']
         # Other #
-        self.bar_name = 'barcode' + self.num
+        self.bar_name = 'barcode%i' % self.num
 
     def load(self):
         # Paths #
@@ -75,13 +78,6 @@ class Sample(FASTA):
         # Mothur #
         self.mothur_fasta = FASTA(self.p.mothur_fasta)
         self.mothur_groups = GroupFile(self.p.mothur_groups)
-
-    def subsample(self, count):
-        self.subsampled.create()
-        for seq in isubsample(self, count):
-            self.subsampled.add_seqrecord(seq)
-        self.subsampled.close()
-        assert len(self.subsampled) == count
 
     def make_mothur_output(self):
         # Trimmed fasta #

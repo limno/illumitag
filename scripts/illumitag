@@ -5,7 +5,7 @@ Parses the command line options using optparse.
 """
 
 # Built-in modules #
-import os, sys, optparse, inspect, subprocess
+import os, sys, optparse, inspect
 
 ###############################################################################
 # Special module location #
@@ -13,23 +13,17 @@ self_path = inspect.getfile(inspect.currentframe())
 presumed_module_dir = os.path.abspath(os.path.dirname(self_path) + '/../')
 sys.path.insert(0, presumed_module_dir)
 
-# Required modules #
-modules = ['illumitag', 'Bio', 'sh', 'patsy', 'pandas', 'statsmodels', 'fastqident']
-
-# We might be missing some modules #
-for module in modules:
-    try:
-        __import__(module)
-    except ImportError as e:
-        if str(e) != 'No module named %s' % module: raise e
-        print 'You do not seem to have the "%s" package properly installed.' \
-              ' Either you never installed it or your $PYTHON_PATH is not set up correctly.' \
-              ' For more instructions see the README file. (%s)' % (module, e)
-        sys.exit()
-
-# Now we can have them #
-import illumitag, sh
+# Imports #
+import illumitag
+from illumitag.helper import dependencies
 from illumitag.common import Color
+
+# Check dependencies #
+dependencies.check_modules()
+dependencies.check_executables()
+
+# Now we can have other modules #
+import sh
 
 # Where the module is #
 module_dir = os.path.dirname(illumitag.__file__)
@@ -40,19 +34,6 @@ if os.path.exists(project_dir + '/.git'):
     version = sh.git("--git-dir=" + project_dir + '/.git', "describe", "--tags", "--dirty", "--always").strip('\n')
 else:
     version = illumitag.__version__
-
-###############################################################################
-# Required executables #
-executables = ['blastall', 'pandaseq', 'mothur']
-
-# We might be missing some executables #
-def check_executable(tool_name):
-    """Raises an exception if the executable *tool_name* is not found."""
-    result = subprocess.call(['which', tool_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if result != 0:
-        message = "The executable '%s' cannot be found in your $PATH" % tool_name
-        raise Exception(message)
-for exe in executables: check_executable(exe)
 
 ###############################################################################
 # The long description #

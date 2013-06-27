@@ -5,8 +5,9 @@ from commands import getstatusoutput
 
 # Internal modules #
 from assemble import Assembled, Unassembled
-from common import property_cached, AutoPaths
-from fasta.paired import PairedFASTQ
+from illumitag.common import property_cached, AutoPaths
+from illumitag.fasta.paired import PairedFASTQ
+from illumitag.graphs import outcome_plots
 
 # Third party modules #
 import sh
@@ -14,10 +15,12 @@ import sh
 ###############################################################################
 class BarcodeGroup(PairedFASTQ):
     """A bunch of sequences all having the same type of barcode outcome"""
+    short_name = "generic_barcode_outcome"
 
     all_paths = """
     /fwd.fastq
     /rev.fastq
+    /graphs/
     /assembled/
     /unassembled/
     """
@@ -28,6 +31,7 @@ class BarcodeGroup(PairedFASTQ):
     def __init__(self, parent):
         # Save parent #
         self.parent, self.pool = parent, parent
+        self.samples = parent.samples
         # Paths #
         self.base_dir = self.pool.p.groups_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
@@ -60,6 +64,11 @@ class BarcodeGroup(PairedFASTQ):
     def check_noalign_counts(self):
         assert self.assembled.stats['noalign'] == self.unassembled.count
 
+    def make_outcome_plots(self):
+        for cls_name in outcome_plots.__all__:
+            cls = getattr(outcome_plots, cls_name)
+            cls(self).plot()
+
 ###############################################################################
 class NoBarcode(BarcodeGroup):
     short_name = "no_barcodes"
@@ -77,7 +86,7 @@ class OneBarcode(BarcodeGroup):
 
     @property_cached
     def counter(self):
-        return Counter(p.matches[0].name for p in self.parse_barcodes())
+        return Counter(str(p.matches[0]) for p in self.parse_barcodes())
 
 #-----------------------------------------------------------------------------#
 class SameBarcode(BarcodeGroup):
@@ -87,12 +96,11 @@ class SameBarcode(BarcodeGroup):
 
     @property_cached
     def set_counter(self):
-        pairs = ((p.matches[0].name, p.matches[1].name) for p in self.parse_barcodes())
-        return Counter(map(frozenset, pairs))
+        return Counter(frozenset(map(str,p.matches)) for p in self.parse_barcodes())
 
     @property_cached
     def counter(self):
-        return Counter((m.name for pair in self.parse_barcodes() for m in pair.matches))
+        return Counter(str(m) for pair in self.parse_barcodes() for m in pair.matches)
 
 #-----------------------------------------------------------------------------#
 class BadBarcode(BarcodeGroup):
@@ -102,12 +110,11 @@ class BadBarcode(BarcodeGroup):
 
     @property_cached
     def set_counter(self):
-        pairs = ((p.matches[0].name, p.matches[1].name) for p in self.parse_barcodes())
-        return Counter(map(frozenset, pairs))
+        return Counter(frozenset(map(str,p.matches)) for p in self.parse_barcodes())
 
     @property_cached
     def counter(self):
-        return Counter((m.name for pair in self.parse_barcodes() for m in pair.matches))
+        return Counter(str(m) for pair in self.parse_barcodes() for m in pair.matches)
 
     @property_cached
     def distribution(self):
@@ -125,8 +132,9 @@ class GoodBarcode(BarcodeGroup):
 
     @property_cached
     def counter(self):
-        return Counter((m.name for pair in self.parse_barcodes() for m in pair.matches))
+        """Keys are of type 'barcode42A'"""
+        return Counter(str(m) for pair in self.parse_barcodes() for m in pair.matches)
 
     @property_cached
     def breakdown(self):
-        return OrderedDict([(name, self.counter[name + 'A']) for name in self.barcodes.names])
+        return OrderedDict([(name, self.counter[name + 'A']) for name in self.samples.bar_names])
