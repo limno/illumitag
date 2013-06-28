@@ -4,6 +4,7 @@ import os, shutil
 # Internal modules #
 from illumitag.common import AutoPaths
 from illumitag.graphs import aggregate_plots
+from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs, SubsampledOTUs
 
 # Third party modules #
 import sh
@@ -15,6 +16,7 @@ class Aggregate(object):
     all_paths = """
     /pools/
     /graphs/
+    /otus/
     """
 
     def __repr__(self): return '<%s object "%s" with %i pools>' % \
@@ -36,7 +38,14 @@ class Aggregate(object):
         self.p = AutoPaths(self.base_dir, self.all_paths)
 
     def load(self):
+        # Children #
         for p in self.pools: p.load()
+        # OTU picking #
+        self.otu_denovo    = DenovoOTUs(self)
+        self.otu_open_ref  = OpenRefOTUs(self)
+        self.otu_step      = StepOTUs(self)
+        self.otu_subsample = SubsampledOTUs(self)
+        # Save state #
         self.loaded = True
 
     def make_plots(self):

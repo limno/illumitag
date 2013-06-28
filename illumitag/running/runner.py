@@ -57,6 +57,8 @@ class PoolRunner(object):
             name, params = step.items()[0]
             fns = self.find_fns(name)
             self.run_step(name, fns, **params)
+        # Report success #
+        print "Success. Results are in %s" % self.parent.base_dir
 
     def find_fns(self, name):
         # Functions #
@@ -69,6 +71,8 @@ class PoolRunner(object):
         elif hasattr(self.pool.first.first, name): fns = [getattr(ag, name) for o in self.pool.outcomes for ag in o.children if hasattr(ag, name)]
         # Check primer groups #
         elif hasattr(self.pool.first.first.first, name): fns = [getattr(pg, name) for o in self.pool.outcomes for ag in o.children for pg in ag.children if hasattr(pg, name)]
+        # Check samples #
+        elif hasattr(self.pool.samples.first, name): fns = [getattr(s, name) for s in self.pool.samples]
         # None found #
         if not fns: raise Exception("Could not find function '%s'" % name)
         # Return #

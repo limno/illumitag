@@ -4,10 +4,9 @@ from itertools import izip
 from collections import Counter
 
 # Internal modules #
-from illumitaq.common import AutoPaths, JobRunner, TmpFile
-from illumitaq.common import flatten
-from illumitaq.otu_plots import cluster_distribution, otu_distribution, sample_sums, otu_sums
-from illumitaq.otu_plots import taxa_hist
+from illumitag.common.autopaths import AutoPaths
+from illumitag.common.tmpstuff import TmpFile
+from illumitag.common import flatten
 
 # Third party modules #
 import shutil, sh, pandas
@@ -17,7 +16,7 @@ from rpy2 import robjects as ro
 home = os.environ['HOME'] + '/'
 
 ###############################################################################
-class OTUs(JobRunner):
+class OTUs(object):
     dist_method = 'horn'
 
     default_steps = [
@@ -231,12 +230,6 @@ class OTUs(JobRunner):
         ro.r("boxplot(mod2)")
         ro.r("plot(TukeyHSD(mod2))")
         ro.r("dev.off()")
-
-    def plot_cluster_distribution(self): cluster_distribution(self)
-    def plot_otu_distribution(self): otu_distribution(self)
-    def plot_sample_sums(self): sample_sums(self)
-    def plot_otu_sums(self): otu_sums(self)
-    def plot_taxa_hist(self): taxa_hist(self)
 
 ###############################################################################
 class DenovoOTUs(OTUs):

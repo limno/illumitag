@@ -127,6 +127,7 @@ class Pool(object):
         self.slurm_job.launch()
 
     def create_outcomes(self):
+        if not self.loaded: self.load()
         for o in self.outcomes: o.create()
         for r in self.raw.parse_barcodes():
             if len(r.matches) == 0:                              self.no_barcodes.add_pair(r)
@@ -137,9 +138,9 @@ class Pool(object):
         for o in self.outcomes: o.close()
 
     def create_samples(self):
+        if not self.loaded: self.load()
         for sample in self.samples: sample.create()
-        for r in self.quality_reads.parse_barcodes():
-            self.samples[r.first.index].add_read(r)
+        for r in self.quality_reads.parse_barcodes(): r.first.sample.add_read(r.read)
         for sample in self.samples: sample.close()
 
     def check_fastq_version(self):

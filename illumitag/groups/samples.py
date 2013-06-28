@@ -16,6 +16,9 @@ class Samples(object):
     def __len__(self): return len(self.children)
     def __getitem__(self, key): return self.children[key]
 
+    @property
+    def first(self): return self.children[0]
+
     def __init__(self, parent):
         # Basic #
         self.parent, self.pool = parent, parent
