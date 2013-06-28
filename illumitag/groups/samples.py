@@ -32,13 +32,13 @@ class Samples(object):
         # Children #
         for s in self: s.load()
         # Barcodes #
-        self.bars_A = [s.fwd_str for s in self]
-        self.bars_B = [s.rev_str for s in self]
+        self.bars_F = [s.fwd_str for s in self]
+        self.bars_R = [s.rev_str for s in self]
         # Barcode names #
         self.bar_names = ['barcode%i' % s.num for s in self]
-        self.bar_sided_names = [name + side for name in self.bar_names for side in ('A','B')]
-        self.bar_names_a = [name + 'A' for name in self.bar_names]
-        self.bar_names_b = [name + 'B' for name in self.bar_names]
+        self.bar_sided_names = [name + side for name in self.bar_names for side in ('F','R')]
+        self.bar_names_F = [name + 'F' for name in self.bar_names]
+        self.bar_names_R = [name + 'R' for name in self.bar_names]
         self.all_bar_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
 
 ###############################################################################

@@ -18,20 +18,20 @@ class BarcodeMatch(object):
         # Attributes #
         self.bar = bar
         # Default values #
-        index_A, index_B = -1, -1
+        index_F, index_R = -1, -1
         self.set, self.sample = None, None
         # Search #
-        try: index_A = samples.bars_A.index(bar)
+        try: index_F = samples.bars_F.index(bar)
         except ValueError: pass
-        try: index_B = samples.bars_B.index(bar)
+        try: index_R = samples.bars_R.index(bar)
         except ValueError: pass
         # Record #
-        if index_A is not -1:
-            self.set = "A"
-            self.sample = samples[index_A]
-        if index_B is not -1:
-            self.set = "B"
-            self.sample = samples[index_B]
+        if index_F is not -1:
+            self.set = "F"
+            self.sample = samples[index_F]
+        if index_R is not -1:
+            self.set = "R"
+            self.sample = samples[index_R]
 
 ###############################################################################
 class ReadWithBarcodes(object):

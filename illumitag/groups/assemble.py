@@ -48,7 +48,7 @@ class AssembleGroup(object):
     @property
     def flipped_iterator(self):
         for r in self.parse_barcodes():
-            if r.first.set == 'A' or r.last.set == 'B': yield reverse_compl_with_name(r.read)
+            if r.first.set == 'R' or r.last.set == 'F': yield reverse_compl_with_name(r.read)
             else: yield r.read
 
     @property_cached

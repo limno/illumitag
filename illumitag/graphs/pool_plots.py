@@ -68,8 +68,8 @@ class SalvageHist(Graph):
     def plot(self):
         # Data #
         columns = [g.doc for g in self.parent]
-        rows = [name + side for name in self.parent.samples.bar_names for side in ('A','B')]
-        data = [[g.counter[name + side] for g in self.parent.outcomes] for name in self.parent.samples.bar_names for side in ('A','B')]
+        rows = self.parent.samples.bar_sided_names
+        data = [[g.counter[sided_name] for g in self.parent.outcomes] for sided_name in rows]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
         fig = pyplot.figure()
