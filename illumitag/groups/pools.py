@@ -28,6 +28,7 @@ class Pool(object):
     /samples/
     /groups/
     /graphs/
+    /logs/
     /results/mothur/reads.fasta
     /results/mothur/reads.qual
     /results/mothur/groups.tsv
@@ -112,15 +113,17 @@ class Pool(object):
         if not self.loaded: self.load()
         self.runner.run(*args, **kwargs)
 
-    def run_slurm(self, steps, **kwargs):
+    def run_slurm(self, steps=None, **kwargs):
+        kwargs.update({})
+        # Check loaded #
+        if not self.loaded: self.load()
         # Make script #
         command = """steps = %s
                      pool = [p for p in illumitag.pools if str(p)=='%s'][0]
-                     pool(steps)"""
-        command = command % (steps, self)
-        command = '\n'.join(l.lstrip(' ') for l in command.split('\n') if l)
+                     pool(steps)""" % (steps, self)
         # Send it #
-        self.slurm_job = SLURMJob(command, log_dir=self.pool.p.logs_dir, **kwargs)
+        self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self),
+                                  time='12:00:00', email=None, **kwargs)
         self.slurm_job.launch()
 
     def create_outcomes(self):

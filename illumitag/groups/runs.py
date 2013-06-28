@@ -1,31 +1,27 @@
 # Built-in modules #
 
 # Third party modules #
+from aggregate import Aggregate
+from illumitag.common import AutoPaths
 
 # Internal modules #
 
 ###############################################################################
-class Run(object):
+class Run(Aggregate):
     """An illumina run containing several pools."""
 
-    all_paths = """
-    /
-    """
-
-    def __repr__(self): return '<%s object number %i>' % (self.__class__.__name__, self.num)
-    def __iter__(self): return iter(self.pools)
-    def __len__(self): return self.count
-    def __getitem__(self, key): return self.samples[key]
-
-    @property
-    def first(self): return self.pools[0]
+    def __repr__(self): return '<%s object number %i with %i pools>' % \
+                               (self.__class__.__name__, self.num, len(self))
 
     @property
     def label(self): return self.first.run_label
 
-    def __init__(self, num, pools):
+    def __init__(self, num, pools, out_dir):
+        # Attributes #
         self.num = num
+        self.name = "run%i" % num
         self.pools = pools
-
-    def load(self):
-        for p in self.pools: p.load()
+        self.loaded = False
+        # Dir #
+        self.base_dir = out_dir + self.name + '/'
+        self.p = AutoPaths(self.base_dir, self.all_paths)

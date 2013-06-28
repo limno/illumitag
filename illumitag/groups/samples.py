@@ -1,7 +1,7 @@
 # Built-in modules #
 
 # Internal modules #
-from illumitag.common import AutoPaths, isubsample
+from illumitag.common import AutoPaths
 from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.fasta.other import GroupFile
 
