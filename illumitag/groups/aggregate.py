@@ -48,6 +48,10 @@ class Aggregate(object):
         # Save state #
         self.loaded = True
 
+    def combine_reads(self):
+        pass
+        #shell_output('cat %s >> %s' % (' '.join([pool.qiime_fasta.path for pool in self.exp1]), self.p.orig_reads_fasta))
+
     def make_plots(self):
         # Check loaded #
         if not self.loaded: self.load()

@@ -1,10 +1,9 @@
 # Built-in modules #
-import json
+import os, json
 from collections import defaultdict
 
 # Third party modules #
 import sh, fastqident
-from Bio import SeqIO
 from Bio.SeqIO.FastaIO import FastaWriter
 
 # Internal modules #
@@ -87,6 +86,7 @@ class Pool(object):
         self.children = self.outcomes
         # The good reads #
         self.quality_reads = self.good_barcodes.assembled.good_primers.len_filtered
+        self.trimmed_reads = self.good_barcodes.assembled.good_primers.trimmed_fastq
         # Primer size #
         self.trim_fwd = bar_len + self.primers.fwd_len
         self.trim_rev = bar_len + self.primers.rev_len
@@ -150,42 +150,34 @@ class Pool(object):
 
     def make_mothur_output(self):
         # Trimmed fasta #
-        self.mothur_fasta.create()
-        for r in self.quality_reads:
-            SeqIO.write(r[self.trim_fwd:-self.trim_rev], self.mothur_fasta.handle, 'fasta')
-        self.mothur_fasta.close()
-        # Trimmed qual #
-        self.mothur_qual.create()
-        for r in self.quality_reads:
-            SeqIO.write(r[self.trim_fwd:-self.trim_rev], self.mothur_qual.handle, 'qual')
-        self.mothur_qual.close()
+        if os.path.exists(self.mothur_fasta.path): os.remove(self.mothur_fasta.path)
+        os.symlink(self.good_barcodes.assembled.good_primers.trimmed_fasta.path, self.mothur_fasta.path)
         # The groups file #
         self.mothur_groups.create()
         for r in self.quality_reads.parse_barcodes():
-            bar_name = str(r.first.sample)
-            read_name = '%s\tpool%i-%s\n' % (r.read.id, self.num, bar_name)
-            #read_name = '%s\t%s-%s\n' % (r.read.id, self.label_name, self.sample_labels[bar_name])
+            sample_name = r.first.sample.short_name
+            read_name = '%s\t%s\n' % (r.read.id, sample_name)
             self.mothur_groups.handle.write(read_name)
         self.mothur_groups.close()
 
     def make_qiime_output(self):
         # Prepare fasta writer #
-        fasta_handle = open(self.qiime_fasta.path, 'w')
-        fasta = FastaWriter(fasta_handle, wrap=0)
-        fasta.write_header()
+        handle = open(self.qiime_fasta.path, 'w')
+        writer = FastaWriter(handle, wrap=0)
+        writer.write_header()
         # Counter #
         counter = defaultdict(int)
         # Do it #
         for r in self.quality_reads.parse_barcodes():
-            bar_name = str(r.first.sample)
-            counter[bar_name] += 1
-            r.read.id = 'pool%i-%s_%i %s' % (self.num, bar_name, counter[bar_name], r.read.id)
-            #r.read.id = '%s-%s_%i %s' % (self.label_name, self.sample_labels[bar_name], counter[bar_name], r.read.id)
-            r.read.description = "orig_bc=%s new_bc=%s bc_diffs=0" % (r.first.bar, r.first.bar)
-            fasta.write_record(r.read[self.trim_fwd:-self.trim_rev])
+            sample_name = r.first.sample.short_name
+            counter[sample_name] += 1
+            r.read.id = '%s_%i %s' % (sample_name, counter[sample_name], r.read.id)
+            bar_seq = r.seq.tostring()[0:bar_len]
+            r.read.description = "orig_bc=%s new_bc=%s bc_diffs=0" % (bar_seq, bar_seq)
+            writer.write_record(r.read[self.trim_fwd:-self.trim_rev])
         # Close #
-        fasta.write_footer()
-        fasta_handle.close()
+        writer.write_footer()
+        handle.close()
 
     def make_pool_plots(self):
         for cls_name in pool_plots.__all__:

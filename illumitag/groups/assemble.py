@@ -21,6 +21,10 @@ class AssembleGroup(object):
     def __len__(self): return self.count
 
     def load(self):
+        # Extra #
+        self.pool = self.outcome.pool
+        self.samples = self.pool.samples
+        self.primers = self.pool.primers
         # All primer outcomes #
         self.good_primers     = GoodPrimers(self)
         self.wrong_primers    = WrongPrimers(self)
@@ -29,10 +33,6 @@ class AssembleGroup(object):
         self.no_primers       = NoPrimers(self)
         self.children = (self.good_primers, self.wrong_primers, self.only_fwd_primers, self.only_rev_primers, self.no_primers)
         self.first = self.good_primers
-        # Extra #
-        self.pool = self.outcome.pool
-        self.samples = self.pool.samples
-        self.primers = self.pool.primers
 
     def make_primer_groups(self):
         for g in self.children: g.create()
@@ -107,6 +107,9 @@ class Assembled(AssembleGroup, FASTQ):
 
     def len_filter(self):
         for g in self.children: g.len_filter()
+
+    def trim_barcodes(self):
+        for g in self.children: g.trim_barcodes()
 
 #-----------------------------------------------------------------------------#
 class Unassembled(AssembleGroup, FASTA):

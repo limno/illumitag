@@ -26,6 +26,8 @@ class PrimerGroup(object):
     /n_filtered.fastq
     /qual_filtered.fastq
     /len_filtered.fastq
+    /trimmed.fastq
+    /trimmed.fasta
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -35,6 +37,7 @@ class PrimerGroup(object):
         # Save parent #
         self.parent = parent
         self.samples = parent.samples
+        self.pool = self.parent.pool
         # Auto paths #
         self.base_dir = parent.p.groups_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
@@ -47,6 +50,8 @@ class PrimerGroup(object):
         if self.parent == 'assembled':
             self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)
             self.len_filtered = BarcodedFASTQ(self.p.len_filtered_fastq, samples=self.samples)
+            self.trimmed_fastq = FASTQ(self.p.trimmed_fastq)
+            self.trimmed_fasta = FASTA(self.p.trimmed_fasta)
         # Extra #
         self.load()
 
@@ -79,6 +84,13 @@ class PrimerGroup(object):
                 yield read
         self.len_filtered.write(good_len_iterator(self.qual_filtered))
 
+    def trim_barcodes(self):
+        def no_bars_iterator(reads):
+            for read in reads:
+                yield read[self.pool.trim_fwd:-self.pool.trim_rev]
+        self.trimmed_fastq.write(no_bars_iterator(self.len_filtered))
+        self.trimmed_fastq.to_fasta(self.trimmed_fasta.path)
+
     def create(self): self.orig_reads.create()
     def add_read(self, read): self.orig_reads.add_read(read)
     def close(self): self.orig_reads.close()
@@ -89,25 +101,24 @@ class GoodPrimers(PrimerGroup):
     short_name = 'good_primers'
 
     all_paths = PrimerGroup.all_paths + """
-    /len_filtered.fasta
+    /
     /chimeras_ref/
     /chimeras_denovo/
     """
 
     def load(self):
-        self.uchime_ref = UchimeRef(self.p.len_filtered_fasta, self.p.chimeras_ref_dir, self)
-        self.uchime_denovo = UchimeDenovo(self.p.len_filtered_fasta, self.p.chimeras_denovo_dir, self)
+        self.uchime_ref = UchimeRef(self.p.trimmed_fasta, self.p.chimeras_ref_dir, self)
+        self.uchime_denovo = UchimeDenovo(self.p.trimmed_fasta, self.p.chimeras_denovo_dir, self)
 
     def check_chimeras(self):
         # Only assembled sequences #
         if self.parent != 'assembled': return
-        # Convert #
-        message = "----> Converting %s of pool %i to FASTA"
-        print Color.l_ylw + message % (self.parent.parent.short_name, self.parent.parent.pool.num) + Color.end
+        # Message #
+        message = "----> Checking pool %i for chimeras"
+        print Color.l_ylw + message % (self.parent.parent.pool.num) + Color.end
         sys.stdout.flush()
-        self.len_filtered.to_fasta(self.p.len_filtered_fasta)
         # Check empty #
-        if not self.len_filtered:
+        if not self.uchime_ref.fasta:
             print Color.l_ylw + 'No chimeras to check for %s (empty set)' % (self,) + Color.end
             sys.stdout.flush()
             return

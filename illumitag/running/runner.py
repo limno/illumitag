@@ -27,6 +27,7 @@ class PoolRunner(object):
         {'discard_reads_with_n':      {}},
         {'quality_filter':            {}},
         {'len_filter':                {}},
+        {'trim_barcodes':             {}},
         ### Early exit ##
         {'make_mothur_output':        {}},
         {'make_qiime_output':         {}},
