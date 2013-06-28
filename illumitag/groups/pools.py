@@ -114,7 +114,6 @@ class Pool(object):
         self.runner.run(*args, **kwargs)
 
     def run_slurm(self, steps=None, **kwargs):
-        kwargs.update({})
         # Check loaded #
         if not self.loaded: self.load()
         # Make script #
@@ -122,8 +121,9 @@ class Pool(object):
                      pool = [p for p in illumitag.pools if str(p)=='%s'][0]
                      pool(steps)""" % (steps, self)
         # Send it #
-        self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self),
-                                  time='12:00:00', email=None, **kwargs)
+        if 'time' not in kwargs: kwargs['time'] = '12:00:00'
+        if 'email' not in kwargs: kwargs['email'] = None
+        self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self), **kwargs)
         self.slurm_job.launch()
 
     def create_outcomes(self):

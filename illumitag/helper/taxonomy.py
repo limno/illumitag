@@ -4,6 +4,7 @@ import os, time, shutil, tempfile
 # Internal modules #
 from illumitag.common import AutoPaths
 from illumitag.fasta.single import FASTA
+from illumitag.helper.mothur import process_log_file
 
 # Third party modules #
 import sh
@@ -37,25 +38,25 @@ class Classifier(object):
 
     def assign_mothur(self):
         # Prepare #
-        directory = tempfile.mkdtemp() + '/'
-        os.symlink(self.fasta.path, directory + 'reads.fasta')
+        tmp_dir = tempfile.mkdtemp() + '/'
+        os.symlink(self.fasta.path, tmp_dir + 'reads.fasta')
         # Run #
         start_time = time.asctime()
         sh.mothur("#classify.seqs(fasta=%s, reference=%s, taxonomy=%s, cutoff=%i, processors=8, probs=F)" %
-                 (directory + 'reads.fasta', train_db_path, train_tax_path, 80))
+                 (tmp_dir + 'reads.fasta', train_db_path, train_tax_path, 80))
         process_log_file('mothur.classify.seqs.logfile', self.base_dir, start_time)
         # Save the flipped ids #
-        flipped_ids = [line.strip('\n') for line in open(directory + 'reads.pds.wang.flip.accnos')]
+        flipped_ids = [line.strip('\n') for line in open(tmp_dir + 'reads.pds.wang.flip.accnos')]
         # Add sample name via hash table #
-        otu_to_sample_hash = dict((r.description.split() for r in self.fasta.parse()))
+        id_to_sample_hash = dict((r.description.split() for r in self.fasta.parse()))
         # Remove stupid quotes #
-        with open(self.p.rep_set_taxonomy, 'w') as handle:
-            for line in open(directory + 'reads.pds.wang.taxonomy', 'r'):
-                name, taxon = line.split()
-                if name in flipped_ids: taxon = "unknown;unclassified;unclassified;unclassified;unclassified;unclassified;"
-                handle.write(name + ' ' + otu_to_sample_hash[name] + '\t' + taxon.replace('"','') + '\n')
+        with open(self.p.reads_taxonomy, 'w') as handle:
+            for line in open(tmp_dir + 'reads.pds.wang.taxonomy', 'r'):
+                the_id, taxon = line.split()
+                if the_id in flipped_ids: taxon = "unknown;unclassified;unclassified;unclassified;unclassified;unclassified;"
+                handle.write(the_id + ' ' + id_to_sample_hash[the_id] + '\t' + taxon.replace('"','') + '\n')
         # Cleanup #
-        shutil.rmtree(directory)
+        shutil.rmtree(tmp_dir)
 
     def assign_crest(self):
         # Run #

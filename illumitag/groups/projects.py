@@ -16,11 +16,11 @@ class Project(Aggregate):
     @property
     def long_name(self): return self.first.project_long_name
 
-    def __init__(self, name, pools, out_dir):
+    def __init__(self, name, pools, projs_dir):
         # Attributes #
         self.name = name
         self.pools = pools
         self.loaded = False
         # Dir #
-        self.base_dir = out_dir + self.name + '/'
+        self.base_dir = projs_dir + self.name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
