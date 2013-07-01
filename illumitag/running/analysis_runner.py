@@ -16,9 +16,9 @@ class AnalysisRunner(Runner):
         {'combine_reads':             {}},
         ### OTUs ###
         {'run_denovo':                {}},
+        #{'run_subsample':             {}},
         #{'run_open_ref':              {}},
         #{'run_progressive':           {}},
-        #{'run_subsample':             {}},
         ### Plots ###
         #{'make_pool_plots':           {'threads':False}},
         #{'make_outcome_plots':        {'threads':False}},

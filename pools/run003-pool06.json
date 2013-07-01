@@ -8,7 +8,7 @@
     "pool_num":      6,
     "pool_id":       "Sample_STB33",
     "forward_reads": "STB33_TGACCA_L001_R1_001.fastq.gz",
-    "reverse_reads": "STB33_TGACCA_L001_R2_001.fastq.fastq.gz",
+    "reverse_reads": "STB33_TGACCA_L001_R2_001.fastq.gz",
 
     "project":       "Andrea",
     "project_name":  "Andrea's study",

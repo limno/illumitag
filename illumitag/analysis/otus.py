@@ -25,8 +25,13 @@ class OTUs(object):
     /table/table.biom
     /table/table.csv
     /table/table_filtered.csv
+    /table/table_transposed.csv
     /graphs/
+    /subsampled/
     """
+
+    def __repr__(self): return '<%s object %s of %s>' % \
+                               (self.__class__.__name__, self.short_name, self.parent)
 
     def __init__(self, parent):
         # Save parent #
@@ -43,16 +48,23 @@ class OTUs(object):
         # Files #
         self.table = TSVTable(self.p.csv_table)
         self.table_filtered = TSVTable(self.p.csv_table_filtered)
+        self.table_transposed = TSVTable(self.p.csv_table_transposed)
         # Children #
         self.stats = StatsOnOTU(self, self.table_filtered)
+        # Deferred import #
+        from illumitag.analysis.subsample import SubsampledOTUs
+        self.subsampled = SubsampledOTUs(self)
 
     def run(self):
+        # Standard #
         self.pick_otus()
         self.pick_rep_set()
         self.make_otu_table()
         self.filter_otu_table()
-        self.compute_stats()
         self.make_otu_plots()
+        self.compute_stats()
+        # Subsample #
+        self.subsampled.run()
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')
@@ -71,12 +83,14 @@ class OTUs(object):
         # Format it #
         self.table.remove_first_line()
         self.table.replace_title('#OTU ID', 'OTUID')
+        self.table.to_integer()
         # Make a filtered version #
         shutil.copy(self.table.path, self.table_filtered.path)
-        self.table_filtered.to_integer()
         self.table_filtered.filter_line_sum(minimum=3) # Min cluster size
         self.table_filtered.transpose()
         self.table_filtered.filter_line_sum(minimum=10) # Min reads in sample
+        # Make a transposed version #
+        self.table_filtered.transpose(path=self.table_transposed.path)
 
     def compute_stats(self):
         self.stats.run()

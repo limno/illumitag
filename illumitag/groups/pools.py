@@ -124,7 +124,7 @@ class Pool(object):
         if 'time' not in kwargs: kwargs['time'] = '12:00:00'
         if 'email' not in kwargs: kwargs['email'] = None
         self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self), **kwargs)
-        self.slurm_job.launch()
+        return self.slurm_job.launch()
 
     def create_outcomes(self):
         if not self.loaded: self.load()
@@ -151,7 +151,7 @@ class Pool(object):
     def make_mothur_output(self):
         # Trimmed fasta #
         if os.path.exists(self.mothur_fasta.path): os.remove(self.mothur_fasta.path)
-        os.symlink(self.good_barcodes.assembled.good_primers.trimmed_fasta.path, self.mothur_fasta.path)
+        os.symlink(self.trimmed_reads.path, self.mothur_fasta.path)
         # The groups file #
         self.mothur_groups.create()
         for r in self.quality_reads.parse_barcodes():

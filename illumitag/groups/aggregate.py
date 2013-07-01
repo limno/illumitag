@@ -37,6 +37,7 @@ class Aggregate(object):
 
     all_paths = """
     /graphs/
+    /logs/
     """
 
     def __repr__(self): return '<%s object "%s" with %i pools>' % \
@@ -59,7 +60,8 @@ class Aggregate(object):
 
     def load(self):
         # Children #
-        for p in self.pools: p.load()
+        for p in self.pools:
+            if not p.loaded: p.load()
         # Analysis #
         self.analysis = Analysis(self)
         # Save state #
@@ -77,7 +79,7 @@ class Aggregate(object):
         for p in self.pools:
             if not p.loaded: p.load()
         # Call function #
-        for p in self.pools: p.run_slurm(steps, **kwargs)
+        return [p.run_slurm(steps, **kwargs) for p in self.pools]
 
     def make_plots(self):
         # Check loaded #

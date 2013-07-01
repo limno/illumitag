@@ -86,7 +86,7 @@ class StatsOnOTU(object):
         ro.r("data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.table.path))
         ro.r("meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.meta_data_path))
         ro.r("data_ordered = data[order(row.names(data)),]")
-        # Meta data #
+        # Meta data #
         ro.r("meta = meta[row.names(data),]")
         ro.r("meta_ordered = meta[order(row.names(meta)),]")
         ro.r("meta_ordered$pool = factor(meta_ordered$pool)")
@@ -118,7 +118,7 @@ class StatsOnOTU(object):
         ro.r("data_sqrt = sqrt(data_ordered)")
         ro.r("data_wa = wisconsin(data_sqrt)")
         ro.r("data_dist = vegdist(data_wa, method='%s')" % self.dist_method)
-        # Meta data #
+        # Meta data #
         ro.r("meta = meta[row.names(data),]")
         ro.r("meta_ordered = meta[row.names(meta),]")
         ro.r("pool = factor(meta[,1])")

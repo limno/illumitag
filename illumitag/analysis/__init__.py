@@ -3,9 +3,7 @@
 # Internal modules #
 from illumitag.common import AutoPaths
 from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs
-from illumitag.analysis.subsample import SubsampledOTUs
 from illumitag.running.analysis_runner import AnalysisRunner
-from illumitag.common.slurm import SLURMJob
 from illumitag.fasta.single import FASTA
 
 # Third party modules #
@@ -43,23 +41,9 @@ class Analysis(object):
         self.otu_denovo    = DenovoOTUs(self)
         self.otu_open_ref  = OpenRefOTUs(self)
         self.otu_step      = StepOTUs(self)
-        self.otu_subsample = SubsampledOTUs(self)
 
     def run(self, *args, **kwargs):
         self.runner.run(*args, **kwargs)
-
-    def run_slurm(self, steps=None, **kwargs):
-        # Check loaded #
-        if not self.loaded: self.load()
-        # Make script #
-        command = """steps = %s
-                     analysis = [pj for p in illumitag.pools if str(pj)=='%s'][0]
-                     analysis(steps)""" % (steps, self.parent.name)
-        # Send it #
-        if 'time' not in kwargs: kwargs['time'] = '12:00:00'
-        if 'email' not in kwargs: kwargs['email'] = None
-        self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self), **kwargs)
-        self.slurm_job.launch()
 
     def combine_reads(self):
         shell_output('cat %s > %s' % (' '.join([pool.qiime_fasta.path for pool in self]), self.qiime_reads.path))

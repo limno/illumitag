@@ -32,6 +32,7 @@ pools_dir = repos_dir + 'pools/'
 # Load all pools #
 json_paths = glob.glob(pools_dir + '*.json')
 pools = [Pool(j, view_dir + 'pools/') for j in json_paths]
+pools.sort(key=lambda x: str(x))
 
 # Compose into runs #
 run_nums = sorted(list(set([p.run_num for p in pools])))

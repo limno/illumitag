@@ -1,9 +1,10 @@
 # Built-in modules #
-import os, sys, time, shutil
+import os, time, shutil, re
 from collections import OrderedDict
+
 # Internal modules #
 import illumitag
-from illumitag.common import get_git_tag
+from illumitag.common import get_git_tag, Color
 from illumitag.common.tmpstuff import TmpFile
 
 # Third party modules #
@@ -31,7 +32,7 @@ class SLURMCommand(object):
         ('email'     , {'needed': False, 'tag': '#SBATCH --mail-user %s', 'default': 'lucas.sinclair@ebc.uu.se'}),
         ('email-when', {'needed': True,  'tag': '#SBATCH --mail-type=%s', 'default': 'END'}),
         ('qos'       , {'needed': False, 'tag': '#SBATCH --qos=%s',       'default': 'short'}),
-        ('dependency', {'needed': False, 'tag': '#SBATCH -d %s',          'default': 'after:1'}),
+        ('dependency', {'needed': False, 'tag': '#SBATCH -d %s',          'default': 'afterok:1'}),
     ))
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
@@ -64,9 +65,13 @@ class SLURMCommand(object):
         else:
             path = TmpFile.from_string(self.script).path
         # Do it #
-        sh.sbatch(path, _out=sys.stdout)
+        sbatch_out = sh.sbatch(path)
+        print Color.i_blu + "sbatch:" + Color.end + " " + str(sbatch_out),
         # Clean up #
         if not self.save_script: os.remove(path)
+        # Return id #
+        self.id = int(re.findall("Submitted batch job ([0-9]+)", str(sbatch_out))[0])
+        return self.id
 
 ################################################################################
 class SLURMJob(object):
@@ -108,4 +113,5 @@ class SLURMJob(object):
         self.slurm_command = SLURMCommand(script, save_script=script_path, out_file=output_path, **kwargs)
 
     def launch(self):
-        self.slurm_command.launch()
+        self.id = self.slurm_command.launch()
+        return self.id

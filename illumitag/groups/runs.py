@@ -30,3 +30,5 @@ class Run(Aggregate):
         # Dir #
         self.base_dir = out_dir + self.name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Extra #
+        self.meta_data_path = None
