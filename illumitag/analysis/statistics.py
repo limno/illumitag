@@ -55,8 +55,8 @@ class StatsOnOTU(object):
         script += ["library(ggplot2)"]
         script += ["library(compare)"]
         # Load data #
-        script += ["data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.table.path)]
-        script += ["meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.meta_data_path)]
+        script += ["data = read.table('%s', header=TRUE, sep='\\t', row.names='OTUID')" % (self.table.path)]
+        script += ["meta = read.table('%s', header=TRUE, sep='\\t', row.names=1)" % (self.meta_data_path)]
         # Compute nmds #
         script += ["ord = metaMDS(data, distance='%s', trymax=200)" % self.dist_method]
         script += ["nmds = scores(ord)"]
@@ -118,7 +118,9 @@ class StatsOnOTU(object):
         ro.r("data_sqrt = sqrt(data_ordered)")
         ro.r("data_wa = wisconsin(data_sqrt)")
         ro.r("data_dist = vegdist(data_wa, method='%s')" % self.dist_method)
+        # Meta data #
         ro.r("meta = meta[row.names(data),]")
+        ro.r("meta_ordered = meta[row.names(meta),]")
         ro.r("pool = factor(meta[,1])")
         ro.r("chemistry = factor(meta[,3])")
         # Chemistry group #
@@ -129,7 +131,7 @@ class StatsOnOTU(object):
         ro.r("test = anova(mod1)")
         result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
         with open(self.p.beta_dispersion_anova, 'w') as handle: handle.write(result)
-        ro.r("pdf(file='%s')" % self.p.beta_dispersion_run_plots)
+        ro.r("pdf(file='%s')" % self.p.beta_dispersion_chemistry_plots)
         ro.r("plot(mod1)")
         ro.r("boxplot(mod1)")
         ro.r("plot(TukeyHSD(mod1))")

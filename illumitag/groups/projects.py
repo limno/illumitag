@@ -32,3 +32,12 @@ class Project(Aggregate):
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Extra #
         self.meta_data_path = illumitag.repos_dir + 'projects/' + self.name + '.csv'
+
+    def run_pools_slurm(self, steps=None, **kwargs):
+        # Test case #
+        if self.name == 'test':
+            kwargs['time'] = '00:15:00'
+            kwargs['qos'] = False
+            kwargs['email'] = '/dev/null'
+        # Call function #
+        Aggregate.run_pools_slurm(self, **kwargs)

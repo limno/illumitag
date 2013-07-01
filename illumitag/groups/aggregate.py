@@ -76,11 +76,6 @@ class Aggregate(object):
         # Check loaded #
         for p in self.pools:
             if not p.loaded: p.load()
-        # Test case #
-        if self.name == 'test':
-            kwargs['time'] = '00:15:00'
-            kwargs['qos'] = False
-            kwargs['email'] = '/dev/null'
         # Call function #
         for p in self.pools: p.run_slurm(steps, **kwargs)
 
