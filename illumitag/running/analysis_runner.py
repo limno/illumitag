@@ -1,23 +1,24 @@
 # Built-in modules #
 
 # Internal modules #
+from illumitag.running import Runner
 
 # Third party modules #
 
 # Constants #
 
 ###############################################################################
-class AnalysisRunner(object):
-    """Will run stuff on an aggregate"""
+class AnalysisRunner(Runner):
+    """Will run stuff on an aggregate's analysis"""
 
     default_steps = [
-        ## Start ###
+        ### Start ###
         {'combine_reads':             {}},
-        ## OTUs ###
+        ### OTUs ###
         {'run_denovo':                {}},
-        {'run_open_ref':              {}},
-        {'run_progressive':           {}},
-        {'run_subsample':             {}},
+        #{'run_open_ref':              {}},
+        #{'run_progressive':           {}},
+        #{'run_subsample':             {}},
         ### Plots ###
         #{'make_pool_plots':           {'threads':False}},
         #{'make_outcome_plots':        {'threads':False}},

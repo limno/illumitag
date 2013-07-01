@@ -2,9 +2,11 @@
 
 # Internal modules #
 from illumitag.common import AutoPaths
-from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs, SubsampledOTUs
+from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs
+from illumitag.analysis.subsample import SubsampledOTUs
 from illumitag.running.analysis_runner import AnalysisRunner
 from illumitag.common.slurm import SLURMJob
+from illumitag.fasta.single import FASTA
 
 # Third party modules #
 from shell_command import shell_output
@@ -18,7 +20,7 @@ class Analysis(object):
     /otus/
     """
 
-    def __repr__(self): return '<%s object "%s" on %s>' % \
+    def __repr__(self): return '<%s object on %s>' % \
                                (self.__class__.__name__, self.parent)
     def __iter__(self): return iter(self.pools)
     def __len__(self): return len(self.pools)
@@ -27,18 +29,23 @@ class Analysis(object):
     def __init__(self, aggregate):
         # Attributes #
         self.aggregate, self.parent = aggregate, aggregate
-        self.pools, self.chidren = aggregate.pools, aggregate.pools
+        # Inherited #
+        self.pools, self.children = self.parent.pools, self.parent.pools
+        self.base_dir = self.parent.base_dir
+        self.meta_data_path = self.parent.meta_data_path
         # Dir #
-        self.p = AutoPaths(self.parent.base_dir, self.all_paths)
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         # Runner #
         self.runner = AnalysisRunner(self)
+        # FASTA #
+        self.qiime_reads = FASTA(self.p.qiime_reads_fasta)
         # OTU picking #
         self.otu_denovo    = DenovoOTUs(self)
         self.otu_open_ref  = OpenRefOTUs(self)
         self.otu_step      = StepOTUs(self)
         self.otu_subsample = SubsampledOTUs(self)
 
-    def __call__(self, *args, **kwargs):
+    def run(self, *args, **kwargs):
         self.runner.run(*args, **kwargs)
 
     def run_slurm(self, steps=None, **kwargs):
@@ -55,7 +62,7 @@ class Analysis(object):
         self.slurm_job.launch()
 
     def combine_reads(self):
-        shell_output('cat %s >> %s' % (' '.join([pool.qiime_fasta.path for pool in self]), self.p.qiime_reads_fasta))
+        shell_output('cat %s > %s' % (' '.join([pool.qiime_fasta.path for pool in self]), self.qiime_reads.path))
 
     def run_denovo(self): self.otu_denovo.run()
     def run_open_ref(self): self.otu_open_ref.run()

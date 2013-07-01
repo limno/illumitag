@@ -1,13 +1,14 @@
 # Built-in modules #
 
 # Internal modules #
+from illumitag.running import Runner
 
 # Third party modules #
 
 # Constants #
 
 ###############################################################################
-class PoolRunner(object):
+class PoolRunner(Runner):
     """Will run stuff on a pool"""
 
     default_steps = [

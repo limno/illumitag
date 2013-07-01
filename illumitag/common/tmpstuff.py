@@ -18,7 +18,19 @@ class TmpFile(object):
         handle.close()
         return cls(path)
 
-    def __init__(self, path):
-        self.path = path
+    def __enter__(self):
+        self.handle = open(self.path, 'w')
+        return self
+
+    def __exit__(self, *exc_info):
+        self.handle.close()
+
+    def __init__(self, path=None, **kwargs):
+        if not path:
+            handle = tempfile.NamedTemporaryFile(delete=False, **kwargs)
+            self.path = handle.name
+            handle.close()
+        else:
+            self.path = path
 
     def __repr__(self): return self.path

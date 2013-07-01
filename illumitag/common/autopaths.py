@@ -147,3 +147,30 @@ class PathItems(object):
     @property
     def complete_dir(self):
         return '/' + os.path.relpath(self.base_dir + self.dir, '/') + '/'
+
+
+################################################################################
+class FilePath(object):
+
+    def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.path)
+
+    def __init__(self, path):
+        self.path = path
+
+    @property
+    def prefix_path(self):
+        """The full path without the extension"""
+        return os.path.splitext(self.path)[0]
+
+    @property
+    def prefix(self):
+        """Just filename without the extension"""
+        return os.path.basename(self.prefix_path)
+
+    @property
+    def directory(self):
+        return os.path.dirname(self.path)
+
+    @property
+    def extension(self):
+        return os.path.splitext(self.path)[1]

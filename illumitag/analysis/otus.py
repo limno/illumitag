@@ -1,17 +1,19 @@
 # Built-in modules #
-import os, csv
-from itertools import izip
+import os
 
 # Internal modules #
+from illumitag.common import flatten
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.tmpstuff import TmpFile
-from illumitag.common import flatten
+from illumitag.common.csv_tables import TSVTable
+from illumitag.analysis.statistics import StatsOnOTU
 
 # Third party modules #
 import shutil, sh
 
 # Constants #
 home = os.environ['HOME'] + '/'
+green_genes_db_path = home + "share/green_genes/rep_set/97_otus.fasta"
 
 ###############################################################################
 class OTUs(object):
@@ -19,30 +21,40 @@ class OTUs(object):
 
     all_paths = """
     /representatives/rep_set.fasta
-    /taxonomy/rep_set.taxonomy
-    /graphs/cluster_hist.pdf
-    /graphs/otu_hist.pdf
-    /graphs/sample_sums_hist.pdf
-    /graphs/otu_sums_hist.pdf
     /table/table.biom
     /table/table.csv
-    /table/table_unfiltered.csv
     /table/table_filtered.csv
-    /table/table_trimmed.csv
-    /table/table_transposed.csv
+    /graphs/
     """
 
     def __init__(self, parent):
         # Save parent #
         self.analysis, self.parent = parent, parent
-        self.pools = parent.pools
+        # Inherited #
+        self.pools = self.parent.pools
+        self.qiime_reads = self.parent.qiime_reads
+        self.meta_data_path = self.parent.meta_data_path
         # Paths #
         self.base_dir = self.parent.p.otus_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Other #
+        self.taxonomy = None
+        # Files #
+        self.table = TSVTable(self.p.csv_table)
+        self.table_filtered = TSVTable(self.p.csv_table_filtered)
+        # Children #
+        self.stats = StatsOnOTU(self, self.table_filtered)
+
+    def run(self):
+        self.pick_otus()
+        self.pick_rep_set()
+        self.make_otu_table()
+        self.filter_otu_table()
+        self.compute_stats()
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')
-        pick_rep('-i', self.p.clusters_otus_txt, '-f', self.orig_reads, '-o', self.p.rep_set_fasta)
+        pick_rep('-i', self.p.clusters_otus_txt, '-f', self.qiime_reads.path, '-o', self.p.rep_set_fasta)
 
     def make_otu_table(self):
         # Make BIOM table #
@@ -51,45 +63,21 @@ class OTUs(object):
         else:             make_table('-i', self.p.clusters_otus_txt, '-o', self.p.biom_table)
         # Make CSV table #
         convert_table = sh.Command('convert_biom.py')
-        convert_table('-i', self.p.biom_table, '-o', self.p.csv_table, '-b')
-        # Remove first line #
-        sh.sed('-i', '1d', self.p.csv_table)
-        # Remove space in OTU ID #
-        sh.sed('-i', '1s/^#OTU ID/OTUID/', self.p.csv_table)
+        convert_table('-i', self.p.biom_table, '-o', self.table.path, '-b')
 
     def filter_otu_table(self):
-        # Check sum is at least 3 and back to int #
-        def goodlines():
-            handle = open(self.p.csv_table)
-            yield handle.next()
-            for line in handle:
-                line = line.split()
-                label = line[0]
-                values = map(float, line[1:])
-                values = map(int, values)
-                if sum(values) > 2:
-                    yield label + '\t' + '\t'.join(map(str,values)) + '\n'
-        handle = open(self.p.csv_filtered_table, 'w')
-        handle.writelines(goodlines())
-        handle.close()
-        # Transpose #
-        handle = open(self.p.csv_transposed_table, "w")
-        rows = izip(*csv.reader(open(self.p.csv_filtered_table), delimiter='\t'))
-        csv.writer(handle, delimiter='\t').writerows(rows)
-        handle.close()
-        # Remove low samples #
-        def goodlines():
-            handle = open(self.p.transposed_table)
-            yield handle.next()
-            for line in handle:
-                line = line.split()
-                label = line[0]
-                values = map(int, line[1:])
-                if sum(values) > 10:
-                    yield label + '\t' + '\t'.join(map(str,values)) + '\n'
-        handle = open(self.p.table_trimmed, 'w')
-        handle.writelines(goodlines())
-        handle.close()
+        # Format it #
+        self.table.remove_first_line()
+        self.table.replace_title('#OTU ID', 'OTUID')
+        # Make a filtered version #
+        shutil.copy(self.table.path, self.table_filtered.path)
+        self.table_filtered.to_integer()
+        self.table_filtered.filter_line_sum(minimum=3) # Min cluster size
+        self.table_filtered.transpose()
+        self.table_filtered.filter_line_sum(minimum=10) # Min reads in sample
+
+    def compute_stats(self):
+        self.stats.run()
 
 ###############################################################################
 class DenovoOTUs(OTUs):
@@ -104,16 +92,17 @@ class DenovoOTUs(OTUs):
     """
 
     def pick_otus(self):
+        # Clean #
+        shutil.rmtree(self.p.clusters_dir)
         # Prepare #
         pick_otus = sh.Command('pick_otus.py')
-        shutil.rmtree(self.p.clusters_dir)
         # Run command #
-        pick_otus('-m', 'uclust', '-s', 0.97, '-i', self.orig_reads, '-o', self.p.clusters_dir)
+        pick_otus('-m', 'uclust', '-s', 0.97, '-i', self.qiime_reads.path, '-o', self.p.clusters_dir)
         # Move into place #
-        base_name = self.p.clusters_dir + os.path.basename(self.orig_reads)[:-6]
-        shutil.move(base_name + '_clusters.uc', self.p.clusters_uc)
-        shutil.move(base_name + '_otus.log', self.p.clusters_otus_log)
+        base_name = self.p.clusters_dir + self.qiime_reads.prefix
         shutil.move(base_name + '_otus.txt', self.p.clusters_otus_txt)
+        shutil.move(base_name + '_otus.log', self.p.clusters_otus_log)
+        shutil.move(base_name + '_clusters.uc', self.p.clusters_uc)
 
 ###############################################################################
 class OpenRefOTUs(OTUs):
@@ -128,15 +117,20 @@ class OpenRefOTUs(OTUs):
     """
 
     def pick_otus(self):
+        # Clean #
+        shutil.rmtree(self.p.clusters_dir)
         # Prepare #
         pick_otus = sh.Command('pick_open_reference_otus.py')
-        shutil.rmtree(self.p.otus_dir)
-        green_genes_db_path = home + "share/green_genes/rep_set/97_otus.fasta"
         # Run command #
         pick_otus('-m', 'uclust', '-i', self.orig_reads, '-o', self.p.clusters_dir, '-f', '-a', '-O', 8,
                   '--reference_fp', green_genes_db_path,
                   '-p', TmpFile.from_string('pick_otus:enable_rev_strand_match False'),
                   '--suppress_align_and_tree')
+        # Move into place #
+        base_name = self.p.clusters_dir + self.qiime_reads.prefix
+        shutil.move(base_name + '_otus.txt', self.p.clusters_otus_txt)
+        shutil.move(base_name + '_otus.log', self.p.clusters_otus_log)
+        shutil.move(base_name + '_clusters.uc', self.p.clusters_uc)
 
 ###############################################################################
 class StepOTUs(OTUs):
@@ -161,16 +155,18 @@ class StepOTUs(OTUs):
     """
 
     def pick_otus(self):
+        # Clean #
+        shutil.rmtree(self.p.clusters_dir)
         # Commands #
         pick_otus = sh.Command('pick_otus.py')
         pick_rep = sh.Command('pick_rep_set.py')
         # 99 #
-        pick_otus('-m', 'uclust', '-s', 0.99, '-i', self.orig_reads, '-o', self.p.clusters_dir)
-        base_name = self.p.clusters_dir + os.path.basename(self.orig_reads)[:-6]
+        pick_otus('-m', 'uclust', '-s', 0.99, '-i', self.qiime_reads.path, '-o', self.p.clusters_dir)
+        base_name = self.p.clusters_dir + self.qiime_reads.prefix
         shutil.move(base_name + '_clusters.uc', self.p.clusters_99_uc)
         shutil.move(base_name + '_otus.log', self.p.otus_99_log)
         shutil.move(base_name + '_otus.txt', self.p.otus_99_txt)
-        pick_rep('-i', self.p.otus_99_txt, '-f', self.orig_reads, '-o', self.p.rep_set_99_fasta)
+        pick_rep('-i', self.p.otus_99_txt, '-f', self.qiime_reads.path, '-o', self.p.rep_set_99_fasta)
         # 98 #
         pick_otus('-m', 'uclust', '-s', 0.98, '-i', self.p.rep_set_99_fasta, '-o', self.p.clusters_dir)
         base_name = self.p.clusters_dir + os.path.basename(self.p.rep_set_99_fasta)[:-6]

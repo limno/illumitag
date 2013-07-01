@@ -4,6 +4,7 @@ from collections import Counter, OrderedDict
 
 # Internal modules #
 from illumitag.common import property_cached, isubsample, Color
+from illumitag.common.autopaths import FilePath
 from illumitag.helper.barcodes import ReadWithBarcodes
 from illumitag.helper.primers import ReadWithPrimers
 
@@ -12,7 +13,7 @@ import sh, shutil
 from Bio import SeqIO
 
 ################################################################################
-class FASTA(object):
+class FASTA(FilePath):
     """A single FASTA file somewhere in the filesystem"""
     extension = 'fasta'
     buffer_size = 1000

@@ -25,7 +25,6 @@ class BarcodeHist(Graph):
     short_name = 'barcode_hist'
 
     def plot(self):
-        1/0
         # Data #
         self.frame = pandas.Series(self.parent.good_barcodes.breakdown.values(), index=self.parent.samples.bar_names)
         # Plot #
