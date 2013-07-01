@@ -64,8 +64,8 @@ class StatsOnOTU(object):
         script += ["df = merge(meta, nmds, by.x='row.names', by.y='row.names')"]
         # Make factors #
         script += ["df$barcode = factor(df$barcode)"]
-        script += ["df$chemistry = factor(df$chemistry)"]
         script += ["df$pool = factor(df$pool)"]
+        script += ["df$chemistry = factor(df$chemistry)"]
         # Make plots #
         script += ["p = ggplot(df, aes(NMDS1, NMDS2)) + xlab('Dimension 1') + ylab('Dimension 2')"]
         script += ["pdf(file='%s')" % self.p.nmds_by_barcode]
@@ -86,9 +86,9 @@ class StatsOnOTU(object):
         ro.r("data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.table.path))
         ro.r("meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.meta_data_path))
         ro.r("data_ordered = data[order(row.names(data)),]")
-        ro.r("meta_ordered = meta[row.names(data),]")
-        ro.r("meta_ordered = meta_ordered[order(row.names(meta_ordered)),]")
-        # As factor #
+        # Meta data #
+        ro.r("meta = meta[row.names(data),]")
+        ro.r("meta_ordered = meta[order(row.names(meta)),]")
         ro.r("meta_ordered$pool = factor(meta_ordered$pool)")
         ro.r("meta_ordered$barcode = factor(meta_ordered$barcode)")
         ro.r("meta_ordered$chemistry = factor(meta_ordered$chemistry)")

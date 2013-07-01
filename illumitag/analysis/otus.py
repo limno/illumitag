@@ -2,11 +2,12 @@
 import os
 
 # Internal modules #
-from illumitag.common import flatten, append_to_file
+from illumitag.common import flatten
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.tmpstuff import TmpFile
 from illumitag.common.csv_tables import TSVTable
 from illumitag.analysis.statistics import StatsOnOTU
+from illumitag.graphs import otu_plots
 
 # Third party modules #
 import shutil, sh
@@ -51,6 +52,7 @@ class OTUs(object):
         self.make_otu_table()
         self.filter_otu_table()
         self.compute_stats()
+        self.make_otu_plots()
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')
@@ -77,11 +79,12 @@ class OTUs(object):
         self.table_filtered.filter_line_sum(minimum=10) # Min reads in sample
 
     def compute_stats(self):
-        # Test case #
-        if self.name == 'test':
-            append_to_file(self.table_filtered.path, "t4-01 1   0   0   0   0   0   0   0   0   2   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   6   0   0   0   1   0   0   0   0   0   0   0   7   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   0   1   0   0   0")
-        # Run cmd #
         self.stats.run()
+
+    def make_otu_plots(self):
+        for cls_name in otu_plots.__all__:
+            cls = getattr(otu_plots, cls_name)
+            cls(self).plot()
 
 ###############################################################################
 class DenovoOTUs(OTUs):
