@@ -1,7 +1,6 @@
 # Built-in modules #
-import os, csv, random, itertools
+import os, csv
 from itertools import izip
-from collections import Counter
 
 # Internal modules #
 from illumitag.common.autopaths import AutoPaths
@@ -9,42 +8,17 @@ from illumitag.common.tmpstuff import TmpFile
 from illumitag.common import flatten
 
 # Third party modules #
-import shutil, sh, pandas
-from rpy2 import robjects as ro
+import shutil, sh
 
 # Constants #
 home = os.environ['HOME'] + '/'
 
 ###############################################################################
 class OTUs(object):
-    dist_method = 'horn'
-
-    default_steps = [
-        #{'pick_otus':                 {}},
-        #{'pick_rep_set':              {}},
-        #{'make_otu_table':            {}},
-        #{'filter_otu_table':          {}},
-        #{'plot_cluster_distribution': {}},
-        #{'plot_otu_distribution':     {}},
-        #{'plot_sample_sums':          {}},
-        #{'plot_otu_sums':             {}},
-        #{'nmds':             {}},
-        #{'permanova':             {}},
-        {'beta_dispersion':             {}},
-    ]
+    """Base class for OTU analyses"""
 
     all_paths = """
     /representatives/rep_set.fasta
-    /taxonomy/pool1_hist.pdf
-    /taxonomy/pool1_hist.csv
-    /taxonomy/pool2_hist.pdf
-    /taxonomy/pool2_hist.csv
-    /taxonomy/pool3_hist.pdf
-    /taxonomy/pool3_hist.csv
-    /taxonomy/pool4_hist.pdf
-    /taxonomy/pool4_hist.csv
-    /taxonomy/pool5_hist.pdf
-    /taxonomy/pool5_hist.csv
     /taxonomy/rep_set.taxonomy
     /graphs/cluster_hist.pdf
     /graphs/otu_hist.pdf
@@ -56,27 +30,15 @@ class OTUs(object):
     /table/table_filtered.csv
     /table/table_trimmed.csv
     /table/table_transposed.csv
-    /nmds/by_barcode.pdf
-    /nmds/by_pool.pdf
-    /nmds/by_run.pdf
-    /nmds/r.out
-    /permanova/all.txt
-    /permanova/pairs.txt
-    /beta_dispersion/permutest.txt
-    /beta_dispersion/anova.txt
-    /beta_dispersion/pool_plots.pdf
-    /beta_dispersion/run_plots.pdf
     """
 
-    def __init__(self, base_dir, orig_reads, procedure):
+    def __init__(self, parent):
+        # Save parent #
+        self.analysis, self.parent = parent, parent
+        self.pools = parent.pools
         # Paths #
-        if not base_dir.endswith('/') : base_dir += '/'
-        self.base_dir = base_dir
+        self.base_dir = self.parent.p.otus_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Attributes #
-        self.orig_reads = orig_reads
-        self.procedure = procedure
-        self.taxonomy = None
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')
@@ -129,112 +91,11 @@ class OTUs(object):
         handle.writelines(goodlines())
         handle.close()
 
-    def nmds(self):
-        # Script #
-        script = []
-        # Load libs #
-        script += ["library(vegan)"]
-        script += ["library(MASS)"]
-        script += ["library(ggplot2)"]
-        script += ["library(compare)"]
-        # Load data #
-        script += ["data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.p.table_trimmed)]
-        script += ["meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.procedure.metadata_path)]
-        # Compute nmds #
-        script += ["ord = metaMDS(data, distance='%s', trymax=200)" % self.dist_method]
-        script += ["nmds = scores(ord)"]
-        # Make a dataframe #
-        script += ["df = merge(meta, nmds, by.x='row.names', by.y='row.names')"]
-        # Make factors #
-        script += ["df$barcode = factor(df$barcode)"]
-        script += ["df$run = factor(df$run)"]
-        script += ["df$pool = factor(df$pool)"]
-        # Make plots #
-        script += ["p = ggplot(df, aes(NMDS1, NMDS2)) + xlab('Dimension 1') + ylab('Dimension 2')"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_barcode]
-        script += ["p + geom_point(aes(colour=barcode))"]
-        script += ["dev.off()"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_pool]
-        script += ["p + geom_point(aes(colour=pool))"]
-        script += ["dev.off()"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_run]
-        script += ["p + geom_point(aes(colour=run))"]
-        script += ["dev.off()"]
-        # Run it #
-        sh.R('--no-save', '-f', TmpFile.from_string('\n'.join(script)), _out=self.p.nmds_out)
-
-    def permanova(self):
-        # Basic PERMANOVA #
-        ro.r("library(vegan)")
-        ro.r("data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.p.table_trimmed))
-        ro.r("meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.procedure.metadata_path))
-        ro.r("data_ordered = data[order(row.names(data)),]")
-        ro.r("meta_ordered = meta[row.names(data),]")
-        ro.r("meta_ordered = meta_ordered[order(row.names(meta_ordered)),]")
-        # As factor #
-        ro.r("meta_ordered$pool = factor(meta_ordered$pool)")
-        ro.r("meta_ordered$barcode = factor(meta_ordered$barcode)")
-        ro.r("meta_ordered$run = factor(meta_ordered$run)")
-        # Run test #
-        ro.r("permanova = adonis(formula = data ~ pool * barcode, data=meta_ordered, permutations=1000, method='%s')" % self.dist_method)
-        result = '\n'.join(ro.r("capture.output(print(permanova))")).encode('utf-8')
-        with open(self.p.permanova_all, 'w') as handle: handle.write(result)
-        # All pool pairs #
-        with open(self.p.permanova_pairs, 'w') as handle:
-            for pair in itertools.combinations(['1', '2', '3', '4', '5'], 2):
-                ro.r("subset = row.names(meta_ordered[meta_ordered$pool == 1 | meta_ordered$pool == 3,])")
-                ro.r("subdata = data_ordered[subset,]")
-                ro.r("submeta = meta_ordered[subset,]")
-                ro.r("permanova = adonis(formula = subdata ~ pool * barcode, data=submeta, permutations=1000, method='%s')" % self.dist_method)
-                handle.write("\n\n ---- Pool %s against Pool %s ---- \n\n" % pair)
-                result = '\n'.join(ro.r("capture.output(print(permanova))")).encode('utf-8')
-                handle.write(result)
-
-    def beta_dispersion(self):
-        # Prepare #
-        ro.r("library(vegan)")
-        ro.r("data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.p.table_trimmed))
-        ro.r("meta = read.table('%s', header=TRUE, sep='\t', row.names=1)" % (self.procedure.metadata_path))
-        # Compute #
-        ro.r("data_ordered = data[order(row.names(data)),]")
-        ro.r("data_sqrt = sqrt(data_ordered)")
-        ro.r("data_wa = wisconsin(data_sqrt)")
-        ro.r("data_dist = vegdist(data_wa, method='%s')" % self.dist_method)
-        ro.r("meta = meta[row.names(data),]")
-        ro.r("pool = factor(meta[,1])")
-        ro.r("run = factor(meta[,3])")
-        # Run group #
-        ro.r("mod1 = betadisper(data_dist, run)")
-        ro.r("test = permutest(mod1, control = permControl(nperm = 1000))")
-        result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
-        with open(self.p.beta_dispersion_permutest, 'w') as handle: handle.write(result)
-        ro.r("test = anova(mod1)")
-        result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
-        with open(self.p.beta_dispersion_anova, 'w') as handle: handle.write(result)
-        ro.r("pdf(file='%s')" % self.p.beta_dispersion_run_plots)
-        ro.r("plot(mod1)")
-        ro.r("boxplot(mod1)")
-        ro.r("plot(TukeyHSD(mod1))")
-        ro.r("dev.off()")
-        # Pool group #
-        ro.r("mod2 = betadisper(data_dist, pool)")
-        ro.r("test = permutest(mod2, control = permControl(nperm = 1000))")
-        result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
-        with open(self.p.beta_dispersion_permutest, 'w') as handle: handle.write(result)
-        ro.r("mod1 = betadisper(data_dist, run)")
-        ro.r("test = anova(mod2)")
-        result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
-        with open(self.p.beta_dispersion_anova, 'w') as handle: handle.write(result)
-        ro.r("pdf(file='%s')" % self.p.beta_dispersion_pool_plots)
-        ro.r("plot(mod2)")
-        ro.r("boxplot(mod2)")
-        ro.r("plot(TukeyHSD(mod2))")
-        ro.r("dev.off()")
-
 ###############################################################################
 class DenovoOTUs(OTUs):
     short_name = 'denovo'
     method = 'Denovo picking'
+    dist_method = 'horn'
 
     all_paths = OTUs.all_paths + """
     /clusters/otus.txt
@@ -254,10 +115,11 @@ class DenovoOTUs(OTUs):
         shutil.move(base_name + '_otus.log', self.p.clusters_otus_log)
         shutil.move(base_name + '_otus.txt', self.p.clusters_otus_txt)
 
-#------------------------------------------------------------------------------#
+###############################################################################
 class OpenRefOTUs(OTUs):
     short_name = 'openref'
     method = 'Open reference picking'
+    dist_method = 'horn'
 
     all_paths = OTUs.all_paths + """
     /clusters/otus.txt
@@ -276,10 +138,11 @@ class OpenRefOTUs(OTUs):
                   '-p', TmpFile.from_string('pick_otus:enable_rev_strand_match False'),
                   '--suppress_align_and_tree')
 
-#------------------------------------------------------------------------------#
+###############################################################################
 class StepOTUs(OTUs):
     short_name = 'stepwise'
-    method = '99-98-97 progre   ssive picking'
+    method = '99-98-97 progressive picking'
+    dist_method = 'horn'
 
     all_paths = OTUs.all_paths + """
     /clusters/otus_99.txt
@@ -344,68 +207,3 @@ class StepOTUs(OTUs):
         # Combine children #
         with open(self.p.otus_txt, 'w') as handle:
             for k,v in clusters.items(): handle.write(k + '\t' + '\t'.join(v) + '\n')
-
-#------------------------------------------------------------------------------#
-class SubsampledOTUs(OTUs):
-    short_name = 'subsampled'
-    method = 'Denovo Subsampled OTUs'
-    dist_method = 'bray'
-
-    all_paths = OTUs.all_paths + """
-    /table/subsampled_float.csv
-    """
-
-    default_steps = [
-        #{'subsample_table':           {}},
-        #{'plot_sample_sums':          {}},
-        #{'plot_otu_sums':             {}},
-        #{'nmds':                      {}},
-        #{'permanova':                      {}},
-        {'beta_dispersion':                      {}},
-    ]
-
-    def __init__(self, base_dir, base_otu, procedure):
-        # Paths #
-        if not base_dir.endswith('/') : base_dir += '/'
-        self.base_dir = base_dir
-        self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Attributes #
-        self.base_otu = base_otu
-        self.procedure = procedure
-
-    def filter_otu_table(self): raise NotImplementedError('')
-
-    def subsample_table(self):
-        # Parse #
-        otus = pandas.read_csv(self.base_otu.p.table_trimmed, sep = '\t', index_col=0)
-        # Drop those below 10 #
-        #sums = otus.sum(axis=1)
-        #otus = otus.drop(sums[sums < 10].keys())
-        # Subsample #
-        sums = otus.sum(axis=1)
-        down_to = min(sums)
-        subotus = pandas.DataFrame(columns=otus.columns, index=otus.index, dtype=int)
-        # Do it #
-        for sample_name in otus.index:
-            row = otus.loc[sample_name]
-            weighted_choices = list(row[row != 0].iteritems())
-            population = [val for val, count in weighted_choices for i in range(count)]
-            sub_pop = random.sample(population, down_to)
-            frequencies = Counter(sub_pop)
-            new_row = pandas.Series(frequencies.values(), index=frequencies.keys(), dtype=int)
-            subotus.loc[sample_name] = new_row
-        # Output it #
-        subotus.to_csv(self.p.subsampled_table_float, sep='\t', na_rep='0')
-        # Cast to integer #
-        def lines_as_integer(path):
-            handle = open(path)
-            yield handle.next()
-            for line in handle:
-                line = line.split()
-                label = line[0]
-                values = map(float, line[1:])
-                values = map(int, values)
-                yield label + '\t' + '\t'.join(map(str,values)) + '\n'
-        handle = open(self.p.table_trimmed, 'w')
-        handle.writelines(lines_as_integer(self.p.subsampled_table_float))
-        handle.close()

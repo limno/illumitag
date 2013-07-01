@@ -1,7 +1,8 @@
 # Built-in modules #
 
 # Internal modules #
-from aggregate import Collection, Aggregate
+import illumitag
+from illumitag.groups.aggregate import Collection, Aggregate
 from illumitag.common import AutoPaths
 
 # Third party modules #
@@ -29,3 +30,5 @@ class Project(Aggregate):
         # Dir #
         self.base_dir = projs_dir + self.name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Extra #
+        self.meta_data_path = illumitag.repos_dir + 'projects/' + self.name + '.csv'

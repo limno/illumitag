@@ -135,4 +135,4 @@ class BarcodedFASTQ(FASTQ):
 
     @property_cached
     def good_barcodes_breakdown(self):
-        return OrderedDict([(name, self.barcode_counter[name + 'A']) for name in self.samples.bar_names])
+        return OrderedDict([(name, self.barcode_counter[name + 'F']) for name in self.samples.bar_names])

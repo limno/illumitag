@@ -137,4 +137,4 @@ class GoodBarcode(BarcodeGroup):
 
     @property_cached
     def breakdown(self):
-        return OrderedDict([(name, self.counter[name + 'A']) for name in self.samples.bar_names])
+        return OrderedDict([(name, self.counter[name + 'F']) for name in self.samples.bar_names])

@@ -15,7 +15,7 @@ from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTA, FASTQ
 from illumitag.fasta.paired import PairedFASTQ
 from illumitag.fasta.other import QualFile, GroupFile
-from illumitag.running.runner import PoolRunner
+from illumitag.running.pool_runner import PoolRunner
 from illumitag.graphs import pool_plots
 from illumitag.helper.barcodes import bar_len
 

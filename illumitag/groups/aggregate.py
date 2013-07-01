@@ -4,7 +4,7 @@ import os, shutil
 # Internal modules #
 from illumitag.common import AutoPaths
 from illumitag.graphs import aggregate_plots
-from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs, SubsampledOTUs
+from illumitag.analysis import Analysis
 
 # Third party modules #
 import sh
@@ -36,9 +36,7 @@ class Aggregate(object):
     """A arbitrary aggregate of several pools."""
 
     all_paths = """
-    /pools/
     /graphs/
-    /otus/
     """
 
     def __repr__(self): return '<%s object "%s" with %i pools>' % \
@@ -62,15 +60,19 @@ class Aggregate(object):
     def load(self):
         # Children #
         for p in self.pools: p.load()
-        # OTU picking #
-        self.otu_denovo    = DenovoOTUs(self)
-        self.otu_open_ref  = OpenRefOTUs(self)
-        self.otu_step      = StepOTUs(self)
-        self.otu_subsample = SubsampledOTUs(self)
+        # Analysis #
+        self.analysis = Analysis(self)
         # Save state #
         self.loaded = True
 
-    def run_slurm(self, steps=None, **kwargs):
+    def run_pools(self, steps=None, **kwargs):
+        # Check loaded #
+        for p in self.pools:
+            if not p.loaded: p.load()
+        # Call function #
+        for p in self.pools: p()
+
+    def run_pools_slurm(self, steps=None, **kwargs):
         # Check loaded #
         for p in self.pools:
             if not p.loaded: p.load()
@@ -80,12 +82,7 @@ class Aggregate(object):
             kwargs['qos'] = False
             kwargs['email'] = '/dev/null'
         # Call function #
-        for p in self.pools:
-            p.run_slurm(steps, **kwargs)
-
-    def combine_reads(self):
-        pass
-        #shell_output('cat %s >> %s' % (' '.join([pool.qiime_fasta.path for pool in self.exp1]), self.p.orig_reads_fasta))
+        for p in self.pools: p.run_slurm(steps, **kwargs)
 
     def make_plots(self):
         # Check loaded #

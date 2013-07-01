@@ -26,8 +26,8 @@ view_dir = out_dir = home + 'ILLUMITAG/views/'
 # Get pool files #
 self = sys.modules[__name__]
 module_dir = os.path.dirname(self.__file__)
-project_dir = os.path.abspath(module_dir + '/../') + '/'
-pools_dir = project_dir + 'pools/'
+repos_dir = os.path.abspath(module_dir + '/../') + '/'
+pools_dir = repos_dir + 'pools/'
 
 # Load all pools #
 json_paths = glob.glob(pools_dir + '*.json')

@@ -84,12 +84,12 @@ class SLURMJob(object):
         # Copy module there #
         module_dir = os.path.dirname(module.__file__)
         module_name = module.__name__
-        project_dir = os.path.abspath(module_dir + '/../')
-        project_name = os.path.basename(project_dir)
-        shutil.copytree(project_dir, self.log_dir + project_name)
+        repos_dir = os.path.abspath(module_dir + '/../')
+        project_name = os.path.basename(repos_dir)
+        shutil.copytree(repos_dir, self.log_dir + project_name)
         static_module_dir = self.log_dir + project_name + '/'
         # Archive version #
-        self.module_version = module.__version__ + ' ' + get_git_tag(project_dir)
+        self.module_version = module.__version__ + ' ' + get_git_tag(repos_dir)
         # Make script #
         script = """
             import os, sys, time, platform
