@@ -1,10 +1,15 @@
 # Built-in modules #
 
-# Third party modules #
-from aggregate import Aggregate
+# Internal modules #
+from aggregate import Collection, Aggregate
 from illumitag.common import AutoPaths
 
-# Internal modules #
+# Third party modules #
+
+###############################################################################
+class Projects(Collection):
+    """A collection of projects."""
+    pass
 
 ###############################################################################
 class Project(Aggregate):

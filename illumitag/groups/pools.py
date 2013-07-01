@@ -172,7 +172,7 @@ class Pool(object):
             sample_name = r.first.sample.short_name
             counter[sample_name] += 1
             r.read.id = '%s_%i %s' % (sample_name, counter[sample_name], r.read.id)
-            bar_seq = r.seq.tostring()[0:bar_len]
+            bar_seq = r.read.seq[0:bar_len]
             r.read.description = "orig_bc=%s new_bc=%s bc_diffs=0" % (bar_seq, bar_seq)
             writer.write_record(r.read[self.trim_fwd:-self.trim_rev])
         # Close #

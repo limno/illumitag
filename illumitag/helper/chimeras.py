@@ -29,10 +29,11 @@ class ChimerasChecker(object):
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.fasta)
 
-    def __init__(self, fasta_path, base_dir, parent):
+    def __init__(self, fasta_path, base_dir, parent, verbose=False):
         # Base #
         self.fasta = FASTA(fasta_path)
         self.parent = parent
+        self.verbose = verbose
         # Auto paths #
         self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
@@ -64,16 +65,16 @@ class UchimeRef(ChimerasChecker):
     def check(self):
         # Prepare #
         self.clean()
-        print Color.l_ylw + "----> Subsampling down to %i" % (self.downto,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Subsampling down to %i" % (self.downto,) + Color.end
         sys.stdout.flush()
         self.fasta.subsample(self.downto, self.subsampled.path)
         # Cluster #
-        print Color.l_ylw + "----> Running derep_prefix on %s" % (self.subsampled.path,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Running derep_prefix on %s" % (self.subsampled.path,) + Color.end
         sys.stdout.flush()
         command = ("-derep_prefix", self.subsampled.path, "-output", self.derep_cluster.path, "-sizeout")
         sh.usearch(command)
         # Detect #
-        print Color.l_ylw + "----> Running uchime_ref on %s" % (self.derep_cluster.path,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Running uchime_ref on %s" % (self.derep_cluster.path,) + Color.end
         sys.stdout.flush()
         command = ("-uchime_ref", self.derep_cluster.path, "-db", chimera_ref_path, "-strand", "plus",
                    "-chimeras", self.positive.path, "-nonchimeras", self.negative.path)
@@ -87,17 +88,17 @@ class UchimeDenovo(ChimerasChecker):
     def check(self):
         # Prepare #
         self.clean()
-        print Color.l_ylw + "----> Subsampling down to %i" % (self.downto,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Subsampling down to %i" % (self.downto,) + Color.end
         sys.stdout.flush()
         self.fasta.subsample(self.downto, self.subsampled.path)
         # Cluster #
-        print Color.l_ylw + "----> Running cluster_fast on %s" % (self.subsampled.path,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Running cluster_fast on %s" % (self.subsampled.path,) + Color.end
         sys.stdout.flush()
         command = ("-cluster_fast", self.subsampled.path, "-id", '0.99',
                    "-consout", self.cluster_99.path, "-sizeout")
         sh.usearch(command)
         # Detect #
-        print Color.l_ylw + "----> Running uchime_denovo on %s" % (self.cluster_99.path,) + Color.end
+        if self.verbose: print Color.l_ylw + "----> Running uchime_denovo on %s" % (self.cluster_99.path,) + Color.end
         sys.stdout.flush()
         command = ("-uchime_denovo", self.cluster_99.path,
                    "-chimeras", self.positive.path, "-nonchimeras", self.negative.path)

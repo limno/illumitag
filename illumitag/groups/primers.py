@@ -114,8 +114,8 @@ class GoodPrimers(PrimerGroup):
         # Only assembled sequences #
         if self.parent != 'assembled': return
         # Message #
-        message = "----> Checking pool %i for chimeras"
-        print Color.l_ylw + message % (self.parent.parent.pool.num) + Color.end
+        message = "----> Checking pool %i %s for chimeras"
+        print Color.l_ylw + message % (self.parent.parent.pool.num, self.parent.parent.short_name) + Color.end
         sys.stdout.flush()
         # Check empty #
         if not self.uchime_ref.fasta:

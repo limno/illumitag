@@ -48,7 +48,7 @@ class PoolRunner(object):
         if not hasattr(main, '__file__'): self.color = True
         else: self.color = False
 
-    def run(self, steps=None):
+    def run(self, steps=None, **kwargs):
         # Message #
         if self.color: print Color.f_cyn + "Running pool %s" % (self.pool) + Color.end
         else: print "Running pool %s" % self.pool
@@ -56,6 +56,7 @@ class PoolRunner(object):
         if not steps: steps = self.default_steps
         for step in steps:
             name, params = step.items()[0]
+            params.update(kwargs)
             fns = self.find_fns(name)
             self.run_step(name, fns, **params)
         # Report success #

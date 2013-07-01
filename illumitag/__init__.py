@@ -8,8 +8,8 @@ import os, sys, glob
 
 # Internal modules #
 from illumitag.groups.pools import Pool
-from illumitag.groups.runs import Run
-from illumitag.groups.projects import Project
+from illumitag.groups.runs import Runs, Run
+from illumitag.groups.projects import Projects, Project
 from illumitag.common import dependencies
 
 # Constants #
@@ -36,9 +36,11 @@ pools = [Pool(j, view_dir + 'pools/') for j in json_paths]
 # Compose into runs #
 run_nums = sorted(list(set([p.run_num for p in pools])))
 runs = [Run(num, [p for p in pools if p.run_num==num], view_dir + 'runs/') for num in run_nums]
-for p in pools: p.run = [r for r in runs if r.num == p.run_num][0]
+runs = Runs(runs)
+for p in pools: p.run = runs[p.run_num]
 
 # Compose into projects #
 proj_names = sorted(list(set([p.project_short_name for p in pools])))
 projects = [Project(name, [p for p in pools if p.project_short_name==name], view_dir + 'projects/') for name in proj_names]
-for pool in pools: p.project = [proj for proj in projects if proj.name == pool.project_short_name][0]
+projects = Projects(projects)
+for p in pools: p.project = projects[p.project_short_name]

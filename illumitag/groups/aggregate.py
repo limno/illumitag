@@ -10,6 +10,28 @@ from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs, Subsample
 import sh
 
 ###############################################################################
+class Collection(object):
+    """A collection of aggregates."""
+
+    def __repr__(self): return 'Collection: %s' % (self.children)
+    def __iter__(self): return iter(self.children)
+    def __len__(self): return len(self.children)
+
+    def __init__(self, children):
+        self.children = children
+
+    @property
+    def first(self): return self.children[0]
+
+    def __getitem__(self, key):
+        if isinstance(key, basestring):
+            return [c for c in self.children if c.name == key][0]
+        elif isinstance(key, int):
+            if hasattr(self.first, 'num'): return [c for c in self.children if c.num == key][0]
+            else: return self.children[key]
+        else: raise TypeError('key')
+
+###############################################################################
 class Aggregate(object):
     """A arbitrary aggregate of several pools."""
 
@@ -47,6 +69,19 @@ class Aggregate(object):
         self.otu_subsample = SubsampledOTUs(self)
         # Save state #
         self.loaded = True
+
+    def run_slurm(self, steps=None, **kwargs):
+        # Check loaded #
+        for p in self.pools:
+            if not p.loaded: p.load()
+        # Test case #
+        if self.name == 'test':
+            kwargs['time'] = '00:15:00'
+            kwargs['qos'] = False
+            kwargs['email'] = '/dev/null'
+        # Call function #
+        for p in self.pools:
+            p.run_slurm(steps, **kwargs)
 
     def combine_reads(self):
         pass
