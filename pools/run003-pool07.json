@@ -1,6 +1,6 @@
 {
-    "contact":  "Lucas Sinclair",
-    "email":    "lucas.sinclair@ebc.uu.se",
+    "contact":  "Inga Richert",
+    "email":    "inga.richert@ebc.uu.se",
 
     "uppmax_id":    "b2011032",
     "run_num":       3,
@@ -10,7 +10,7 @@
     "forward_reads": "STB34_ACAGTG_L001_R1_001.fastq.gz",
     "reverse_reads": "STB34_ACAGTG_L001_R2_001.fastq.gz",
 
-    "project":       "Inga",
+    "project":       "inga",
     "project_name":  "Inga's project",
     "pool":          "inga1",
     "pool_name":     "First and only Inga pool",

@@ -10,7 +10,7 @@
     "forward_reads": "STB32_TTAGGC_L001_R1_001.fastq.gz",
     "reverse_reads": "STB32_TTAGGC_L001_R2_001.fastq.gz",
 
-    "project":       "Andrea",
+    "project":       "andrea",
     "project_name":  "Andrea's study",
     "pool":          "andrea2",
     "pool_name":     "Second of Andrea's pools",

@@ -10,7 +10,7 @@
     "forward_reads": "STB23_AGTTCC_L001_R1_001.fastq.gz",
     "reverse_reads": "STB23_AGTTCC_L001_R2_001.fastq.gz",
 
-    "project":       "GBG",
+    "project":       "gbg",
     "project_name":  "Code name GBG (unknown)",
     "pool":          "gbg3",
     "pool_name":     "Third GBG pool",

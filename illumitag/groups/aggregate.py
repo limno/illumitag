@@ -1,13 +1,15 @@
 # Built-in modules #
-import os, shutil
+import os, shutil, re
 
 # Internal modules #
 from illumitag.common import AutoPaths
+from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis
 
 # Third party modules #
-import sh
+import sh, pandas
+from dateutil.parser import parse as dateutil_parse
 
 ###############################################################################
 class Collection(object):
@@ -38,13 +40,17 @@ class Aggregate(object):
     all_paths = """
     /graphs/
     /logs/
+    /results/slurm_report.csv
     """
 
     def __repr__(self): return '<%s object "%s" with %i pools>' % \
                                (self.__class__.__name__, self.name, len(self))
     def __iter__(self): return iter(self.pools)
     def __len__(self): return len(self.pools)
-    def __getitem__(self, key): return self.pools[key]
+    def __getitem__(self, key):
+        if isinstance(key, basestring): return [c for c in self.children if str(c) == key][0]
+        elif isinstance(key, int): return self.children[key]
+        else: raise TypeError('key')
 
     @property
     def first(self): return self.pools[0]
@@ -87,6 +93,51 @@ class Aggregate(object):
         for cls_name in aggregate_plots.__all__:
             cls = getattr(aggregate_plots, cls_name)
             cls(self).plot()
+
+    def make_slurm_report(self):
+        running_jobs_names = [j['name'] for j in slurm.running_jobs_info()]
+        queued_jobs_names = [j['name'] for j in slurm.running_jobs_info()]
+        for p in self:
+            # Loaded #
+            if not p.loaded: p.load()
+            # Let's see if it didn't fail #
+            p.job_state = "Failed"
+            # Running #
+            if str(p) in queued_jobs_names:
+                p.job_state = "Queued"
+                continue
+            if str(p) in running_jobs_names:
+                p.job_state = "Running"
+                continue
+            # Out path #
+            job_out_path = p.runner.latest_log + 'run.out'
+            # No file #
+            if not os.path.exists(job_out_path):
+                p.job_state = "Missing"
+                continue
+            # Read the log #
+            with open(job_out_path, 'r') as handle: job_out = handle.read()
+            # Success #
+            if 'Success' in job_out: p.job_state = "Success"
+            # Problems #
+            if 'CANCELLED' in job_out: p.job_state = "Slurm CANCELLED"
+            if '(core dumped)' in job_out: p.job_state = "Core DUMPED"
+            # Start and end time #
+            start_time = re.findall('^SLURM: start at (.+) on .+$', job_out, re.M)
+            if start_time: p.runner.job_start_time = dateutil_parse(start_time[0])
+            end_time = re.findall('^SBATCH: end at (.+)$', job_out, re.M)
+            if end_time: p.runner.job_end_time = dateutil_parse(end_time[0])
+            # Total time #
+            if start_time and end_time:
+                p.runner.job_runtime = p.runner.job_end_time - p.runner.job_start_time
+        # Make report #
+        rows = [str(p) for p in self]
+        columns = ['Name', 'Project', 'State', 'Start time', 'End time', 'Run time']
+        data = [(p.long_name, p.project.name, p.job_state,
+                str(p.runner.job_start_time), str(p.runner.job_end_time), str(p.runner.job_runtime))
+                for p in self]
+        frame = pandas.DataFrame(data, index=rows, columns=columns)
+        frame.to_csv(self.p.slurm_report)
 
     def make_zipfile(self):
         # Delete current report #

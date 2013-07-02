@@ -10,7 +10,7 @@
     "forward_reads": "STB33_TGACCA_L001_R1_001.fastq.gz",
     "reverse_reads": "STB33_TGACCA_L001_R2_001.fastq.gz",
 
-    "project":       "Andrea",
+    "project":       "andrea",
     "project_name":  "Andrea's study",
     "pool":          "andrea3",
     "pool_name":     "Third of Andrea's pools",

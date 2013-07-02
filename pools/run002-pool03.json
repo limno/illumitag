@@ -10,7 +10,7 @@
     "forward_reads": "STB12_ATCACG_L001_R1_001.fastq.gz",
     "reverse_reads": "STB12_ATCACG_L001_R2_001.fastq.gz",
 
-    "project":       "STUBB",
+    "project":       "stubb",
     "project_name":  "Code name STUBB (unknown)",
     "pool":          "stubb2",
     "pool_name":     "Second STUBB pool",

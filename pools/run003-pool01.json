@@ -10,7 +10,7 @@
     "forward_reads": "STB21_CTTGTA_L001_R1_001.fastq.gz",
     "reverse_reads": "STB21_CTTGTA_L001_R2_001.fastq.gz",
 
-    "project":       "GBG",
+    "project":       "gbg",
     "project_name":  "Code name GBG (unknown)",
     "pool":          "gbg1",
     "pool_name":     "First GBG pool",

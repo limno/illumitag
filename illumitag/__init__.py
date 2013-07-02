@@ -9,6 +9,7 @@ import os, sys, glob
 # Internal modules #
 from illumitag.groups.pools import Pool
 from illumitag.groups.runs import Runs, Run
+from illumitag.groups.aggregate import Aggregate
 from illumitag.groups.projects import Projects, Project
 from illumitag.common import dependencies
 
@@ -45,3 +46,6 @@ proj_names = sorted(list(set([p.project_short_name for p in pools])))
 projects = [Project(name, [p for p in pools if p.project_short_name==name], view_dir + 'projects/') for name in proj_names]
 projects = Projects(projects)
 for p in pools: p.project = projects[p.project_short_name]
+
+# Make an aggregate with all pools #
+aggregate = Aggregate('all', pools, view_dir + 'aggregate/')

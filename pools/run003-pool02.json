@@ -10,7 +10,7 @@
     "forward_reads": "STB22_AGTCAA_L001_R1_001.fastq.gz",
     "reverse_reads": "STB22_AGTCAA_L001_R2_001.fastq.gz",
 
-    "project":       "GBG",
+    "project":       "gbg",
     "project_name":  "Code name GBG (unknown)",
     "pool":          "gbg2",
     "pool_name":     "Second GBG pool",

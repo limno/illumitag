@@ -10,7 +10,7 @@
     "forward_reads": "STB13_TAGCTT_L001_R1_001.fastq.gz",
     "reverse_reads": "STB13_TAGCTT_L001_R2_001.fastq.gz",
 
-    "project":       "STUBB",
+    "project":       "stubb",
     "project_name":  "Code name STUBB (unknown)",
     "pool":          "stubb3",
     "pool_name":     "Third STUBB pool",

@@ -1,5 +1,5 @@
 # Built-in modules #
-import os, time, shutil, re
+import os, time, shutil, re, getpass
 from collections import OrderedDict
 
 # Internal modules #
@@ -11,6 +11,23 @@ from illumitag.common.tmpstuff import TmpFile
 import sh
 
 # Constants #
+
+
+################################################################################
+def queued_jobs_info():
+    text = sh.jobinfo('-u', getpass.getuser())
+    lines = sh.grep("(null)", _in=text, _ok_code=[0,1]).split('\n')
+    params = ['jobid','pos','partition','name','user','account','state','start_time','time_left','priority','cpus','nodelist','features','dependency']
+    jobs = [dict(zip(params,line.split())) for line in lines if line]
+    return jobs
+
+################################################################################
+def running_jobs_info():
+    text = sh.jobinfo('-u', getpass.getuser())
+    lines = sh.grep("q[0-9]\+$", _in=text, _ok_code=[0,1]).split('\n')
+    params = ['jobid','partition','name','user','account','state','start_time','time_left','nodes','cpus','nodelist']
+    jobs = [dict(zip(params,line.split())) for line in lines if line]
+    return jobs
 
 ################################################################################
 class SLURMCommand(object):
@@ -103,7 +120,7 @@ class SLURMJob(object):
             import %s
             print "Using version from {0}".format(os.path.abspath(%s.__file__))
             %s
-            print "SBATCH: end at {0}".format(time.asctime())"""
+            print "SLURM: end at {0}".format(time.asctime())"""
         script = script % (static_module_dir, module_name, module_name, command)
         script = '\n'.join(l.lstrip(' ') for l in script.split('\n') if l)
         script_path = self.log_dir + "run.py"

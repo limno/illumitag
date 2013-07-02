@@ -10,7 +10,7 @@
     "forward_reads": "STB31_CGATGT_L001_R1_001.fastq.gz",
     "reverse_reads": "STB31_CGATGT_L001_R2_001.fastq.gz",
 
-    "project":       "Andrea",
+    "project":       "andrea",
     "project_name":  "Andrea's study",
     "pool":          "andrea1",
     "pool_name":     "First of Andrea's pools",

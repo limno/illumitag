@@ -12,6 +12,7 @@ import illumitag; pj = illumitag.projects['test']; p = pj[0]; p(threads=False)
 
 # Just one pool via slurm #
 import illumitag; pj = illumitag.projects['Andrea']; p = pj[2]; p.run_slurm()
+import illumitag; id = illumitag.projects['Inga'].first.run_slurm()
 
 # Just one function for one pool #
 import illumitag; pj = illumitag.projects['test']; p = pj[0]; p(steps=[{'make_pool_plots':{}}], threads=False)

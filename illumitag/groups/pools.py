@@ -10,7 +10,6 @@ from Bio.SeqIO.FastaIO import FastaWriter
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
 from illumitag.common import property_cached, AutoPaths
-from illumitag.common.slurm import SLURMJob
 from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTA, FASTQ
 from illumitag.fasta.paired import PairedFASTQ
@@ -113,18 +112,9 @@ class Pool(object):
         if not self.loaded: self.load()
         self.runner.run(*args, **kwargs)
 
-    def run_slurm(self, steps=None, **kwargs):
-        # Check loaded #
+    def run_slurm(self, *args, **kwargs):
         if not self.loaded: self.load()
-        # Make script #
-        command = """steps = %s
-                     pool = [p for p in illumitag.pools if str(p)=='%s'][0]
-                     pool(steps)""" % (steps, self)
-        # Send it #
-        if 'time' not in kwargs: kwargs['time'] = '12:00:00'
-        if 'email' not in kwargs: kwargs['email'] = None
-        self.slurm_job = SLURMJob(command, self.p.logs_dir, job_name=str(self), **kwargs)
-        return self.slurm_job.launch()
+        self.runner.run_slurm(*args, **kwargs)
 
     def create_outcomes(self):
         if not self.loaded: self.load()
