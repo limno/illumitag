@@ -6,9 +6,9 @@
     "run_num":       3,
     "run_id":        "130527_M00485_0050_000000000-A4D9Y",
     "pool_num":      7,
-    "pool_id":       "Sample_STB33",
-    "forward_reads": "STB33_TGACCA_L001_R2_001.fastq.gz",
-    "reverse_reads": "STB33_TGACCA_L001_R1_001.fastq.gz",
+    "pool_id":       "Sample_STB34",
+    "forward_reads": "STB34_ACAGTG_L001_R1_001.fastq.gz",
+    "reverse_reads": "STB34_ACAGTG_L001_R2_001.fastq.gz",
 
     "project":       "Inga",
     "project_name":  "Inga's project",
