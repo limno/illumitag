@@ -4,6 +4,7 @@
 from illumitag.common import AutoPaths
 from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.fasta.other import GroupFile
+from illumitag.helper.barcodes import bar_len
 
 # Third party modules #
 
@@ -40,6 +41,9 @@ class Samples(object):
         self.bar_names_F = [name + 'F' for name in self.bar_names]
         self.bar_names_R = [name + 'R' for name in self.bar_names]
         self.all_bar_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
+        # Primer size #
+        self.trim_fwd = bar_len + self.primers.fwd_len
+        self.trim_rev = bar_len + self.primers.rev_len
 
 ###############################################################################
 class Sample(FASTQ):

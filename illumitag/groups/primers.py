@@ -4,7 +4,8 @@ import sys, os
 # Internal modules #
 from illumitag.common import AutoPaths, moving_average, Color
 from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
-from illumitag.fasta.single import FASTQ, FASTA, BarcodedFASTQ
+from illumitag.fasta.single import FASTQ, FASTA
+from illumitag.helper.barcodes import bar_len
 
 # Third party modules #
 import sh
@@ -26,8 +27,7 @@ class PrimerGroup(object):
     /n_filtered.fastq
     /qual_filtered.fastq
     /len_filtered.fastq
-    /trimmed.fastq
-    /trimmed.fasta
+    /trimmed_barcodes.fasta
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -49,9 +49,8 @@ class PrimerGroup(object):
         # Quality filtered #
         if self.parent == 'assembled':
             self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)
-            self.len_filtered = BarcodedFASTQ(self.p.len_filtered_fastq, samples=self.samples)
-            self.trimmed_fastq = FASTQ(self.p.trimmed_fastq)
-            self.trimmed_fasta = FASTA(self.p.trimmed_fasta)
+            self.len_filtered = FASTQ(self.p.len_filtered_fastq, samples=self.samples)
+            self.trimmed_barcodes = FASTA(self.p.trimmed_barcodes)
         # Extra #
         self.load()
 
@@ -85,11 +84,10 @@ class PrimerGroup(object):
         self.len_filtered.write(good_len_iterator(self.qual_filtered))
 
     def trim_barcodes(self):
-        def no_bars_iterator(reads):
+        def no_barcodes_iterator(reads):
             for read in reads:
-                yield read[self.pool.trim_fwd:-self.pool.trim_rev]
-        self.trimmed_fastq.write(no_bars_iterator(self.len_filtered))
-        self.trimmed_fastq.to_fasta(self.trimmed_fasta.path)
+                yield read[bar_len:-bar_len]
+        self.trimmed_barcodes.write(no_barcodes_iterator(self.len_filtered))
 
     def create(self): self.orig_reads.create()
     def add_read(self, read): self.orig_reads.add_read(read)
@@ -107,8 +105,8 @@ class GoodPrimers(PrimerGroup):
     """
 
     def load(self):
-        self.uchime_ref = UchimeRef(self.p.trimmed_fasta, self.p.chimeras_ref_dir, self)
-        self.uchime_denovo = UchimeDenovo(self.p.trimmed_fasta, self.p.chimeras_denovo_dir, self)
+        self.uchime_ref = UchimeRef(self.trimmed_barcodes.path, self.p.chimeras_ref_dir, self)
+        self.uchime_denovo = UchimeDenovo(self.trimmed_barcodes.path, self.p.chimeras_denovo_dir, self)
 
     def check_chimeras(self):
         # Only assembled sequences #

@@ -2,6 +2,8 @@
 
 # Internal modules #
 from illumitag.running import Runner
+from illumitag.common.slurm import SLURMJob
+from illumitag.groups.projects import Project
 
 # Third party modules #
 
@@ -10,6 +12,7 @@ from illumitag.running import Runner
 ###############################################################################
 class AnalysisRunner(Runner):
     """Will run stuff on an aggregate's analysis"""
+    default_time = '1-00:00:00'
 
     default_steps = [
         ### Start ###
@@ -27,3 +30,24 @@ class AnalysisRunner(Runner):
     def __init__(self, parent):
         # Save parent #
         self.parent, self.analysis = parent, parent
+
+    def run_slurm(self, steps=None, **kwargs):
+        # Check project #
+        if not isinstance(self.analysis.aggregate, Project):
+            raise Exception("Can only analyze projects via SLURM.")
+        # Make script #
+        command = """steps = %s
+                     proj = [pj for pj in illumitag.projects if pj.name=='%s'][0]
+                     proj.load()
+                     proj.analysis.run()""" % (steps, self.analysis.aggregate.name)
+        # Test case #
+        if self.name == 'test':
+            kwargs['time'] = '00:15:00'
+            kwargs['qos'] = False
+            kwargs['email'] = '/dev/null'
+        # Send it #
+        if 'time' not in kwargs: kwargs['time'] = self.default_time
+        if 'email' not in kwargs: kwargs['email'] = None
+        self.slurm_job = SLURMJob(command, self.analysis.p.logs_dir,
+                                  job_name="illumitag_" + self.analysis.aggregate.name, **kwargs)
+        self.slurm_job.launch()

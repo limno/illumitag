@@ -12,7 +12,6 @@ import sh
 
 # Constants #
 
-
 ################################################################################
 def queued_jobs_info():
     text = sh.jobinfo('-u', getpass.getuser())

@@ -1,5 +1,5 @@
 # Built-in modules #
-import os, gzip, re
+import os, gzip
 from collections import Counter, OrderedDict
 
 # Internal modules #
@@ -83,6 +83,14 @@ class FASTA(FilePath):
     def parse_primers(self):
         return (ReadWithPrimers(r, self.primers) for r in self.parse())
 
+    @property_cached
+    def barcode_counter(self):
+        return Counter((str(m) for read in self.parse_barcodes() for m in read.matches))
+
+    @property_cached
+    def good_barcodes_breakdown(self):
+        return OrderedDict([(name, self.barcode_counter[name + 'F']) for name in self.samples.bar_names])
+
     def subsample(self, down_to, new_path=None):
         # Auto path #
         if not new_path: new_path = self.p.subsample
@@ -115,25 +123,3 @@ class FASTQ(FASTA):
     def to_fasta(self, path):
         with open(path, 'w') as handle:
             for r in self: SeqIO.write(r, handle, 'fasta')
-
-#-----------------------------------------------------------------------------#
-class SizesFASTA(FASTA):
-    """A Fasta with cluster weights"""
-
-    @property_cached
-    def count(self):
-        get_size = lambda x: int(re.findall("size=([0-9]+)", x)[0])
-        sizes = (get_size(r.description) for r in self)
-        return sum(sizes)
-
-#-----------------------------------------------------------------------------#
-class BarcodedFASTQ(FASTQ):
-    """A Fastq with barcodes still attached"""
-
-    @property_cached
-    def barcode_counter(self):
-        return Counter((str(m) for read in self.parse_barcodes() for m in read.matches))
-
-    @property_cached
-    def good_barcodes_breakdown(self):
-        return OrderedDict([(name, self.barcode_counter[name + 'F']) for name in self.samples.bar_names])

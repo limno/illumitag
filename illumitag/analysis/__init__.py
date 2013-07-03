@@ -16,6 +16,7 @@ class Analysis(object):
     all_paths = """
     /reads/qiime_reads.fasta
     /otus/
+    /logs/
     """
 
     def __repr__(self): return '<%s object on %s>' % \
@@ -45,8 +46,13 @@ class Analysis(object):
     def run(self, *args, **kwargs):
         self.runner.run(*args, **kwargs)
 
+    def run_slurm(self, *args, **kwargs):
+        if not self.loaded: self.load()
+        self.runner.run_slurm()
+
     def combine_reads(self):
-        shell_output('cat %s > %s' % (' '.join([pool.qiime_fasta.path for pool in self]), self.qiime_reads.path))
+        paths = [pool.quality_reads.qiime_fasta.path for pool in self]
+        shell_output('cat %s > %s' % (' '.join(paths), self.qiime_reads.path))
 
     def run_denovo(self): self.otu_denovo.run()
     def run_open_ref(self): self.otu_open_ref.run()

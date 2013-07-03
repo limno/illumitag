@@ -1,22 +1,19 @@
 # Built-in modules #
-import os, json
-from collections import defaultdict
+import json
 
 # Third party modules #
 import sh, fastqident
-from Bio.SeqIO.FastaIO import FastaWriter
 
 # Internal modules #
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
+from quality import QualityReads
 from illumitag.common import property_cached, AutoPaths
 from illumitag.helper.primers import TwoPrimers
-from illumitag.fasta.single import FASTA, FASTQ
+from illumitag.fasta.single import FASTQ
 from illumitag.fasta.paired import PairedFASTQ
-from illumitag.fasta.other import QualFile, GroupFile
 from illumitag.running.pool_runner import PoolRunner
 from illumitag.graphs import pool_plots
-from illumitag.helper.barcodes import bar_len
 
 ###############################################################################
 class Pool(object):
@@ -27,10 +24,7 @@ class Pool(object):
     /groups/
     /graphs/
     /logs/
-    /results/mothur/reads.fasta
-    /results/mothur/reads.qual
-    /results/mothur/groups.tsv
-    /results/qiime/reads.fasta
+    /quality_reads/
     """
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
@@ -84,17 +78,7 @@ class Pool(object):
         self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
         self.children = self.outcomes
         # The good reads #
-        self.quality_reads = self.good_barcodes.assembled.good_primers.len_filtered
-        self.trimmed_reads = self.good_barcodes.assembled.good_primers.trimmed_fastq
-        # Primer size #
-        self.trim_fwd = bar_len + self.primers.fwd_len
-        self.trim_rev = bar_len + self.primers.rev_len
-        # Mothur output #
-        self.mothur_fasta = FASTA(self.p.mothur_fasta)
-        self.mothur_qual = QualFile(self.p.mothur_qual)
-        self.mothur_groups = GroupFile(self.p.mothur_groups)
-        # Qiime output #
-        self.qiime_fasta = FASTA(self.p.qiime_fasta)
+        self.quality_reads = QualityReads(self)
         # Runner #
         self.runner = PoolRunner(self)
         # Loaded #
@@ -137,37 +121,6 @@ class Pool(object):
         for o in self.outcomes:
             assert fastqident.detect_encoding(o.fwd_path) == 'sanger'
             assert fastqident.detect_encoding(o.rev_path) == 'sanger'
-
-    def make_mothur_output(self):
-        # Trimmed fasta #
-        if os.path.exists(self.mothur_fasta.path): os.remove(self.mothur_fasta.path)
-        os.symlink(self.trimmed_reads.path, self.mothur_fasta.path)
-        # The groups file #
-        self.mothur_groups.create()
-        for r in self.quality_reads.parse_barcodes():
-            sample_name = r.first.sample.short_name
-            read_name = '%s\t%s\n' % (r.read.id, sample_name)
-            self.mothur_groups.handle.write(read_name)
-        self.mothur_groups.close()
-
-    def make_qiime_output(self):
-        # Prepare fasta writer #
-        handle = open(self.qiime_fasta.path, 'w')
-        writer = FastaWriter(handle, wrap=0)
-        writer.write_header()
-        # Counter #
-        counter = defaultdict(int)
-        # Do it #
-        for r in self.quality_reads.parse_barcodes():
-            sample_name = r.first.sample.short_name
-            counter[sample_name] += 1
-            r.read.id = '%s_%i %s' % (sample_name, counter[sample_name], r.read.id)
-            bar_seq = r.read.seq[0:bar_len]
-            r.read.description = "orig_bc=%s new_bc=%s bc_diffs=0" % (bar_seq, bar_seq)
-            writer.write_record(r.read[self.trim_fwd:-self.trim_rev])
-        # Close #
-        writer.write_footer()
-        handle.close()
 
     def make_pool_plots(self):
         for cls_name in pool_plots.__all__:

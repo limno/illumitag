@@ -23,7 +23,7 @@
         {"name": "C3-4",  "used": 1, "group": "None", "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
         {"name": "C4-6",  "used": 1, "group": "None", "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
         {"name": "C6-8",  "used": 1, "group": "None", "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
-        {"name": "A0",    "used": 1, "group": "None", "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "AO",    "used": 1, "group": "None", "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
         {"name": "BO",    "used": 1, "group": "None", "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
         {"name": "CO",    "used": 1, "group": "None", "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
         {"name": "DO",    "used": 1, "group": "None", "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},

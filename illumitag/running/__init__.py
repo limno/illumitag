@@ -1,5 +1,5 @@
 # Built-in modules #
-import sys, time, datetime
+import os, sys, time, datetime
 
 # Internal modules #
 from illumitag.common import Color
@@ -72,3 +72,13 @@ class Runner(object):
         if self.color: print Color.ylw + "Run time: '%s'" % (run_time) + Color.end
         else: print "Run time: '%s'" % (run_time)
         sys.stdout.flush()
+
+    @property
+    def latest_log(self):
+        if not self.parent.loaded: self.parent.load()
+        def logs():
+            for dir_name in os.listdir(self.parent.p.logs_dir):
+                dir_path = os.path.join(self.parent.p.logs_dir, dir_name)
+                if not os.path.isdir(dir_path): continue
+                yield dir_path + '/'
+        return max(logs(), key=lambda x: os.stat(x).st_mtime)
