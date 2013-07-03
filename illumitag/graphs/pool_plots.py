@@ -47,7 +47,7 @@ class ReadsThatPassHist(Graph):
         # Data #
         columns = ["After barcode check", "After processing"]
         rows = self.parent.samples.bar_names
-        data = zip(self.parent.good_barcodes.breakdown.values(), self.parent.quality_reads.good_barcodes_breakdown.values())
+        data = zip(self.parent.good_barcodes.breakdown.values(), self.parent.quality_reads.untrimmed.good_barcodes_breakdown.values())
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
         fig = pyplot.figure()

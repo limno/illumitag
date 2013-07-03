@@ -25,7 +25,7 @@ class Project(Aggregate):
     def __init__(self, name, pools, projs_dir):
         # Attributes #
         self.name = name
-        self.pools = pools
+        self.pools, self.children = pools, pools
         self.loaded = False
         # Dir #
         self.base_dir = projs_dir + self.name + '/'

@@ -27,7 +27,7 @@ class Collection(object):
 
     def __getitem__(self, key):
         if isinstance(key, basestring):
-            return [c for c in self.children if c.name == key][0]
+            return [c for c in self.children if c.name == key.lower()][0]
         elif isinstance(key, int):
             if hasattr(self.first, 'num'): return [c for c in self.children if c.num == key][0]
             else: return self.children[key]

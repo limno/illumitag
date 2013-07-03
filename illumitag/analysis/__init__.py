@@ -47,7 +47,6 @@ class Analysis(object):
         self.runner.run(*args, **kwargs)
 
     def run_slurm(self, *args, **kwargs):
-        if not self.loaded: self.load()
         self.runner.run_slurm()
 
     def combine_reads(self):

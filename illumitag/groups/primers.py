@@ -105,8 +105,9 @@ class GoodPrimers(PrimerGroup):
     """
 
     def load(self):
-        self.uchime_ref = UchimeRef(self.trimmed_barcodes.path, self.p.chimeras_ref_dir, self)
-        self.uchime_denovo = UchimeDenovo(self.trimmed_barcodes.path, self.p.chimeras_denovo_dir, self)
+        if self.parent == 'assembled':
+            self.uchime_ref = UchimeRef(self.trimmed_barcodes.path, self.p.chimeras_ref_dir, self)
+            self.uchime_denovo = UchimeDenovo(self.trimmed_barcodes.path, self.p.chimeras_denovo_dir, self)
 
     def check_chimeras(self):
         # Only assembled sequences #

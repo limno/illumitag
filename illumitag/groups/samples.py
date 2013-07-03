@@ -42,8 +42,8 @@ class Samples(object):
         self.bar_names_R = [name + 'R' for name in self.bar_names]
         self.all_bar_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
         # Primer size #
-        self.trim_fwd = bar_len + self.primers.fwd_len
-        self.trim_rev = bar_len + self.primers.rev_len
+        self.trim_fwd = bar_len + self.pool.primers.fwd_len
+        self.trim_rev = bar_len + self.pool.primers.rev_len
 
 ###############################################################################
 class Sample(FASTQ):

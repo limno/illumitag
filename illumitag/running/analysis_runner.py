@@ -3,7 +3,6 @@
 # Internal modules #
 from illumitag.running import Runner
 from illumitag.common.slurm import SLURMJob
-from illumitag.groups.projects import Project
 
 # Third party modules #
 
@@ -33,6 +32,7 @@ class AnalysisRunner(Runner):
 
     def run_slurm(self, steps=None, **kwargs):
         # Check project #
+        from illumitag.groups.projects import Project
         if not isinstance(self.analysis.aggregate, Project):
             raise Exception("Can only analyze projects via SLURM.")
         # Make script #
@@ -41,7 +41,7 @@ class AnalysisRunner(Runner):
                      proj.load()
                      proj.analysis.run()""" % (steps, self.analysis.aggregate.name)
         # Test case #
-        if self.name == 'test':
+        if self.analysis.aggregate.name == 'test':
             kwargs['time'] = '00:15:00'
             kwargs['qos'] = False
             kwargs['email'] = '/dev/null'

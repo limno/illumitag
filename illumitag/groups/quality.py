@@ -29,18 +29,17 @@ class QualityReads(object):
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.orig_reads)
 
-    def __init__(self, parent, reads):
+    def __init__(self, parent):
         # Save parent #
-        self.parent = parent
+        self.parent, self.pool = parent, parent
         self.samples = parent.samples
-        self.pool = self.parent.pool
         # Auto paths #
         self.base_dir = parent.p.quality_dir + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Files #
         self.untrimmed = self.pool.good_barcodes.assembled.good_primers.len_filtered
-        self.only_used = FASTA(self.p.only_used)
-        self.trimmed = FASTA(self.trimmed)
+        self.only_used = FASTA(self.p.only_used, samples=self.samples)
+        self.trimmed = FASTA(self.p.trimmed)
         # Qiime output #
         self.qiime_fasta = FASTA(self.p.qiime_fasta)
         # Mothur #
@@ -54,7 +53,7 @@ class QualityReads(object):
     def filter_unused(self):
         def no_unused_iterator(reads):
             for r in reads.parse_barcodes():
-                if r.first.sample.used: yield r
+                if r.first.sample.used: yield r.read
         self.only_used.write(no_unused_iterator(self.untrimmed))
 
     def trim_primers(self):

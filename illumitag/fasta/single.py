@@ -1,5 +1,5 @@
 # Built-in modules #
-import os, gzip
+import os, gzip, re
 from collections import Counter, OrderedDict
 
 # Internal modules #
@@ -123,3 +123,13 @@ class FASTQ(FASTA):
     def to_fasta(self, path):
         with open(path, 'w') as handle:
             for r in self: SeqIO.write(r, handle, 'fasta')
+
+#-----------------------------------------------------------------------------#
+class SizesFASTA(FASTA):
+    """A Fasta with cluster weights"""
+
+    @property_cached
+    def count(self):
+        get_size = lambda x: int(re.findall("size=([0-9]+)", x)[0])
+        sizes = (get_size(r.description) for r in self)
+        return sum(sizes)
