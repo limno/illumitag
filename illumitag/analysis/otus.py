@@ -57,14 +57,14 @@ class OTUs(object):
 
     def run(self):
         # Standard #
-        self.pick_otus()
-        self.pick_rep_set()
-        self.make_otu_table()
-        self.filter_otu_table()
-        self.make_otu_plots()
+        #self.pick_otus()
+        #self.pick_rep_set()
+        #self.make_otu_table()
+        #self.filter_otu_table()
+        #self.make_otu_plots()
         self.compute_stats()
         # Subsample #
-        self.subsampled.run()
+        #self.subsampled.run()
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')

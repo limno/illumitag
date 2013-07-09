@@ -42,8 +42,8 @@ class StatsOnOTU(object):
         self.p = AutoPaths(self.base_dir, self.all_paths)
 
     def run(self):
-        self.nmds()
-        self.permanova()
+        #self.nmds()
+        #self.permanova()
         self.beta_dispersion()
 
     def nmds(self):

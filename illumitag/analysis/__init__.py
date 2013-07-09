@@ -56,4 +56,3 @@ class Analysis(object):
     def run_denovo(self): self.otu_denovo.run()
     def run_open_ref(self): self.otu_open_ref.run()
     def run_progressive(self): self.otu_step.run()
-    def run_subsample(self): self.otu_subsample.run()

@@ -15,10 +15,9 @@ class AnalysisRunner(Runner):
 
     default_steps = [
         ### Start ###
-        {'combine_reads':             {}},
+        #{'combine_reads':             {}},
         ### OTUs ###
         {'run_denovo':                {}},
-        {'run_subsample':             {}},
         #{'run_open_ref':              {}},
         #{'run_progressive':           {}},
         ### Plots ###
