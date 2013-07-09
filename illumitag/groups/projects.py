@@ -33,15 +33,6 @@ class Project(Aggregate):
         # Extra #
         self.meta_data_path = illumitag.repos_dir + 'projects/' + self.name + '.csv'
 
-    def run_pools_slurm(self, steps=None, **kwargs):
-        # Test case #
-        if self.name == 'test':
-            kwargs['time'] = '00:15:00'
-            kwargs['qos'] = False
-            kwargs['email'] = '/dev/null'
-        # Call function #
-        return Aggregate.run_pools_slurm(self, **kwargs)
-
     def run_analysis_slurm(self, *args, **kwargs):
         if not self.loaded: self.load()
         self.analysis.run_slurm(*args, **kwargs)

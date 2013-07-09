@@ -58,9 +58,15 @@ class PoolRunner(Runner):
         return Runner.find_fns(self, name)
 
     def run_slurm(self, steps=None, **kwargs):
+        # Test case #
+        if self.pool.project.name == 'test':
+            kwargs['time'] = '00:15:00'
+            kwargs['qos'] = False
+            kwargs['email'] = '/dev/null'
+        # Script #
         command = """steps = %s
                      pool = [p for p in illumitag.pools if str(p)=='%s'][0]
-                     pool(steps)""" % (steps, self)
+                     pool(steps)""" % (steps, self.pool)
         # Send it #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None

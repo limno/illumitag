@@ -26,11 +26,11 @@ class SubsampledOTUs(OTUs):
                                (self.__class__.__name__, self.parent)
 
     def __init__(self, parent):
+        # Save parent #
+        self.full_otu, self.parent = parent, parent
         # Names #
         self.short_name = parent.short_name + '_subsampled'
         self.method = parent.method + ' (Subsampled)'
-        # Save parent #
-        self.full_otu, self.parent = parent, parent
         # Inherited #
         self.pools = self.parent.pools
         self.qiime_reads = self.parent.qiime_reads

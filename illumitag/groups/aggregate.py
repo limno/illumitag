@@ -81,10 +81,6 @@ class Aggregate(object):
         for p in self.pools: p()
 
     def run_pools_slurm(self, steps=None, **kwargs):
-        # Check loaded #
-        for p in self.pools:
-            if not p.loaded: p.load()
-        # Call function #
         return [p.run_slurm(steps, **kwargs) for p in self.pools]
 
     def make_plots(self):
@@ -125,7 +121,7 @@ class Aggregate(object):
             # Start and end time #
             start_time = re.findall('^SLURM: start at (.+) on .+$', job_out, re.M)
             if start_time: p.runner.job_start_time = dateutil_parse(start_time[0])
-            end_time = re.findall('^SBATCH: end at (.+)$', job_out, re.M)
+            end_time = re.findall('^SLURM: end at (.+)$', job_out, re.M)
             if end_time: p.runner.job_end_time = dateutil_parse(end_time[0])
             # Total time #
             if start_time and end_time:

@@ -48,4 +48,4 @@ projects = Projects(projects)
 for p in pools: p.project = projects[p.project_short_name]
 
 # Make an aggregate with all pools #
-aggregate = Aggregate('all', pools, view_dir + 'aggregate/')
+aggregate = Aggregate('all', pools, view_dir + 'aggregates/')

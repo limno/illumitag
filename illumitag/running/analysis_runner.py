@@ -18,7 +18,7 @@ class AnalysisRunner(Runner):
         {'combine_reads':             {}},
         ### OTUs ###
         {'run_denovo':                {}},
-        #{'run_subsample':             {}},
+        {'run_subsample':             {}},
         #{'run_open_ref':              {}},
         #{'run_progressive':           {}},
         ### Plots ###
@@ -29,6 +29,7 @@ class AnalysisRunner(Runner):
     def __init__(self, parent):
         # Save parent #
         self.parent, self.analysis = parent, parent
+        self.pools = parent.pools
 
     def run_slurm(self, steps=None, **kwargs):
         # Check project #
@@ -45,9 +46,15 @@ class AnalysisRunner(Runner):
             kwargs['time'] = '00:15:00'
             kwargs['qos'] = False
             kwargs['email'] = '/dev/null'
+        # Dependencies #
+        if all([hasattr(p, 'slurm_job') for p in self.pools]):
+            deps = 'afterok:' + ':'.join(str(p.slurm_job.id) for p in self.pools)
+        else:
+            deps = 'afterok:1'
         # Send it #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
         self.slurm_job = SLURMJob(command, self.analysis.p.logs_dir,
-                                  job_name="illumitag_" + self.analysis.aggregate.name, **kwargs)
+                                  job_name="illumitag_" + self.analysis.aggregate.name,
+                                  dependency=deps, **kwargs)
         self.slurm_job.launch()

@@ -120,7 +120,7 @@ class StatsOnOTU(object):
         ro.r("data_dist = vegdist(data_wa, method='%s')" % self.dist_method)
         # Meta data #
         ro.r("meta = meta[row.names(data),]")
-        ro.r("meta_ordered = meta[row.names(meta),]")
+        ro.r("meta_ordered = meta[order(row.names(meta)),]")
         ro.r("pool = factor(meta[,1])")
         ro.r("chemistry = factor(meta[,3])")
         # Chemistry group #
@@ -141,7 +141,6 @@ class StatsOnOTU(object):
         ro.r("test = permutest(mod2, control = permControl(nperm = 1000))")
         result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
         with open(self.p.beta_dispersion_permutest, 'w') as handle: handle.write(result)
-        ro.r("mod1 = betadisper(data_dist, run)")
         ro.r("test = anova(mod2)")
         result = '\n'.join(ro.r("capture.output(print(test))")).encode('utf-8')
         with open(self.p.beta_dispersion_anova, 'w') as handle: handle.write(result)
