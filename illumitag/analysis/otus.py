@@ -57,14 +57,14 @@ class OTUs(object):
 
     def run(self):
         # Standard #
-        #self.pick_otus()
-        #self.pick_rep_set()
-        #self.make_otu_table()
-        #self.filter_otu_table()
-        #self.make_otu_plots()
+        self.pick_otus()
+        self.pick_rep_set()
+        self.make_otu_table()
+        self.filter_otu_table()
+        self.make_otu_plots()
         self.compute_stats()
         # Subsample #
-        #self.subsampled.run()
+        self.subsampled.run()
 
     def pick_rep_set(self):
         pick_rep = sh.Command('pick_rep_set.py')
@@ -89,7 +89,7 @@ class OTUs(object):
         self.table_filtered.filter_line_sum(minimum=3) # Min cluster size
         self.table_filtered.transpose()
         self.table_filtered.filter_line_sum(minimum=10) # Min reads in sample
-        # Make a transposed version #
+        # Make a retransposed version #
         self.table_filtered.transpose(path=self.table_transposed.path)
 
     def compute_stats(self):
@@ -101,9 +101,9 @@ class OTUs(object):
             cls(self).plot()
 
 ###############################################################################
-class DenovoOTUs(OTUs):
-    short_name = 'denovo'
-    method = 'Denovo picking'
+class UclustOTUs(OTUs):
+    short_name = 'uclust'
+    method = 'Uclust denovo picking'
     dist_method = 'horn'
 
     all_paths = OTUs.all_paths + """
@@ -124,6 +124,20 @@ class DenovoOTUs(OTUs):
         shutil.move(base_name + '_otus.txt', self.p.clusters_otus_txt)
         shutil.move(base_name + '_otus.log', self.p.clusters_otus_log)
         shutil.move(base_name + '_clusters.uc', self.p.clusters_uc)
+
+###############################################################################
+class CdhitOTUs(OTUs):
+    short_name = 'cdhit'
+    method = 'CD-HIT denovo picking'
+    dist_method = 'horn'
+
+    all_paths = OTUs.all_paths + """
+    /clusters/lorem.txt
+    """
+
+    def pick_otus(self):
+        # Clean #
+        shutil.rmtree(self.p.clusters_dir)
 
 ###############################################################################
 class OpenRefOTUs(OTUs):

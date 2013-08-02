@@ -27,7 +27,11 @@ class Samples(object):
         self.children = [Sample(s, self) for s in self.info]
         # Sort them #
         self.children.sort(key=lambda x: x.num)
+        # Check number are all there #
         assert [s.num for s in self] == range(1,51)
+        # Check names are unique #
+        names = [s.short_name for s in self if s.used]
+        assert len(names) == len(set(names))
 
     def load(self):
         # Children #

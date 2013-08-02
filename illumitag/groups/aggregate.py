@@ -8,7 +8,7 @@ from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis
 
 # Third party modules #
-import sh, pandas
+import sh, pandas, playdoh
 from dateutil.parser import parse as dateutil_parse
 
 ###############################################################################
@@ -54,6 +54,13 @@ class Aggregate(object):
 
     @property
     def first(self): return self.pools[0]
+
+    @property
+    def count(self): return sum([p.count for p in self.pools])
+
+    @property
+    def avg_quality(self):
+        return playdoh.map(lambda p: p.avg_quality, self.pools, cpu=len(self))
 
     def __init__(self, name, pools, out_dir):
         # Attributes #

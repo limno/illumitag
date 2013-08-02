@@ -7,8 +7,8 @@
     "run_id":        "test_data",
     "pool_num":      1,
     "pool_id":       "pool1",
-    "forward_reads": "pool1_fwd.fastq",
-    "reverse_reads": "pool1_rev.fastq",
+    "forward_reads": "pool1_fwd.fastq.gz",
+    "reverse_reads": "pool1_rev.fastq.gz",
 
     "project":       "test",
     "project_name":  "Test data",

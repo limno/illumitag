@@ -32,18 +32,18 @@ class StatsOnOTU(object):
         self.otu, self.parent = parent, parent
         self.table = table
         # Inherited #
-        if not base_dir: self.base_dir = self.parent.base_dir
-        else:            self.base_dir = base_dir
+        if not base_dir:       self.base_dir = self.parent.base_dir
+        else:                  self.base_dir = base_dir
         if not meta_data_path: self.meta_data_path = self.parent.meta_data_path
         else:                  self.meta_data_path = meta_data_path
-        if not dist_method: self.dist_method = self.parent.dist_method
-        else:               self.dist_method = dist_method
+        if not dist_method:    self.dist_method = self.parent.dist_method
+        else:                  self.dist_method = dist_method
         # Paths #
         self.p = AutoPaths(self.base_dir, self.all_paths)
 
     def run(self):
-        #self.nmds()
-        #self.permanova()
+        self.nmds()
+        self.permanova()
         self.beta_dispersion()
 
     def nmds(self):

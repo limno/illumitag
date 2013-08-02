@@ -2,7 +2,7 @@
 
 # Internal modules #
 from illumitag.common import AutoPaths
-from illumitag.analysis.otus import DenovoOTUs, OpenRefOTUs, StepOTUs
+from illumitag.analysis.otus import UclustOTUs, CdhitOTUs, OpenRefOTUs, StepOTUs
 from illumitag.running.analysis_runner import AnalysisRunner
 from illumitag.fasta.single import FASTA
 
@@ -39,7 +39,8 @@ class Analysis(object):
         # FASTA #
         self.qiime_reads = FASTA(self.p.qiime_reads_fasta)
         # OTU picking #
-        self.otu_denovo    = DenovoOTUs(self)
+        self.otu_uclust    = UclustOTUs(self)
+        self.otu_cdhit     = CdhitOTUs(self)
         self.otu_open_ref  = OpenRefOTUs(self)
         self.otu_step      = StepOTUs(self)
 
@@ -53,6 +54,7 @@ class Analysis(object):
         paths = [pool.quality_reads.qiime_fasta.path for pool in self]
         shell_output('cat %s > %s' % (' '.join(paths), self.qiime_reads.path))
 
-    def run_denovo(self): self.otu_denovo.run()
+    def run_uclust(self): self.otu_uclust.run()
+    def run_cdhit(self): self.otu_cdhit.run()
     def run_open_ref(self): self.otu_open_ref.run()
     def run_progressive(self): self.otu_step.run()

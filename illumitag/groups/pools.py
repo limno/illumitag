@@ -2,13 +2,13 @@
 import os, json
 
 # Third party modules #
-import sh, fastqident
+import fastqident
 
 # Internal modules #
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
 from quality import QualityReads
-from illumitag.common import property_cached, AutoPaths
+from illumitag.common import AutoPaths
 from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTQ
 from illumitag.fasta.paired import PairedFASTQ
@@ -23,6 +23,7 @@ class Pool(object):
     /samples/
     /groups/
     /graphs/
+    /fastqc/
     /logs/
     /quality_reads/
     /info.json
@@ -72,7 +73,7 @@ class Pool(object):
         self.rev_path = "/proj/%s/INBOX/%s/%s/%s" % (self.account, self.run.label, self.label, self.info['reverse_reads'])
         self.fwd = FASTQ(self.fwd_path)
         self.rev = FASTQ(self.rev_path)
-        self.raw = PairedFASTQ(self.fwd.path, self.rev.path, self)
+        self.fastq = PairedFASTQ(self.fwd.path, self.rev.path, self)
         # Make Outcomes #
         self.no_barcodes   = NoBarcode(self)
         self.one_barcodes  = OneBarcode(self)
@@ -91,10 +92,15 @@ class Pool(object):
     @property
     def first(self): return self.children[0]
 
-    @property_cached
+    @property
     def count(self):
-        if self.fwd_path.endswith('gz'): return int(sh.zgrep('-c', "^+$", self.fwd_path))
-        else: return int(sh.grep('-c', "^+$", self.fwd_path))
+        if not self.loaded: self.load()
+        return self.fastq.count
+
+    @property
+    def avg_quality(self):
+        if not self.loaded: self.load()
+        return self.fastq.avg_quality
 
     def __call__(self, *args, **kwargs):
         if not self.loaded: self.load()
@@ -104,10 +110,14 @@ class Pool(object):
         if not self.loaded: self.load()
         return self.runner.run_slurm(*args, **kwargs)
 
+    def pool_fastqc(self):
+        if not self.loaded: self.load()
+        self.fastq.fastqc(self.p.fastqc_dir)
+
     def create_outcomes(self):
         if not self.loaded: self.load()
         for o in self.outcomes: o.create()
-        for r in self.raw.parse_barcodes():
+        for r in self.fastq.parse_barcodes():
             if len(r.matches) == 0:                              self.no_barcodes.add_pair(r)
             elif len(r.matches) == 1:                            self.one_barcodes.add_pair(r)
             elif r.matches[0].set == r.matches[1].set:           self.same_barcodes.add_pair(r)

@@ -17,7 +17,8 @@ class AnalysisRunner(Runner):
         ### Start ###
         #{'combine_reads':             {}},
         ### OTUs ###
-        {'run_denovo':                {}},
+        #{'run_uclust':                {}},
+        {'run_cdhit':                 {}},
         #{'run_open_ref':              {}},
         #{'run_progressive':           {}},
         ### Plots ###

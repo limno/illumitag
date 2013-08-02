@@ -53,6 +53,16 @@ def isubsample(full_sample, k, full_sample_len=None):
     assert picked == k
 
 ################################################################################
+def imean(numbers):
+    """Iterative mean"""
+    count = 0
+    total = 0
+    for num in numbers:
+        count += 1
+        total += num
+    return float(total)/count
+
+################################################################################
 def find_files_by_regex(regex, directory='./'):
     """Search one directory for all files matching a pattern"""
     for name in glob.glob(directory + "*"):

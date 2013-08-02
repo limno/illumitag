@@ -124,6 +124,18 @@ class FASTQ(FASTA):
         with open(path, 'w') as handle:
             for r in self: SeqIO.write(r, handle, 'fasta')
 
+    def fastqc(self):
+        # Call #
+        sh.fastqc(self.path, '-q')
+        # Paths #
+        zip_file = self.prefix_path + '_fastqc.zip'
+        report_dir = self.prefix_path + '_fastqc/'
+        #images_dir = self.prefix_path + '_fastqc/Images/'
+        # Clean up #
+        os.remove(zip_file)
+        # Return #
+        return report_dir
+
 #-----------------------------------------------------------------------------#
 class SizesFASTA(FASTA):
     """A Fasta with cluster weights"""

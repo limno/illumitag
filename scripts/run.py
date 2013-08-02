@@ -15,6 +15,8 @@ import illumitag; pj = illumitag.projects['test']; [pool() for pool in pj.pools[
 
 # Just one function for one pool #
 import illumitag; pj = illumitag.projects['test']; p = pj[0]; p(steps=[{'make_pool_plots':{}}], threads=False)
+# One function for several pools in parallel #
+playdoh.map(lambda p: p.pool_fastqc(), illumitag.projects['evaluation'].pools, cpu=5)
 
 
 # Just one analysis #
