@@ -54,3 +54,24 @@ class Aligned(FASTA):
         if os.path.exists('formatdb.log'): os.remove('formatdb.log')
         if os.path.exists('error.log') and os.path.getsize('error.log') == 0: os.remove('error.log')
         for p in sh.glob('mothur.*.logfile'): os.remove(p)
+
+#-----------------------------------------------------------------------------#
+class CollectionPairedFASTQ(object):
+    """A collection of PairedFASTQ objects"""
+
+    def __len__(self): return self.count
+    def __iter__(self): return iter(self.pairs)
+    def __repr__(self): return '<%s object with %i pairs>' % (self.__class__.__name__, len(self.pairs))
+
+    def __init__(self, pair_objs):
+        # Check it is not a generator #
+        if not isinstance(pair_objs, list): pair_objs = list(pair_objs)
+        # Save attributes #
+        self.pairs, self.children = pair_objs, pair_objs
+
+    @property
+    def first(self): return self.children[0]
+
+    @property
+    def count(self):
+        return sum([p.count for p in self.pairs])

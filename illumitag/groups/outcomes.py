@@ -10,7 +10,7 @@ from illumitag.fasta.paired import PairedFASTQ
 from illumitag.graphs import outcome_plots
 
 # Third party modules #
-import sh
+import sh, scipy
 
 ###############################################################################
 class BarcodeGroup(PairedFASTQ):
@@ -38,6 +38,7 @@ class BarcodeGroup(PairedFASTQ):
         # Super #
         self.fwd_path = self.p.fwd_fastq
         self.rev_path = self.p.rev_fastq
+        self.gziped = True if self.fwd_path.endswith('gz') else False
         # Add assembly files #
         self.assembled = Assembled(self)
         self.unassembled = Unassembled(self)
@@ -72,8 +73,7 @@ class BarcodeGroup(PairedFASTQ):
 ###############################################################################
 class NoBarcode(BarcodeGroup):
     short_name = "no_barcodes"
-    @property
-    def doc(self): return "No barcodes found at all"
+    doc = "No barcodes found at all"
 
     @property_cached
     def counter(self):
@@ -138,3 +138,9 @@ class GoodBarcode(BarcodeGroup):
     @property_cached
     def breakdown(self):
         return OrderedDict([(name, self.counter[name + 'F']) for name in self.samples.bar_names])
+
+    @property_cached
+    def relative_std_dev(self):
+        avg = scipy.mean(self.breakdown.values())
+        std_dev = scipy.std_dev(self.breakdown.values())
+        return std_dev/avg

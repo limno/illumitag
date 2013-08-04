@@ -25,10 +25,11 @@ class Graph(object):
         fig.set_figheight(height)
         fig.subplots_adjust(hspace=0.0, bottom=bottom, top=top, left=left, right=right)
         # Data and source #
-        fig.text(0.99, 0.98, time.asctime(), horizontalalignment='right')
-        job_name = os.environ.get('SLURM_JOB_NAME', 'Unnamed')
-        user_msg = 'user: %s, job: %s' % (getpass.getuser(), job_name)
-        fig.text(0.01, 0.98, user_msg, horizontalalignment='left')
+        if False:
+            fig.text(0.99, 0.98, time.asctime(), horizontalalignment='right')
+            job_name = os.environ.get('SLURM_JOB_NAME', 'Unnamed')
+            user_msg = 'user: %s, job: %s' % (getpass.getuser(), job_name)
+            fig.text(0.01, 0.98, user_msg, horizontalalignment='left')
         # Nice digit grouping #
         if 'x' in sep:
             locale.setlocale(locale.LC_ALL, '')

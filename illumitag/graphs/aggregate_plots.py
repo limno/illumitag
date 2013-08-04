@@ -18,9 +18,9 @@ class BarcodeStack(Graph):
 
     def plot(self):
         # Data #
-        rows = ['Pool "%s" (%s)' % (p.long_name, p) for p in self.parent.pools]
+        rows = [p.long_name for p in reversed(self.parent.pools)]
         columns = [o.doc for o in self.parent.first.outcomes]
-        data = [[o.count for o in p.outcomes] for p in self.parent.pools]
+        data = [[o.count for o in p.outcomes] for p in reversed(self.parent.pools)]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
         fig = pyplot.figure()
@@ -30,8 +30,9 @@ class BarcodeStack(Graph):
         axes.set_title('Demultiplexing result (%i barcodes are used)' % len(self.parent.first.samples))
         axes.set_xlabel('Number of paired reads')
         axes.xaxis.grid(True)
+        axes.yaxis.grid(False)
         # Save it #
-        self.save_plot(fig, axes, sep=('x'))
+        self.save_plot(fig, axes, sep=('x'), left=0.1, right=0.97)
         self.frame.to_csv(self.csv_path)
 
 ################################################################################

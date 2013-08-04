@@ -13,7 +13,7 @@
     "project":       "evaluation",
     "project_name":  "Evaluation of Illumina protocol",
     "pool":          "evaluation5",
-    "pool_name":     "Updated Illumina protocol",
+    "pool_name":     "Updated chemistry",
 
     "samples": [
         {"name": "p5bc01", "used": 1, "group": "update", "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},

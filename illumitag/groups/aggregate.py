@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 import os, shutil, re
 
@@ -6,6 +9,7 @@ from illumitag.common import AutoPaths
 from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis
+from illumitag.fasta.other import CollectionPairedFASTQ
 
 # Third party modules #
 import sh, pandas, playdoh
@@ -56,11 +60,19 @@ class Aggregate(object):
     def first(self): return self.pools[0]
 
     @property
-    def count(self): return sum([p.count for p in self.pools])
+    def count(self):
+        return sum(map(lambda p: p.count, self.pools))
+        return sum(playdoh.map(lambda p: p.count, self.pools, cpu=len(self)))
 
     @property
     def avg_quality(self):
+        return map(lambda p: p.avg_quality, self.pools)
         return playdoh.map(lambda p: p.avg_quality, self.pools, cpu=len(self))
+
+    @property
+    def outcome_percentage(self):
+        for o in self.outcomes: print o.first.doc + ': ' + str(int(round(100*len(o)/self.count))) + '%'
+        assert sum(map(len, self.outcomes)) == self.count
 
     def __init__(self, name, pools, out_dir):
         # Attributes #
@@ -75,6 +87,13 @@ class Aggregate(object):
         # Children #
         for p in self.pools:
             if not p.loaded: p.load()
+        # Make Outcomes #
+        self.no_barcodes   = CollectionPairedFASTQ(p.no_barcodes for p in self)
+        self.one_barcodes  = CollectionPairedFASTQ(p.one_barcodes for p in self)
+        self.same_barcodes = CollectionPairedFASTQ(p.same_barcodes for p in self)
+        self.bad_barcodes  = CollectionPairedFASTQ(p.bad_barcodes for p in self)
+        self.good_barcodes = CollectionPairedFASTQ(p.good_barcodes for p in self)
+        self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
         # Analysis #
         self.analysis = Analysis(self)
         # Save state #

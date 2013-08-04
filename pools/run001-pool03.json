@@ -13,7 +13,7 @@
     "project":       "evaluation",
     "project_name":  "Evaluation of Illumina protocol",
     "pool":          "evaluation3",
-    "pool_name":     "Third replicate of two step PCR",
+    "pool_name":     "Two step PCR 3",
 
     "samples": [
         {"name": "p3bc01", "used": 1, "group": "2step", "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},

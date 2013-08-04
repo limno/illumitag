@@ -27,7 +27,7 @@ class PairedFASTQ(object):
         self.pool, self.parent = parent, parent
         self.samples = parent.samples
         self.primers = parent.primers
-        self.gziped = True if fwd_path.endswith('gz') else False
+        self.gziped = True if self.fwd_path.endswith('gz') else False
 
     @property_cached
     def count(self):
