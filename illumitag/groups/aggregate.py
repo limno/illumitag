@@ -9,10 +9,11 @@ from illumitag.common import AutoPaths
 from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis
+from illumitag.reporting import Reporter
 from illumitag.fasta.other import CollectionPairedFASTQ
 
 # Third party modules #
-import sh, pandas, playdoh
+import sh, pandas
 from dateutil.parser import parse as dateutil_parse
 
 ###############################################################################
@@ -59,21 +60,6 @@ class Aggregate(object):
     @property
     def first(self): return self.pools[0]
 
-    @property
-    def count(self):
-        return sum(map(lambda p: p.count, self.pools))
-        return sum(playdoh.map(lambda p: p.count, self.pools, cpu=len(self)))
-
-    @property
-    def avg_quality(self):
-        return map(lambda p: p.avg_quality, self.pools)
-        return playdoh.map(lambda p: p.avg_quality, self.pools, cpu=len(self))
-
-    @property
-    def outcome_percentage(self):
-        for o in self.outcomes: print o.first.doc + ': ' + str(int(round(100*len(o)/self.count))) + '%'
-        assert sum(map(len, self.outcomes)) == self.count
-
     def __init__(self, name, pools, out_dir):
         # Attributes #
         self.name = name
@@ -96,6 +82,8 @@ class Aggregate(object):
         self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
         # Analysis #
         self.analysis = Analysis(self)
+        # Reporting #
+        self.reporter = Reporter(self)
         # Save state #
         self.loaded = True
 

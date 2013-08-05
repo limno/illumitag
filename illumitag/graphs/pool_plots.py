@@ -62,7 +62,7 @@ class ReadsThatPassHist(Graph):
 
 ################################################################################
 class SalvageHist(Graph):
-    """Breakdown of distribution of barcodes within a pool"""
+    """Breakdown of outcomes of barcodes within a pool"""
     short_name = 'salvage_hist'
 
     def plot(self):
@@ -84,7 +84,7 @@ class SalvageHist(Graph):
 
 ################################################################################
 class MissmatchReg(Graph):
-    """Regression of missmatches per barcode proportions"""
+    """Regression of mismatches per barcode proportions"""
     short_name = 'missmatch_reg'
 
     def plot(self):
@@ -105,9 +105,9 @@ class MissmatchReg(Graph):
         fig = smgraphics.regressionplots.plot_fit(self.reg, 1)
         axes = pyplot.gca()
         smgraphics.regressionplots.abline_plot(model_results=self.reg, ax=axes, color='red')
-        axes.set_title('Barcode abundance against missmatched barcode abundance for every barcode pair')
+        axes.set_title('Barcode abundance against mismatched barcode abundance for every barcode pair')
         axes.set_xlabel('Fraction of matched barcode against all matched')
-        axes.set_ylabel('Fraction of missmatched barcode against all missmatched')
+        axes.set_ylabel('Fraction of mismatched barcode against all mismatched')
         axes.legend(loc=1)
         # Add regression result #
         matplotlib.rc('text', usetex=True)
@@ -128,6 +128,33 @@ class MissmatchReg(Graph):
         # Save it #
         self.save_plot(fig, axes)
         matplotlib.rc('text', usetex=False)
+
+################################################################################
+class AssemblyCounts(Graph):
+    """How many reads assembled and how many did not"""
+    short_name = 'assembly_counts'
+
+    def plot(self):
+        # Data #
+        rows = [bg.doc for bg in self.parent]
+        columns = ['Assembled', 'Unassembled', 'Low quality']
+        percentage = lambda x,y: (len(x)/len(y))*100 if len(y) != 0 else 0
+        data = [(percentage(bg.assembled,bg),
+                 percentage(bg.unassembled,bg),
+                 (bg.assembled.stats['lowqual']/len(bg))*100) for bg in self.parent]
+        self.frame = pandas.DataFrame(data, index=rows, columns=columns)
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.plot(kind='barh', stacked=True)
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_title('Proportion of reads pairs that assemble for pool %i' % self.parent.num)
+        axes.set_xlabel('Percentage of total reads for a given category of barcode outcome')
+        axes.xaxis.grid(True)
+        axes.set_xlim(0,100)
+        # Save it #
+        self.save_plot(fig, axes, left=0.15, sep=('x'))
+        self.frame.to_csv(self.csv_path)
 
 ################################################################################
 class PrimerCounts(Graph):

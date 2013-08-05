@@ -8,7 +8,7 @@ import fastqident
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
 from quality import QualityReads
-from illumitag.common import AutoPaths
+from illumitag.common import AutoPaths, property_cached
 from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTQ
 from illumitag.fasta.paired import PairedFASTQ
@@ -140,3 +140,29 @@ class Pool(object):
         for cls_name in pool_plots.__all__:
             cls = getattr(pool_plots, cls_name)
             cls(self).plot()
+
+    @property_cached
+    def loss_statistics(self):
+        class MessageStat(self):
+            def __init__(self, msg, value):
+                self.msg = msg
+                self.value = value
+        class LossStatistics(object):
+            def __init__(self, pool): self.pool = pool
+            def __iter__(self): return iter((self.outcome, self.assembly, self.n_filter, self.qual_filter, self.len_filter))
+            @property
+            def outcome(self):     return MessageStat("Good barcodes are only %f%% of total",
+            (100*len(self.good_barcodes)/self.count))
+            @property
+            def assembly(self):    return MessageStat("Assembled is only %f%% of good barcodes",
+            (100*len(self.good_barcodes.assembled)/len(self.good_barcodes)))
+            @property
+            def n_filter(self):    return MessageStat("N filtered is only %f%% of good primers",
+            (100*len(self.good_barcodes.assembled.good_primers)/len(self.good_barcodes.assembled)))
+            @property
+            def qual_filter(self): return MessageStat("Qual filtered primers is only %f%% of N filtered",
+            (100*len(self.good_barcodes.assembled.good_primers.qual_filtered)/len(self.good_barcodes.assembled.good_primers.n_filtered)))
+            @property
+            def len_filter(self):  return MessageStat("Length filter primers is only %f%% of qual filtered",
+            (100*len(self.good_barcodes.assembled.good_primers.len_filtered)/len(self.good_barcodes.assembled.good_primers.qual_filtered)))
+        return LossStatistics(self)

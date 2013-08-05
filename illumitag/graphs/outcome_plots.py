@@ -34,6 +34,7 @@ class AssemblyDistrib(Graph):
         import matplotlib.ticker as mticker
         myLocator = mticker.MultipleLocator(10)
         axes.xaxis.set_major_locator(myLocator)
+        axes.set_xlim(0,250)
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)

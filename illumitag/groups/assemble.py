@@ -97,6 +97,7 @@ class Assembled(AssembleGroup, FASTQ):
         result['distrib'] = map(int, result['distrib'][0].split())
         result['lengths'] = flatten([[i+1]*v for i,v in enumerate(result['distrib'])])
         result['noalign'] = int(re.findall('\tSTAT\tNOALGN\t(.+)$', result['raw'], re.M)[0])
+        result['lowqual'] = int(re.findall('\tSTAT\tLOWQ\t(.+)$', result['raw'], re.M)[0])
         return result
 
     def flip_reads(self):

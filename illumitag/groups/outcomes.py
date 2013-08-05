@@ -10,7 +10,7 @@ from illumitag.fasta.paired import PairedFASTQ
 from illumitag.graphs import outcome_plots
 
 # Third party modules #
-import sh, scipy
+import sh, numpy
 
 ###############################################################################
 class BarcodeGroup(PairedFASTQ):
@@ -64,6 +64,7 @@ class BarcodeGroup(PairedFASTQ):
 
     def check_noalign_counts(self):
         assert self.assembled.stats['noalign'] == self.unassembled.count
+        assert len(self.assembled) + len(self.unassembled) + self.assembled.stats['lowqual'] == len(self)
 
     def make_outcome_plots(self):
         for cls_name in outcome_plots.__all__:
@@ -139,8 +140,6 @@ class GoodBarcode(BarcodeGroup):
     def breakdown(self):
         return OrderedDict([(name, self.counter[name + 'F']) for name in self.samples.bar_names])
 
-    @property_cached
+    @property
     def relative_std_dev(self):
-        avg = scipy.mean(self.breakdown.values())
-        std_dev = scipy.std_dev(self.breakdown.values())
-        return std_dev/avg
+        return numpy.std(self.breakdown.values()) / numpy.mean(self.breakdown.values())
