@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 import re
 from collections import Counter
@@ -98,6 +101,7 @@ class Assembled(AssembleGroup, FASTQ):
         result['lengths'] = flatten([[i+1]*v for i,v in enumerate(result['distrib'])])
         result['noalign'] = int(re.findall('\tSTAT\tNOALGN\t(.+)$', result['raw'], re.M)[0])
         result['lowqual'] = int(re.findall('\tSTAT\tLOWQ\t(.+)$', result['raw'], re.M)[0])
+        result['loss'] = 100 * sum(result['distrib'][100:]) / sum(result['distrib'])
         return result
 
     def flip_reads(self):

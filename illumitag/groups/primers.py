@@ -35,7 +35,7 @@ class PrimerGroup(object):
 
     def __init__(self, parent):
         # Save parent #
-        self.parent = parent
+        self.parent, self.assemble_group = parent, parent
         self.samples = parent.samples
         self.pool = self.parent.pool
         # Auto paths #
@@ -117,7 +117,7 @@ class GoodPrimers(PrimerGroup):
         print Color.l_ylw + message % (self.parent.parent.pool.num, self.parent.parent.short_name) + Color.end
         sys.stdout.flush()
         # Check empty #
-        if not self.uchime_ref.fasta:
+        if not self.trimmed_barcodes:
             print Color.l_ylw + 'No chimeras to check for %s (empty set)' % (self,) + Color.end
             sys.stdout.flush()
             return

@@ -61,3 +61,28 @@ class AssemblyCounts(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('x'))
         self.frame.to_csv(self.csv_path)
+
+################################################################################
+class ChimerasSummary(Graph):
+    """Aggregate the chimeras results"""
+    short_name = 'chimeras_summary'
+
+    def plot(self):
+        # Data #
+        rows = []
+        for a in ('uchime_ref', 'uchime_denovo'):
+            for p in self.parent.pools:
+                for t in ('good_barcodes', 'bad_barcodes'):
+                    rows.append(getattr(getattr(p, t).assembled.good_primers,a))
+        self.frame = pandas.Series(map(lambda x: x.percent,rows), index=map(str,rows))
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.plot(kind='barh')
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_title('Chimeras detection results')
+        axes.set_xlabel('Percentage of sequences identified as chimeras after quality filtering')
+        axes.xaxis.grid(True)
+        # Save it #
+        self.save_plot(fig, axes, sep=('x'), left=0.3)
+        self.frame.to_csv(self.csv_path)

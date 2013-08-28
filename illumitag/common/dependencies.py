@@ -28,7 +28,7 @@ def check_module(mod_name):
     except ImportError as e:
         if str(e) != 'No module named %s' % mod_name: raise e
         print 'You do not seem to have the "%s" package properly installed.' \
-              ' Either you never installed it or your $PYTHON_PATH is not set up correctly.' \
+              ' Either you never installed it or your $PYTHONPATH is not set up correctly.' \
               ' For more instructions see the README file. (%s)' % (mod_name, e)
         sys.exit()
 

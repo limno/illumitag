@@ -4,6 +4,7 @@ from __future__ import division
 # Built-in modules #
 
 # Internal modules #
+import numpy
 
 # Third party modules #
 import playdoh
@@ -43,4 +44,9 @@ class Reporter(object):
     def loss_statistics(self):
         for p in self.pools:
             print "--- Pool %s ---"  % p.short_name
-            for s in p.loss_statistics: print s.msg % (100.0 - s.value)
+            for s in p.loss_statistics: print s.msg % (100 - s.value)
+            print 'Assembled over 100: %f%%' % p.good_barcodes.assembled.stats['loss']
+        print "--- Average ---"
+        for s in ['outcome', 'assembly', 'primers', 'n_filter', 'qual_filter', 'len_filter']:
+            print 'Average ' + s + ': %f%%' % (100 - numpy.mean([getattr(p.loss_statistics,s).value for p in self]))
+        print 'Assembled over 100: %f%%' % numpy.mean([p.good_barcodes.assembled.stats['loss'] for p in self])

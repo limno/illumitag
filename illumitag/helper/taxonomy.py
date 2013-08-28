@@ -17,7 +17,7 @@ silva_path = home + "/share/LCAClassifier/parts/flatdb/silvamod/silvamod.fasta"
 
 ###############################################################################
 class Classifier(object):
-    """Can assign taxonomy to a FASTA file."""
+    """Can assign taxonomy to a FASTA file of 16S sequences."""
 
     all_paths = """
     /reads.taxonomy

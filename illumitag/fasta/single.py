@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 import os, gzip, re
 from collections import Counter, OrderedDict
@@ -90,6 +93,13 @@ class FASTA(FilePath):
     @property_cached
     def good_barcodes_breakdown(self):
         return OrderedDict([(name, self.barcode_counter[name + 'F']) for name in self.samples.bar_names])
+
+    @property_cached
+    def lengths(self):
+        return Counter((len(s) for s in self.parse()))
+
+    def shorter_than(self, value):
+        return 100 * sum((v for k,v in self.lengths.items() if k < value)) / self.count
 
     def subsample(self, down_to, new_path=None):
         # Auto path #

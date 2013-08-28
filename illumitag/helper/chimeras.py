@@ -28,6 +28,8 @@ class ChimerasChecker(object):
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.fasta)
+    def __str__(self): return "%s on %s of pool %s" % (self.long_name, self.parent.parent.parent.long_name,
+                                                       self.parent.parent.parent.parent.id_name)
 
     def __init__(self, fasta_path, base_dir, parent, verbose=False):
         # Base #
@@ -59,8 +61,9 @@ class ChimerasChecker(object):
 
 ################################################################################
 class UchimeRef(ChimerasChecker):
-    title = "UCHIME algorithm for downsampled pool %i (in reference mode)"
     downto = 100000
+    title = "UCHIME algorithm for downsampled pool %i (in reference mode)"
+    long_name = "UCHIME reference"
 
     def check(self):
         # Prepare #
@@ -84,6 +87,7 @@ class UchimeRef(ChimerasChecker):
 class UchimeDenovo(ChimerasChecker):
     downto = 50000
     title = "UCHIME algorithm for downsampled pool %i (in denovo mode)"
+    long_name = "UCHIME denovo"
 
     def check(self):
         # Prepare #

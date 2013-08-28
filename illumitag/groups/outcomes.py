@@ -107,6 +107,7 @@ class SameBarcode(BarcodeGroup):
 class BadBarcode(BarcodeGroup):
     """When the barcodes have an index discrepancy"""
     short_name = "bad_barcodes"
+    long_name = "missmatching barcodes"
     doc = "The two barcodes missmatch"
 
     @property_cached
@@ -129,6 +130,7 @@ class BadBarcode(BarcodeGroup):
 #-----------------------------------------------------------------------------#
 class GoodBarcode(BarcodeGroup):
     short_name = "good_barcodes"
+    long_name = "matching barcodes"
     doc = "Success: barcodes match"
 
     @property_cached
