@@ -55,5 +55,4 @@ class CSVTable(FilePath):
 
 ################################################################################
 class TSVTable(CSVTable):
-    """Actually they are tab delimited, but the extension CSV is better known"""
     d = '\t'

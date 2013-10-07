@@ -99,8 +99,7 @@ def prepend_to_file(path, data, bufsize=1<<15):
                 outputfile.write(buf)
                 buf = inputfile.read(bufsize)
     # Remove backup on success #
-    try: os.unlink(backupname)
-    except OSError: pass
+    os.remove(backupname)
 
 def append_to_file(path, data):
     with open(path, "a") as handle:

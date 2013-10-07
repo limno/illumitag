@@ -98,7 +98,7 @@ class SLURMJob(object):
 
     def __init__(self, command, log_base_dir, module=illumitag, **kwargs):
         # Log directory #
-        dir_name = "%4d-%02d-%02d_%02d-%02d-%02d"
+        dir_name = "%4d-%02d-%02d|%02d-%02d-%02d"
         dir_name = dir_name % time.localtime()[0:6]
         self.log_dir = log_base_dir + dir_name + '/'
         os.mkdir(self.log_dir)
