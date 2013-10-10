@@ -18,6 +18,9 @@ from illumitag.fasta.paired import PairedFASTQ
 from illumitag.running.pool_runner import PoolRunner
 from illumitag.graphs import pool_plots
 
+# Constants #
+home = os.environ['HOME'] + '/'
+
 ###############################################################################
 class Pool(object):
     """An illumina MID is called here a 'pool'."""
@@ -72,8 +75,8 @@ class Pool(object):
         self.samples.load()
         self.primers.load()
         # Raw file pairs #
-        self.fwd_path = "/proj/%s/INBOX/%s/%s/%s" % (self.account, self.run.label, self.label, self.info['forward_reads'])
-        self.rev_path = "/proj/%s/INBOX/%s/%s/%s" % (self.account, self.run.label, self.label, self.info['reverse_reads'])
+        self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['forward_reads'])
+        self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['reverse_reads'])
         self.fwd = FASTQ(self.fwd_path)
         self.rev = FASTQ(self.rev_path)
         self.fastq = PairedFASTQ(self.fwd.path, self.rev.path, self)
