@@ -44,6 +44,8 @@ class BarcodeGroup(PairedFASTQ):
         self.unassembled = Unassembled(self)
         self.children = (self.assembled, self.unassembled)
         self.first = self.assembled
+        # Graphs #
+        self.graphs = [getattr(outcome_plots, cls_name)(self) for cls_name in outcome_plots.__all__]
         # Extra #
         self.samples = self.pool.samples
 
@@ -67,9 +69,7 @@ class BarcodeGroup(PairedFASTQ):
         assert len(self.assembled) + len(self.unassembled) + self.assembled.stats['lowqual'] == len(self)
 
     def make_outcome_plots(self):
-        for cls_name in outcome_plots.__all__:
-            cls = getattr(outcome_plots, cls_name)
-            cls(self).plot()
+        for graph in self.graphs: graph.plot()
 
 ###############################################################################
 class NoBarcode(BarcodeGroup):

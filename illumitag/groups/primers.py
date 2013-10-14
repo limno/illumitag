@@ -42,10 +42,10 @@ class PrimerGroup(object):
         self.base_dir = parent.p.groups_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # More #
-        if self.parent == 'assembled': FASTCLASS = FASTQ
-        else:                          FASTCLASS = FASTA
-        self.orig_reads = FASTCLASS(self.p.orig_fastq, samples=self.samples)
-        self.n_filtered = FASTCLASS(self.p.n_filtered, samples=self.samples)
+        if self.parent == 'assembled': FASTACLASS = FASTQ
+        else:                          FASTACLASS = FASTA
+        self.orig_reads = FASTACLASS(self.p.orig_fastq, samples=self.samples)
+        self.n_filtered = FASTACLASS(self.p.n_filtered, samples=self.samples)
         # Quality filtered #
         if self.parent == 'assembled':
             self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)

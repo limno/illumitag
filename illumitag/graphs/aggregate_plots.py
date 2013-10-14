@@ -1,4 +1,5 @@
 # Built-in modules #
+from collections import Counter
 
 # Internal modules #
 from illumitag.graphs import Graph
@@ -9,7 +10,7 @@ import pandas
 from matplotlib import pyplot
 
 # Constants #
-__all__ = ['BarcodeStack', 'AssemblyCounts']
+__all__ = ['BarcodeStack', 'AssemblyCounts', 'ChimerasSummary', 'LengthDistribution']
 
 ################################################################################
 class BarcodeStack(Graph):
@@ -85,4 +86,31 @@ class ChimerasSummary(Graph):
         axes.xaxis.grid(True)
         # Save it #
         self.save_plot(fig, axes, sep=('x'), left=0.3)
+        self.frame.to_csv(self.csv_path)
+
+################################################################################
+class LengthDistribution(Graph):
+    """Distribution of assembly lengths"""
+    short_name = 'length_distribution'
+
+    def plot(self):
+        # Data #
+        counts = sum((p.good_barcodes.assembled.lengths for p in self.parent), Counter())
+        self.frame = pandas.Series(counts.get(i,0) for i in range(max(counts.keys())+1))
+        # Plot #
+        fig = pyplot.figure()
+        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray')
+        title = 'Distribution of sequence lengths for reads that assemble.'
+        axes = pyplot.gca()
+        axes.set_title(title)
+        axes.set_xlabel('Length of sequence in nucleotides')
+        axes.set_ylabel('Number of sequences with this length')
+        axes.xaxis.grid(False)
+        # Change ticks #
+        import matplotlib.ticker as mticker
+        myLocator = mticker.MultipleLocator(10)
+        axes.xaxis.set_major_locator(myLocator)
+        axes.set_xlim(400, 500)
+        # Save it #
+        self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)

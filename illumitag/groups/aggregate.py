@@ -60,6 +60,9 @@ class Aggregate(object):
     @property
     def first(self): return self.pools[0]
 
+    @property
+    def count(self): return sum(map(len, self.outcomes))
+
     def __init__(self, name, pools, out_dir):
         # Attributes #
         self.name = name
@@ -84,6 +87,8 @@ class Aggregate(object):
         self.analysis = Analysis(self)
         # Reporting #
         self.reporter = Reporter(self)
+        # Graphs #
+        self.graphs = [getattr(aggregate_plots, cls_name)(self) for cls_name in aggregate_plots.__all__]
         # Save state #
         self.loaded = True
 
@@ -98,11 +103,8 @@ class Aggregate(object):
         return [p.run_slurm(steps, **kwargs) for p in self.pools]
 
     def make_plots(self):
-        # Check loaded #
         if not self.loaded: self.load()
-        for cls_name in aggregate_plots.__all__:
-            cls = getattr(aggregate_plots, cls_name)
-            cls(self).plot()
+        for graph in self.graphs: graph.plot()
 
     def make_slurm_report(self):
         running_jobs_names = [j['name'] for j in slurm.running_jobs_info()]

@@ -69,7 +69,7 @@ class Pool(object):
         self.base_dir = self.out_dir + self.id_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Make an alias to the json #
-        if os.path.exists(self.p.info_json): os.remove(self.p.info_json)
+        if os.path.lexists(self.p.info_json): os.remove(self.p.info_json)
         os.symlink(self.json_path, self.p.info_json)
         # Children #
         self.samples.load()
@@ -92,6 +92,8 @@ class Pool(object):
         self.quality_reads = QualityReads(self)
         # Runner #
         self.runner = PoolRunner(self)
+        # Graphs #
+        self.graphs = [getattr(pool_plots, cls_name)(self) for cls_name in pool_plots.__all__]
         # Loaded #
         self.loaded = True
 
@@ -143,9 +145,8 @@ class Pool(object):
             assert fastqident.detect_encoding(o.rev_path) == 'sanger'
 
     def make_pool_plots(self):
-        for cls_name in pool_plots.__all__:
-            cls = getattr(pool_plots, cls_name)
-            cls(self).plot()
+        if not self.loaded: self.load()
+        for graph in self.graphs: graph.plot()
 
     @property_cached
     def loss_statistics(self):

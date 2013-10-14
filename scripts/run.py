@@ -25,7 +25,9 @@ p = illumitag.projects['evaluation']; p.load(); [pl.good_barcodes.relative_std_d
 # Just one graph for one project #
 p = illumitag.projects['evaluation']; p.load(); [illumitag.graphs.pool_plots.AssemblyCounts(pl).plot() for pl in p]
 # Just one function for one project #
-pj = illumitag.projects['evaluation']; pj.load(); [ p(steps=[{'check_noalign_counts':{}}]) for p in pj]
+pj = illumitag.projects['evaluation']; pj.load(); [p(steps=[{'check_noalign_counts':{}}]) for p in pj]
+# Just one plot for one project #
+pj = illumitag.projects['evaluation']; pj.load(); pj.graphs[-1].plot()
 
 
 # Just one analysis #
@@ -51,3 +53,7 @@ illumitag.aggregate.make_slurm_report()
 
 # Regenerate the early exit for one pool #
 illumitag.projects['inga'].first.run_slurm([{'make_qiime_output':{}},{'make_mothur_output':{}}])
+
+
+# Assembly statistics #
+ipj = illumitag.projects['evaluation']; pj.load(); pj.reporter.outcome_percentage

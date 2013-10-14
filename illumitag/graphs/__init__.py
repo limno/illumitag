@@ -8,6 +8,7 @@ import matplotlib
 class Graph(object):
 
     def __init__(self, parent, base_dir=None, short_name=None):
+        # Save parent #
         self.parent = parent
         # Base dir #
         if not base_dir: self.base_dir = self.parent.p.graphs_dir

@@ -41,6 +41,14 @@ class Reporter(object):
         #assert sum(map(len, p.outcomes)) == p.count
 
     @property
+    def avg_assembly_stat(self):
+        for bc_outcome in self.aggregate.first.outcomes:
+            outcomes = [getattr(p, bc_outcome.short_name) for p in self]
+            fails_ratio = [len(o.unassembled)/len(o) for o in outcomes]
+            avg_fail = 100*sum(fails_ratio)/len(fails_ratio)
+            print '%s: %.2f %%' % (o.doc, avg_fail)
+
+    @property
     def loss_statistics(self):
         for p in self.pools:
             print "--- Pool %s ---"  % p.short_name
