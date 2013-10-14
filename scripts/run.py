@@ -24,11 +24,13 @@ import playdoh; playdoh.map(lambda p: p.pool_fastqc(), illumitag.projects['evalu
 p = illumitag.projects['evaluation']; p.load(); [pl.good_barcodes.relative_std_dev for pl in p]
 # Just one graph for one project #
 p = illumitag.projects['evaluation']; p.load(); [illumitag.graphs.pool_plots.AssemblyCounts(pl).plot() for pl in p]
+pj = illumitag.projects['evaluation']; pj.load(); pj.graphs[-1].plot()
 # Just one function for one project #
 pj = illumitag.projects['evaluation']; pj.load(); [p(steps=[{'check_noalign_counts':{}}]) for p in pj]
-# Just one plot for one project #
-pj = illumitag.projects['evaluation']; pj.load(); pj.graphs[-1].plot()
 
+# One graphs for one run #
+run = illumitag.runs[2]; run.load(); run.graphs[0].plot()
+for p in run: p.graphs[0].plot()
 
 # Just one analysis #
 pj = illumitag.projects['test']; pj.load(); pj.analysis.run()

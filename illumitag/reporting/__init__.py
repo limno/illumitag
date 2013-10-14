@@ -44,7 +44,7 @@ class Reporter(object):
     def avg_assembly_stat(self):
         for bc_outcome in self.aggregate.first.outcomes:
             outcomes = [getattr(p, bc_outcome.short_name) for p in self]
-            fails_ratio = [len(o.unassembled)/len(o) for o in outcomes]
+            fails_ratio = [1.0 - len(o.assembled)/len(o) for o in outcomes]
             avg_fail = 100*sum(fails_ratio)/len(fails_ratio)
             print '%s: %.2f %%' % (o.doc, avg_fail)
 

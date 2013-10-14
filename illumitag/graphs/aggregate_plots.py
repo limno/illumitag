@@ -20,6 +20,7 @@ class BarcodeStack(Graph):
     def plot(self):
         # Data #
         rows = [p.long_name for p in reversed(self.parent.pools)]
+        rows = ["Pool %i" % p.num for p in reversed(self.parent.pools)]
         columns = [o.doc for o in self.parent.first.outcomes]
         data = [[o.count for o in p.outcomes] for p in reversed(self.parent.pools)]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
@@ -33,7 +34,7 @@ class BarcodeStack(Graph):
         axes.xaxis.grid(True)
         axes.yaxis.grid(False)
         # Save it #
-        self.save_plot(fig, axes, sep=('x'), left=0.1, right=0.97)
+        self.save_plot(fig, axes, sep=('x'), left=0.1, right=0.96)
         self.frame.to_csv(self.csv_path)
 
 ################################################################################

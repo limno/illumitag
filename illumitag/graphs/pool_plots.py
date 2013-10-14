@@ -139,8 +139,8 @@ class AssemblyCounts(Graph):
         rows = [bg.doc for bg in self.parent]
         columns = ['Assembled', 'Unassembled', 'Low quality']
         percentage = lambda x,y: (len(x)/len(y))*100 if len(y) != 0 else 0
-        data = [(percentage(bg.assembled,bg),
-                 percentage(bg.unassembled,bg),
+        data = [(percentage(bg.assembled, bg),
+                 percentage(bg.unassembled, bg),
                  (bg.assembled.stats['lowqual']/len(bg))*100) for bg in self.parent]
         self.frame = pandas.DataFrame(data, index=rows, columns=columns)
         # Plot #
