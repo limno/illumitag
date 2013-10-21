@@ -1,8 +1,20 @@
 {
-    "contact":  "Lucas Sinclair",
-    "email":    "lucas.sinclair@ebc.uu.se",
+    "contacts": {
+        "main": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@me.com"
+        },
+        "pi": {
+            "name": "Alexander Eiler",
+            "email": "alexander.eiler@ebc.uu.se"
+        },
+        "lab": {
+            "name": "Sainur Samad",
+            "email": "sainur24@gmail.com"
+        }
+    },
 
-    "uppmax_id":    "b2011032",
+    "uppmax_id":     "b2011032",
     "run_num":       3,
     "run_id":        "130527_M00485_0050_000000000-A4D9Y",
     "pool_num":      8,
@@ -16,52 +28,262 @@
     "pool_name":     "All samples from the three model lakes",
 
     "samples": [
-        {"name": "US01", "used": 1, "group": "US", "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
-        {"name": "US02", "used": 1, "group": "US", "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
-        {"name": "US03", "used": 1, "group": "US", "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
-        {"name": "US04", "used": 1, "group": "US", "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
-        {"name": "US05", "used": 1, "group": "US", "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
-        {"name": "US06", "used": 1, "group": "US", "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
-        {"name": "US07", "used": 1, "group": "US", "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
-        {"name": "US08", "used": 1, "group": "US", "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
-        {"name": "US09", "used": 1, "group": "US", "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
-        {"name": "US10", "used": 1, "group": "US", "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
-        {"name": "US12", "used": 1, "group": "US", "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
-        {"name": "US13", "used": 1, "group": "US", "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
-        {"name": "US14", "used": 1, "group": "US", "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
-        {"name": "US15", "used": 1, "group": "US", "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT"},
-        {"name": "US16", "used": 1, "group": "US", "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT"},
-        {"name": "US17", "used": 1, "group": "US", "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT"},
-        {"name": "SS01", "used": 1, "group": "SS", "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA"},
-        {"name": "SS02", "used": 1, "group": "SS", "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC"},
-        {"name": "SS03", "used": 1, "group": "SS", "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT"},
-        {"name": "SS04", "used": 1, "group": "SS", "num": 20, "fwd": "AGACACA", "rev": "TACTGAC"},
-        {"name": "SS05", "used": 1, "group": "SS", "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT"},
-        {"name": "SS06", "used": 1, "group": "SS", "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT"},
-        {"name": "SS07", "used": 1, "group": "SS", "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT"},
-        {"name": "SS08", "used": 1, "group": "SS", "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
-        {"name": "SS09", "used": 1, "group": "SS", "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
-        {"name": "SS10", "used": 1, "group": "SS", "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
-        {"name": "SS11", "used": 1, "group": "SS", "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
-        {"name": "SS12", "used": 1, "group": "SS", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
-        {"name": "SS13", "used": 1, "group": "SS", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
-        {"name": "SS14", "used": 1, "group": "SS", "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
-        {"name": "SS15", "used": 1, "group": "SS", "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
-        {"name": "SS16", "used": 1, "group": "SS", "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC"},
-        {"name": "SS17", "used": 1, "group": "SS", "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA"},
-        {"name": "ZL01", "used": 1, "group": "ZL", "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA"},
-        {"name": "ZL02", "used": 1, "group": "ZL", "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA"},
-        {"name": "ZL03", "used": 1, "group": "ZL", "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT"},
-        {"name": "ZL04", "used": 1, "group": "ZL", "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA"},
-        {"name": "ZL08", "used": 1, "group": "ZL", "num": 38, "fwd": "GACTATG", "rev": "TACTCTC"},
-        {"name": "ZL09", "used": 1, "group": "ZL", "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC"},
-        {"name": "ZL10", "used": 1, "group": "ZL", "num": 40, "fwd": "GACTGAT", "rev": "TGACACT"},
-        {"name": "ZL11", "used": 1, "group": "ZL", "num": 41, "fwd": "GACATCA", "rev": "TGACTCA"},
-        {"name": "ZL12", "used": 1, "group": "ZL", "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA"},
-        {"name": "ZL14", "used": 1, "group": "ZL", "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
-        {"name": "ZL15", "used": 1, "group": "ZL", "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
-        {"name": "ZL16", "used": 1, "group": "ZL", "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
-        {"name": "ZL17", "used": 1, "group": "ZL", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "US01", "used": 1, "group": "US", "num": 1, "fwd": "TATCACG", "rev": "ACTGAGA",
+            "date":        "2012-04-02",
+            "TSS":         [2333,  "mg/l"],
+            "DOC":         [56,    "mg/l"],
+            "temperature": [5.7,   "Celsius"],
+            "pH":          [9.4,   "-log10([H+])"],
+            "conductance": [4.3,   "mS/cm"],
+            "sodium":      [1000,  "mg/l", "Na"],
+            "sulfate":     [1026,  "mg/l", "SO4"],
+            "bicarbonate": [1427,  "mg/l", "HCO3"],
+            "carbonate":   [119,   "mg/l", "CO3"],
+            "phosphorus":  [3610,  "mg/l", "Ptot"],
+            "chla":        [282.5, "mg/l"],
+            "microbes":    null
+        },
+
+        {"name": "US02", "used": 1, "group": "US", "num": 2, "fwd": "TACGTCA", "rev": "ACTGACT",
+            "date":        "2012-04-16",
+            "TSS":         [5700,  "mg/l"],
+            "DOC":         [57,    "mg/l"],
+            "temperature": [3.5,   "Celsius"],
+            "pH":          [9.6,   "-log10([H+])"],
+            "conductance": [4.4,   "mS/cm"],
+            "sodium":      [3773,  "mg/l", "Na"],
+            "sulfate":     [1645,  "mg/l", "SO4"],
+            "bicarbonate": [1760,  "mg/l", "HCO3"],
+            "carbonate":   [157,   "mg/l", "CO3"],
+            "phosphorus":  [5830,  "mg/l", "Ptot"],
+            "chla":        [426.6, "mg/l"],
+            "microbes":    null
+        },
+
+        {"name": "US03", "used": 1, "group": "US", "num": 3, "fwd": "ACATCAG", "rev": "ACTGATC",
+            "date":        "2012-05-02",
+            "TSS":         [825,   "mg/L"],
+            "DOC":         [78,    "mg/L"],
+            "temperature": [20,    "Celsius"],
+            "pH":          [9.49,  "-log10([H+])"],
+            "conductance": [5,     "mS/cm"],
+            "sodium":      null,
+            "sulfate":     null,
+            "bicarbonate": null,
+            "carbonate":   null,
+            "phosphorus":  null,
+            "chla":        null,
+            "microbes":    [69660000, "cells/ml"]
+        },
+
+        {"name": "US04", "used": 1, "group": "US", "num": 4, "fwd": "ACACTGT", "rev": "ACTGTGT",
+            "date":        "2012-05-14",
+            "TSS":         [165,      "mg/l"],
+            "DOC":         [73,       "mg/l"],
+            "temperature": [13.5,     "Celsius"],
+            "pH":          [9.6,      "-log10([H+])"],
+            "conductance": [5.2,      "mS/cm"],
+            "sodium":      [346,      "mg/l", "Na"],
+            "sulfate":     [369,      "mg/l", "SO4"],
+            "bicarbonate": [2096,     "mg/l", "HCO3"],
+            "carbonate":   [266,      "mg/l", "CO3"],
+            "phosphorus":  [240,      "mg/l", "Ptot"],
+            "chla":        [24,       "mg/l"],
+            "microbes":    [7.02E+07, "cells/ml"]
+        },
+
+        {"name": "US05", "used": 1, "group": "US", "num": 5, "fwd": "ACACACT", "rev": "ACTCGAT",
+            "date":        "2012-06-05",
+            "TSS":         [680,      "mg/l"],
+            "DOC":         [67,       "mg/l"],
+            "temperature": [15.7,     "Celsius"],
+            "pH":          [9.7,      "-log10([H+])"],
+            "conductance": [5.7,      "mS/cm"],
+            "sodium":      null,
+            "sulfate":     null,
+            "bicarbonate": [2292,     "mg/l", "HCO3"],
+            "carbonate":   [245,      "mg/l", "CO3"],
+            "phosphorus":  [296,      "mg/l", "Ptot"],
+            "chla":        [64,       "mg/l"],
+            "microbes":    [5.40E+07, "cells/ml"]
+        },
+
+        {"name": "US06", "used": 1, "group": "US", "num": 6, "fwd": "ACACAGA", "rev": "ACTCAGT",
+            "date": "2012-06-18",
+            "TSS":         [240,      "mg/l"],
+            "DOC":         [107,      "mg/l"],
+            "temperature": [23.1,     "Celsius"],
+            "pH":          [9.8,      "-log10([H+])"],
+            "conductance": [6.8,      "mS/cm"],
+            "sodium":      [1653,     "mg/l", "Na"],
+            "sulfate":     [773,      "mg/l", "SO4"],
+            "bicarbonate": [3080,     "mg/l", "HCO3"],
+            "carbonate":   [345,      "mg/l", "CO3"],
+            "phosphorus":  [184,      "mg/l", "Ptot"],
+            "chla":        [7,        "mg/l"],
+            "microbes":    [9.13E+07, "cells/ml"]
+        },
+
+        {"name": "US07", "used": 1, "group": "US", "num": 7, "fwd": "ACGATGT", "rev": "ACTCTGA",
+            "date": "2012-07-02"
+        },
+
+        {"name": "US08", "used": 1, "group": "US", "num": 8, "fwd": "ACGAGTA", "rev": "ACTCTCT",
+            "date": "2012-07-16"
+        },
+
+        {"name": "US09", "used": 1, "group": "US", "num": 9, "fwd": "ACGAGAT", "rev": "ACTCTAC",
+            "date": "2012-07-30"
+        },
+
+        {"name": "US10", "used": 1, "group": "US", "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA",
+            "date": "2012-08-06"
+        },
+
+        {"name": "US12", "used": 1, "group": "US", "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT",
+            "date": "2012-09-10"
+        },
+
+        {"name": "US13", "used": 1, "group": "US", "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC",
+            "date": "2012-10-01"
+        },
+
+        {"name": "US14", "used": 1, "group": "US", "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC",
+            "date": "2012-11-05"
+        },
+
+        {"name": "US15", "used": 1, "group": "US", "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT",
+            "date": "2012-01-16"
+        },
+
+        {"name": "US16", "used": 1, "group": "US", "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT",
+            "date": "2012-02-06"
+        },
+
+        {"name": "US17", "used": 1, "group": "US", "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT",
+            "date": "2012-03-22"
+        },
+
+        {"name": "SS01", "used": 1, "group": "SS", "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA",
+            "date": "2012-04-02"
+        },
+
+        {"name": "SS02", "used": 1, "group": "SS", "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC",
+            "date": "2012-04-16"
+        },
+
+        {"name": "SS03", "used": 1, "group": "SS", "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT",
+            "date": "2012-05-02"
+        },
+
+        {"name": "SS04", "used": 1, "group": "SS", "num": 20, "fwd": "AGACACA", "rev": "TACTGAC",
+            "date": "2012-05-14"
+        },
+
+        {"name": "SS05", "used": 1, "group": "SS", "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT",
+            "date": "2012-06-05"
+        },
+
+        {"name": "SS06", "used": 1, "group": "SS", "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT",
+            "date": "2012-06-18"
+        },
+
+        {"name": "SS07", "used": 1, "group": "SS", "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT",
+            "date": "2012-07-02"
+        },
+
+        {"name": "SS08", "used": 1, "group": "SS", "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT",
+            "date": "2012-07-16"
+        },
+
+        {"name": "SS09", "used": 1, "group": "SS", "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC",
+            "date": "2012-07-30"
+        },
+
+        {"name": "SS10", "used": 1, "group": "SS", "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC",
+            "date": "2012-08-06"
+        },
+
+        {"name": "SS11", "used": 1, "group": "SS", "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC",
+            "date": "2012-08-28"
+        },
+
+        {"name": "SS12", "used": 1, "group": "SS", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC",
+            "date": "2012-09-10"
+        },
+
+        {"name": "SS13", "used": 1, "group": "SS", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA",
+            "date": "2012-10-01"
+        },
+
+        {"name": "SS14", "used": 1, "group": "SS", "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT",
+            "date": "2012-11-05"
+        },
+
+        {"name": "SS15", "used": 1, "group": "SS", "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT",
+            "date": "2012-01-16"
+        },
+
+        {"name": "SS16", "used": 1, "group": "SS", "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC",
+            "date": "2012-02-06"
+        },
+
+        {"name": "SS17", "used": 1, "group": "SS", "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA",
+            "date": "2012-03-22"
+        },
+
+        {"name": "ZL01", "used": 1, "group": "ZL", "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA",
+            "date": "2012-04-02"
+        },
+
+        {"name": "ZL02", "used": 1, "group": "ZL", "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA",
+            "date": "2012-04-16"
+        },
+
+        {"name": "ZL03", "used": 1, "group": "ZL", "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT",
+            "date": "2012-05-02"
+        },
+
+        {"name": "ZL04", "used": 1, "group": "ZL", "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA",
+            "date": "2012-05-14"
+        },
+
+        {"name": "ZL08", "used": 1, "group": "ZL", "num": 38, "fwd": "GACTATG", "rev": "TACTCTC",
+            "date": "2012-07-16"
+        },
+
+        {"name": "ZL09", "used": 1, "group": "ZL", "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC",
+            "date": "2012-07-30"
+        },
+
+        {"name": "ZL10", "used": 1, "group": "ZL", "num": 40, "fwd": "GACTGAT", "rev": "TGACACT",
+            "date": "2012-08-06"
+        },
+
+        {"name": "ZL11", "used": 1, "group": "ZL", "num": 41, "fwd": "GACATCA", "rev": "TGACTCA",
+            "date": "2012-08-28"
+        },
+
+        {"name": "ZL12", "used": 1, "group": "ZL", "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA",
+            "date": "2012-09-10"
+        },
+
+        {"name": "ZL14", "used": 1, "group": "ZL", "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA",
+            "date": "2012-11-05"
+        },
+
+        {"name": "ZL15", "used": 1, "group": "ZL", "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA",
+            "date": "2012-01-16"
+        },
+
+        {"name": "ZL16", "used": 1, "group": "ZL", "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA",
+            "date": "2012-02-06"
+        },
+
+        {"name": "ZL17", "used": 1, "group": "ZL", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC",
+            "date": "2012-03-22"
+        },
+
         {"name": "empty", "used": 0, "group": "empty", "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
         {"name": "empty", "used": 0, "group": "empty", "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
         {"name": "empty", "used": 0, "group": "empty", "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
