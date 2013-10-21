@@ -1,0 +1,91 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Anna Székely",
+            "email": "mikromara@gmail.com"
+        },
+        "pi": {
+            "name": "Silke Langenheder",
+            "email": "silke.langenheder@ebc.uu.se"
+        },
+        "lab": {
+            "name": "Sainur Samad",
+            "email": "sainur24@gmail.com"
+        }
+    },
+
+    "uppmax_id":     "b2011032",
+    "run_num":       4,
+    "run_id":        "131002_M00485_0074_000000000-A5GKR",
+    "pool_num":      5,
+    "pool_id":       "Sample_SS05",
+    "forward_reads": "SS05_ACAGTG_L001_R1_001.fastq.gz",
+    "reverse_reads": "SS05_ACAGTG_L001_R2_001.fastq.gz",
+
+    "project":       "anna",
+    "project_name":  "Anna's study",
+    "pool":          "anna1",
+    "pool_name":     "First of Anna's pools",
+
+    "comments": "Theme: impact of soil leachate on lake bacterial community assembly",
+
+    "samples": [
+        {"name": "KOLA",   "used": 1, "group": "Klocka",  "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
+        {"name": "KOLB",   "used": 1, "group": "Klocka",  "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
+        {"name": "KOLC",   "used": 1, "group": "Klocka",  "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
+        {"name": "KALA",   "used": 1, "group": "Klocka",  "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
+        {"name": "KALB",   "used": 1, "group": "Klocka",  "num": 5, "fwd": "ACACACT", "rev": "ACTCGAT"},
+        {"name": "KALC",   "used": 1, "group": "Klocka",  "num": 6, "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "KOLSA",  "used": 1, "group": "Klocka",  "num": 7, "fwd": "ACGATGT", "rev": "ACTCTGA"},
+        {"name": "KOLSB",  "used": 1, "group": "Klocka",  "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "KOLSC",  "used": 1, "group": "Klocka",  "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
+        {"name": "KALSA",  "used": 1, "group": "Klocka",  "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
+        {"name": "KALSB",  "used": 1, "group": "Klocka",  "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
+        {"name": "KALSC",  "used": 1, "group": "Klocka",  "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
+        {"name": "KOSA",   "used": 1, "group": "Klocka",  "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
+        {"name": "KOSB",   "used": 1, "group": "Klocka",  "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT"},
+        {"name": "KOSC",   "used": 1, "group": "Klocka",  "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT"},
+        {"name": "KASA",   "used": 1, "group": "Klocka",  "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT"},
+        {"name": "KASB",   "used": 1, "group": "Klocka",  "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA"},
+        {"name": "KASC",   "used": 1, "group": "Klocka",  "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 20, "fwd": "AGACACA", "rev": "TACTGAC"},
+        {"name": "AOLA",   "used": 1, "group": "Ånnsjön", "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT"},
+        {"name": "AOLB",   "used": 1, "group": "Ånnsjön", "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT"},
+        {"name": "AOLC",   "used": 1, "group": "Ånnsjön", "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT"},
+        {"name": "AALA",   "used": 1, "group": "Ånnsjön", "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
+        {"name": "AALB",   "used": 1, "group": "Ånnsjön", "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
+        {"name": "AALC",   "used": 1, "group": "Ånnsjön", "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
+        {"name": "AOLSA",  "used": 1, "group": "Ånnsjön", "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
+        {"name": "AOLSB",  "used": 1, "group": "Ånnsjön", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
+        {"name": "AOLSC",  "used": 1, "group": "Ånnsjön", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
+        {"name": "AALSA",  "used": 1, "group": "Ånnsjön", "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
+        {"name": "AALSB",  "used": 1, "group": "Ånnsjön", "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
+        {"name": "AALSC",  "used": 1, "group": "Ånnsjön", "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC"},
+        {"name": "AOSA",   "used": 1, "group": "Ånnsjön", "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA"},
+        {"name": "AOSB",   "used": 1, "group": "Ånnsjön", "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA"},
+        {"name": "AOSC",   "used": 1, "group": "Ånnsjön", "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA"},
+        {"name": "AASA",   "used": 1, "group": "Ånnsjön", "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT"},
+        {"name": "AASB",   "used": 1, "group": "Ånnsjön", "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA"},
+        {"name": "AASC",   "used": 1, "group": "Ånnsjön", "num": 38, "fwd": "GACTATG", "rev": "TACTCTC"},
+        {"name": "AA0",    "used": 1, "group": "Ånnsjön", "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC"},
+        {"name": "AO0",    "used": 1, "group": "Ånnsjön", "num": 40, "fwd": "GACTGAT", "rev": "TGACACT"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 41, "fwd": "GACATCA", "rev": "TGACTCA"},
+        {"name": "LoOLB",  "used": 1, "group": "Lötsjön", "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA"},
+        {"name": "LoOLC",  "used": 1, "group": "Lötsjön", "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
+        {"name": "LoALA",  "used": 1, "group": "Lötsjön", "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
+        {"name": "LoALB",  "used": 1, "group": "Lötsjön", "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
+        {"name": "LoALC",  "used": 1, "group": "Lötsjön", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
+        {"name": "empty",  "used": 0, "group": "empty",   "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+      ],
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}

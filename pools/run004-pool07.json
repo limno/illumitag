@@ -1,0 +1,91 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Jérôme Comte",
+            "email": "jerome.comte@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Eva Lindström",
+            "email": "eva.lindstrom@ebc.uu.se"
+        },
+        "lab": {
+            "name": "Sainur Samad",
+            "email": "sainur24@gmail.com"
+        }
+    },
+
+    "uppmax_id":     "b2011032",
+    "run_num":       4,
+    "run_id":        "131002_M00485_0074_000000000-A5GKR",
+    "pool_num":      7,
+    "pool_id":       "Sample_SS07",
+    "forward_reads": "SS07_TGACCA_L001_R1_001.fastq.gz",
+    "reverse_reads": "SS07_TGACCA_L001_R2_001.fastq.gz",
+
+    "project":       "jerome",
+    "project_name":  "Jerome's study",
+    "pool":          "jerome1",
+    "pool_name":     "First of Jerome's pools",
+
+    "comments": "Theme: recruitment of bacteria from the different depth of the sediments",
+
+    "samples": [
+        {"name": "empty",     "used": 0, "group": "empty",    "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
+        {"name": "BControl2", "used": 1, "group": "BControl", "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
+        {"name": "empty",     "used": 0, "group": "empty",    "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
+        {"name": "Stenbd11",  "used": 1, "group": "Stenbd1",  "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
+        {"name": "Stenbd12",  "used": 1, "group": "Stenbd1",  "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
+        {"name": "Stenbd13",  "used": 1, "group": "Stenbd1",  "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "Stenbd21",  "used": 1, "group": "Stenbd2",  "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
+        {"name": "Stenbd22",  "used": 1, "group": "Stenbd2",  "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "Stenbd23",  "used": 1, "group": "Stenbd2",  "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
+        {"name": "Stenbd31",  "used": 1, "group": "Stenbd3",  "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
+        {"name": "Stenbd32",  "used": 1, "group": "Stenbd3",  "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
+        {"name": "Stenbd33",  "used": 1, "group": "Stenbd3",  "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
+        {"name": "Stenbd41",  "used": 1, "group": "Stenbd4",  "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
+        {"name": "Stenbd42",  "used": 1, "group": "Stenbd4",  "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT"},
+        {"name": "Stenbd43",  "used": 1, "group": "Stenbd4",  "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT"},
+        {"name": "Stenfd11",  "used": 1, "group": "Stenfd1",  "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT"},
+        {"name": "Stenfd12",  "used": 1, "group": "Stenfd1",  "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA"},
+        {"name": "Stenfd13",  "used": 1, "group": "Stenfd1",  "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC"},
+        {"name": "Stenfd21",  "used": 1, "group": "Stenfd2",  "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT"},
+        {"name": "Stenfd22",  "used": 1, "group": "Stenfd2",  "num": 20, "fwd": "AGACACA", "rev": "TACTGAC"},
+        {"name": "Stenfd23",  "used": 1, "group": "Stenfd2",  "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT"},
+        {"name": "Stenfd31",  "used": 1, "group": "Stenfd3",  "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT"},
+        {"name": "Stenfd32",  "used": 1, "group": "Stenfd3",  "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT"},
+        {"name": "Stenfd33",  "used": 1, "group": "Stenfd3",  "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
+        {"name": "Stenfd41",  "used": 1, "group": "Stenfd4",  "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
+        {"name": "Stenfd42",  "used": 1, "group": "Stenfd4",  "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
+        {"name": "Stenfd43",  "used": 1, "group": "Stenfd4",  "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
+        {"name": "Stenfd1",   "used": 1, "group": "Stenfd",   "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
+        {"name": "Stenfd2",   "used": 1, "group": "Stenfd",   "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
+        {"name": "Stenfd3",   "used": 1, "group": "Stenfd",   "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
+        {"name": "Vbd11",     "used": 1, "group": "Vbd1",     "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
+        {"name": "Vbd12",     "used": 1, "group": "Vbd1",     "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC"},
+        {"name": "Vbd13",     "used": 1, "group": "Vbd1",     "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA"},
+        {"name": "Vbd21",     "used": 1, "group": "Vbd2",     "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA"},
+        {"name": "Vbd22",     "used": 1, "group": "Vbd2",     "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA"},
+        {"name": "Vbd23",     "used": 1, "group": "Vbd2",     "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT"},
+        {"name": "Vbd31",     "used": 1, "group": "Vbd3",     "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA"},
+        {"name": "Vbd32",     "used": 1, "group": "Vbd3",     "num": 38, "fwd": "GACTATG", "rev": "TACTCTC"},
+        {"name": "Vbd33",     "used": 1, "group": "Vbd3",     "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC"},
+        {"name": "Vbd41",     "used": 1, "group": "Vbd4",     "num": 40, "fwd": "GACTGAT", "rev": "TGACACT"},
+        {"name": "Vbd42",     "used": 1, "group": "Vbd4",     "num": 41, "fwd": "GACATCA", "rev": "TGACTCA"},
+        {"name": "Vbd43",     "used": 1, "group": "Vbd4",     "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA"},
+        {"name": "Vfd11",     "used": 1, "group": "Vfd1",     "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
+        {"name": "Vfd12",     "used": 1, "group": "Vfd1",     "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
+        {"name": "Vfd13",     "used": 1, "group": "Vfd1",     "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
+        {"name": "Vfd21",     "used": 1, "group": "Vfd2",     "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "Vfd22",     "used": 1, "group": "Vfd2",     "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
+        {"name": "Vfd23",     "used": 1, "group": "Vfd2",     "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
+        {"name": "Vfd31",     "used": 1, "group": "Vfd3",     "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
+        {"name": "Vfd32",     "used": 1, "group": "Vfd3",     "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+      ],
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}

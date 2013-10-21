@@ -1,0 +1,275 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@me.com"
+        },
+        "pi": {
+            "name": "Alexander Eiler",
+            "email": "alexander.eiler@ebc.uu.se"
+        },
+        "lab": {
+            "name": "Sainur Samad",
+            "email": "sainur24@gmail.com"
+        }
+    },
+
+    "uppmax_id":     "b2011032",
+    "run_num":       4,
+    "run_id":        "131002_M00485_0074_000000000-A5GKR",
+    "pool_num":      4,
+    "pool_id":       "Sample_SS04",
+    "forward_reads": "SS04_TGACCA_L001_R1_001.fastq.gz",
+    "reverse_reads": "SS04_TGACCA_L001_R2_001.fastq.gz",
+
+    "project":       "soda",
+    "project_name":  "Soda lakes study",
+    "pool":          "march_sampling",
+    "pool_name":     "Samples from the March 2013 expedition",
+
+    "comments":      [
+        "The first 13 samples are not from the soda project, but instead from Domenico's study.",
+        "The next 12 samples are reruns of samples that had low number of reads in the previous pool."
+    ],
+
+    "samples": [
+        {"name": "DO01",  "used": 1, "group": "Domenico", "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
+        {"name": "DO02",  "used": 1, "group": "Domenico", "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
+        {"name": "DO03",  "used": 1, "group": "Domenico", "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
+        {"name": "DO04",  "used": 1, "group": "Domenico", "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
+        {"name": "DO05",  "used": 1, "group": "Domenico", "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
+        {"name": "DO06",  "used": 1, "group": "Domenico", "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "DO07",  "used": 1, "group": "Domenico", "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
+        {"name": "DO08",  "used": 1, "group": "Domenico", "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "DO09",  "used": 1, "group": "Domenico", "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
+        {"name": "DO10",  "used": 1, "group": "Domenico", "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
+        {"name": "DO11",  "used": 1, "group": "Domenico", "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
+        {"name": "DO12",  "used": 1, "group": "Domenico", "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
+        {"name": "DO13",  "used": 1, "group": "Domenico", "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
+
+        {"name": "US10", "used": 1, "group": "US", "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT",
+            "rerun":             "run003pool08num10",
+            "DNA conc.":         [0.43, "ng/µl"],
+            "date":              "2012-08-06"
+        },
+
+        {"name": "SS01", "used": 1, "group": "SS", "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT",
+            "rerun":             "run003pool08num17",
+            "DNA conc.":         [0.53, "ng/µl"],
+            "date":              "2012-04-02"
+        },
+
+        {"name": "SS10", "used": 1, "group": "SS", "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT",
+            "rerun":             "run003pool08num26",
+            "DNA conc.":         [0.63, "ng/µl"],
+            "date":              "2012-08-06"
+        },
+
+        {"name": "SS17", "used": 1, "group": "SS", "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA",
+            "rerun":             "run003pool08num33",
+            "DNA conc.":         [0.42, "ng/µl"],
+            "date":              "2012-03-22"
+        },
+
+        {"name": "ZL01", "used": 1, "group": "ZL", "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC",
+            "rerun":             "run003pool08num34",
+            "DNA conc.":         [0.60, "ng/µl"],
+            "date":              "2012-04-02"
+        },
+
+        {"name": "ZL04", "used": 1, "group": "ZL", "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT",
+            "rerun":             "run003pool08num37",
+            "DNA conc.":         [0.78, "ng/µl"],
+            "date":              "2012-05-14"
+        },
+
+        {"name": "ZL09", "used": 1, "group": "ZL", "num": 20, "fwd": "AGACACA", "rev": "TACTGAC",
+            "rerun":             "run003pool08num39",
+            "DNA conc.":         [0.40, "ng/µl"],
+            "date":              "2012-07-30"
+        },
+
+        {"name": "ZL12", "used": 1, "group": "ZL", "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT",
+            "rerun":             "run003pool08num42",
+            "DNA conc.":         [1.27, "ng/µl"],
+            "date":              "2012-09-10",
+        },
+
+        {"name": "ZL14", "used": 1, "group": "ZL", "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT",
+            "rerun":             "run003pool08num43",
+            "DNA conc.":         [0.50, "ng/µl"],
+            "date":              "2012-11-05"
+        },
+
+        {"name": "ZL15", "used": 1, "group": "ZL", "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT",
+            "rerun":             "run003pool08num44",
+            "DNA conc.":         [9.52, "ng/µl"],
+            "date":              "2012-01-16"
+        },
+
+        {"name": "ZL16", "used": 1, "group": "ZL", "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT",
+            "rerun":             "run003pool08num45",
+            "DNA conc.":         [0.50, "ng/µl"],
+            "date":              "2012-02-06"
+        },
+
+        {"name": "ZL17", "used": 1, "group": "ZL", "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC",
+            "rerun":             "run003pool08num46",
+            "DNA conc.":         [0.78, "ng/µl"],
+            "date":              "2012-03-22"
+        },
+
+        {"name": "SL01", "used": 1, "group": "march03", "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC",
+            "DNA conc.":         [1.89, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "Sechsmahd Lacke"
+        },
+
+        {"name": "OW02", "used": 1, "group": "march03", "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC",
+            "DNA conc.":         [3.19, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "ÖSH Wörthen"
+        },
+
+        {"name": "ME03", "used": 1, "group": "march03", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC",
+            "DNA conc.":         [7.18, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "Meijerhof",
+        },
+
+        {"name": "OF04", "used": 1, "group": "march03", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA",
+            "DNA conc.":         [2.79, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "öst Fuchsloch"
+        },
+
+        {"name": "WF05", "used": 1, "group": "march03", "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT",
+            "DNA conc.":         [0.91, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "west. Fuchsloch"
+        },
+
+        {"name": "LL06",  "used": 1, "group": "march03", "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT",
+            "DNA conc.":         [2.87, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "Lange Lacke"
+        },
+
+        {"name": "GN07",  "used": 1, "group": "march03", "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC",
+            "DNA conc.":         [0.96, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "Gr. Neubruch"
+        },
+
+        {"name": "UW08",  "used": 1, "group": "march03", "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA",
+            "DNA conc.":         [1.83, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "Unterer Weisssee"
+        },
+
+        {"name": "SM09",  "used": 1, "group": "march03", "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA",
+            "DNA conc.":         [1.24, "ng/µl"],
+            "date":              "2013-03-05",
+            "long_name":         "sudl. Martenhof"
+        },
+
+        {"name": "NS10",  "used": 1, "group": "march03", "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA",
+            "DNA conc.":         [2.07, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Neusiedler See"
+        },
+
+        {"name": "HS11",  "used": 1, "group": "march03", "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT",
+            "DNA conc.":         [6.61, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Herrensee"
+        },
+
+        {"name": "KS12",  "used": 1, "group": "march03", "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA",
+            "DNA conc.":         [1.74, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Kirchsee"
+        },
+
+        {"name": "ZL13",  "used": 1, "group": "march03", "num": 38, "fwd": "GACTATG", "rev": "TACTCTC",
+            "DNA conc.":         [5.44, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Zicklacke"
+        },
+
+        {"name": "AS14",  "used": 1, "group": "march03", "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC",
+            "DNA conc.":         [3.53, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Albersee"
+        },
+
+        {"name": "SS15",  "used": 1, "group": "march03", "num": 40, "fwd": "GACTGAT", "rev": "TGACACT",
+            "DNA conc.":         [6.58, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Silbersee"
+        },
+
+        {"name": "US16",  "used": 1, "group": "march03", "num": 41, "fwd": "GACATCA", "rev": "TGACTCA",
+            "DNA conc.":         [5.71, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Unterer Stinker"
+        },
+
+        {"name": "OS17",  "used": 1, "group": "march03", "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA",
+            "DNA conc.":          [1.92,"ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Oberer Stinker"
+    },
+
+        {"name": "OH18",  "used": 1, "group": "march03", "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA",
+            "DNA conc.":          [2.23, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Oberer Hölllacke"
+    },
+
+        {"name": "BI19",  "used": 1, "group": "march03", "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA",
+            "DNA conc.":           [2.57, "ng/µl"],
+            "date":              "2013-03-06",
+            "long_name":         "Birnbaum"
+    },
+
+        {"name": "OC20",  "used": 1, "group": "march03", "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA",
+            "DNA conc.":           [0.63, "ng/µl"],
+            "date":                "2013-03-06",
+            "long_name":         "Ochsenbrunn"
+    },
+
+        {"name": "SS21",  "used": 1, "group": "march03", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC",
+            "DNA conc.":          [1.43, "ng/µl"],
+            "date":              "2013-02-04",
+            "long_name":         "Silbersee"
+        },
+
+        {"name": "OS22",  "used": 1, "group": "march03", "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA",
+            "DNA conc.":           [0.37, "ng/µl"],
+            "date":              "2013-02-04",
+            "long_name":         "Oberer Stinker"
+    },
+
+        {"name": "US23",  "used": 1, "group": "march03", "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA",
+            "DNA conc.":           [1.46, "ng/µl"],
+            "date":              "2013-02-04",
+            "long_name":         "Unterer Stinker"
+    },
+
+        {"name": "ZL24",  "used": 1, "group": "march03", "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA",
+            "DNA conc.":         [1.01, "ng/µl"],
+            "date":              "2013-02-04",
+            "long_name":         "Zicklacke"
+    },
+
+        {"name": "empty", "used": 0, "group": "empty", "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+    ],
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}
