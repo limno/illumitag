@@ -69,8 +69,10 @@ class Pool(object):
         self.base_dir = self.out_dir + self.id_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Make an alias to the json #
-        if os.path.lexists(self.p.info_json): os.remove(self.p.info_json)
-        os.symlink(self.json_path, self.p.info_json)
+        try: os.remove(self.p.info_json)
+        except OSError: pass
+        try: os.symlink(self.json_path, self.p.info_json)
+        except OSError: pass
         # Children #
         self.samples.load()
         self.primers.load()

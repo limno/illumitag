@@ -1,6 +1,22 @@
-# The module #
+#!/usr/bin/env python
+
+"""
+A script to contain examples commands
+for running the pipeline.
+"""
+
+# Don't run it #
+import sys
+sys.exit("Copy paste the commands you want in ipython, don't run this script.")
+
+# Modules #
 import illumitag
 
+###############################################################################
+# A full run #
+illumitag.projects['test'].run_pools_slurm()
+
+###############################################################################
 # One project #
 pj = illumitag.projects['test']; pj.run_pools()
 # One project via slurm #
@@ -26,7 +42,7 @@ p = illumitag.projects['evaluation']; p.load(); [pl.good_barcodes.relative_std_d
 p = illumitag.projects['evaluation']; p.load(); [illumitag.graphs.pool_plots.AssemblyCounts(pl).plot() for pl in p]
 pj = illumitag.projects['evaluation']; pj.load(); pj.graphs[-1].plot()
 # Just one function for one project #
-pj = illumitag.projects['evaluation']; pj.load(); [p(steps=[{'check_noalign_counts':{}}]) for p in pj]
+pj = illumitag.projects['evaluation']; pj.load(); [x(steps=[{'check_noalign_counts':{}}]) for x in pj]
 
 # One graphs for one run #
 run = illumitag.runs[2]; run.load(); run.graphs[0].plot()
@@ -46,7 +62,7 @@ job_id = illumitag.projects['evaluation'].run_analysis_slurm()
 # All pools via slurm #
 job_ids = [p.run_slurm() for p in illumitag.pools]
 # And analyses via slurm #
-ids = [pj.run_analysis_slurm() for pj in illumitag.projects]
+ids = [proj.run_analysis_slurm() for proj in illumitag.projects]
 
 
 # SLURM Report #

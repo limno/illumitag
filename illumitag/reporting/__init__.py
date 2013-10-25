@@ -53,8 +53,7 @@ class Reporter(object):
         for bc_outcome in self.aggregate.first.outcomes:
             outcomes = [getattr(p, bc_outcome.short_name) for p in self]
             print "UCHIME ref", [len(o.assembled)/len(o) for o in outcomes]
-            print "UCHIME denovo", [for p in self]
-
+            print "UCHIME denovo", [p for p in self]
             avg_fail = 100*sum(fails_ratio)/len(fails_ratio)
             print '%s: %.2f %%' % (o.doc, avg_fail)
 

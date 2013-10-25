@@ -92,7 +92,7 @@
         {"name": "ZL12", "used": 1, "group": "ZL", "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT",
             "rerun":             "run003pool08num42",
             "DNA conc.":         [1.27, "ng/µl"],
-            "date":              "2012-09-10",
+            "date":              "2012-09-10"
         },
 
         {"name": "ZL14", "used": 1, "group": "ZL", "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT",
@@ -134,7 +134,7 @@
         {"name": "ME03", "used": 1, "group": "march03", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC",
             "DNA conc.":         [7.18, "ng/µl"],
             "date":              "2013-03-05",
-            "long_name":         "Meijerhof",
+            "long_name":         "Meijerhof"
         },
 
         {"name": "OF04", "used": 1, "group": "march03", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA",

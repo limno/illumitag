@@ -67,9 +67,11 @@ class PoolRunner(Runner):
         command = """steps = %s
                      pool = [p for p in illumitag.pools if str(p)=='%s'][0]
                      pool(steps)""" % (steps, self.pool)
-        # Send it #
+        # Defaults #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
         if 'dependency' not in kwargs: kwargs['dependency'] = 'singleton'
-        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=str(self.pool), **kwargs)
+        # Send it #
+        job_name = "illumitag_%s" % self.pool
+        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=job_name, **kwargs)
         return self.pool.slurm_job.launch()
