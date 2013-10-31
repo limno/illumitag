@@ -25,7 +25,7 @@ class Run(Aggregate):
         # Attributes #
         self.num = num
         self.name = "run%i" % num
-        self.pools = pools
+        self.pools, self.children = pools, pools
         self.loaded = False
         # Dir #
         self.base_dir = out_dir + self.name + '/'

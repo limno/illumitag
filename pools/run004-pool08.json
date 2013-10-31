@@ -19,8 +19,8 @@
     "run_id":        "131002_M00485_0074_000000000-A5GKR",
     "pool_num":      8,
     "pool_id":       "Sample_SS08",
-    "forward_reads": "SS08_TGACCA_L001_R1_001.fastq.gz",
-    "reverse_reads": "SS08_TGACCA_L001_R2_001.fastq.gz",
+    "forward_reads": "SS08_ACTTGA_L001_R1_001.fastq.gz",
+    "reverse_reads": "SS08_ACTTGA_L001_R2_001.fastq.gz",
 
     "project":       "jerome",
     "project_name":  "Jerome's study",
