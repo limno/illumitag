@@ -35,6 +35,7 @@ class FASTA(FilePath):
 
     @property_cached
     def count(self):
+        """Should probably check file size instead of just caching once #TODO"""
         return int(sh.grep('-c', "^>", self.path, _ok_code=[0,1]))
 
     def open(self):

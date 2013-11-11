@@ -8,19 +8,15 @@ from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.helper.barcodes import bar_len
 
 # Third party modules #
-import sh
-#from shell_command import shell_output
 
 # Constants #
 home = os.environ['HOME'] + '/'
-chimera_ref_path = home + 'ILLUMITAQ/dataset1/raw/database/silvagold.fasta'
-chimera_ref_path = home + 'ILLUMITAQ/combined-qiime/info/microbiomeutil-r20110519.fasta'
+chimera_ref_path = home + 'glob/16s/microbiomeutil-r20110519.fasta'
 
 ###############################################################################
 class PrimerGroup(object):
     """A bunch of sequences all having the same type of primer outcome
     (and assembly outcome)"""
-    short_name = 'primers_group'
 
     all_paths = """
     /orig.fastq
@@ -33,6 +29,10 @@ class PrimerGroup(object):
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.orig_reads)
 
+    def create(self): self.orig_reads.create()
+    def add_read(self, read): self.orig_reads.add_read(read)
+    def close(self): self.orig_reads.close()
+
     def __init__(self, parent):
         # Save parent #
         self.parent, self.assemble_group = parent, parent
@@ -42,25 +42,16 @@ class PrimerGroup(object):
         self.base_dir = parent.p.groups_dir + self.short_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # More #
-        if self.parent == 'assembled': FASTACLASS = FASTQ
-        else:                          FASTACLASS = FASTA
-        self.orig_reads = FASTACLASS(self.p.orig_fastq, samples=self.samples)
-        self.n_filtered = FASTACLASS(self.p.n_filtered, samples=self.samples)
+        self.orig_reads = self.parent.cls(self.p.orig_fastq, samples=self.samples)
+        self.n_filtered = self.parent.cls(self.p.n_filtered, samples=self.samples)
         # Quality filtered #
         if self.parent == 'assembled':
             self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)
             self.len_filtered = FASTQ(self.p.len_filtered_fastq, samples=self.samples)
             self.trimmed_barcodes = FASTA(self.p.trimmed_barcodes)
-        # Extra #
-        self.load()
-
-    def load(self): pass
-
-    def fastqc(self):
-        sh.fastqc(self.orig_reads.path, '-q')
-        os.remove(os.path.splitext(self.orig_reads.path)[0] + '_fastqc.zip')
 
     def n_filter(self):
+        """Called from AssembleGroup.discard_reads_with_n"""
         def no_n_iterator(reads):
             for read in reads:
                 if 'N' in read: continue
@@ -68,6 +59,7 @@ class PrimerGroup(object):
         self.n_filtered.write(no_n_iterator(self.orig_reads))
 
     def qual_filter(self):
+        """Called from Assemble.quality_filter"""
         def good_qual_iterator(reads, threshold=5, windowsize=10):
             for read in reads:
                 averaged = moving_average(read.letter_annotations["phred_quality"], windowsize)
@@ -76,6 +68,7 @@ class PrimerGroup(object):
         self.qual_filtered.write(good_qual_iterator(self.n_filtered))
 
     def len_filter(self):
+        """Called from Assemble.length_filter"""
         def good_len_iterator(reads, max_overlap=100):
             min_length = 250 + 250 - max_overlap
             for read in reads:
@@ -83,15 +76,12 @@ class PrimerGroup(object):
                 yield read
         self.len_filtered.write(good_len_iterator(self.qual_filtered))
 
-    def trim_barcodes(self):
+    def trim_bc(self):
+        """Called from Assemble.trim_barcodes"""
         def no_barcodes_iterator(reads):
             for read in reads:
                 yield read[bar_len:-bar_len]
         self.trimmed_barcodes.write(no_barcodes_iterator(self.len_filtered))
-
-    def create(self): self.orig_reads.create()
-    def add_read(self, read): self.orig_reads.add_read(read)
-    def close(self): self.orig_reads.close()
 
 ###############################################################################
 class GoodPrimers(PrimerGroup):

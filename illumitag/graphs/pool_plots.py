@@ -259,7 +259,7 @@ class LenFilter(Graph):
 
 ################################################################################
 class UchimeRefBar(Graph):
-    """Lorem"""
+    """Lorem ipsum"""
     short_name = "uchime_ref"
 
     def plot(self):
@@ -282,7 +282,7 @@ class UchimeRefBar(Graph):
 
 ################################################################################
 class UchimeDenovoBar(Graph):
-    """Lorem"""
+    """Lorem ipsum"""
     short_name = "uchime_denovo"
 
     def plot(self):

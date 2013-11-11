@@ -107,11 +107,10 @@ class Aggregate(object):
         for graph in self.graphs: graph.plot()
 
     def make_slurm_report(self):
+        if not self.loaded: self.load()
         running_jobs_names = [j['name'] for j in slurm.running_jobs_info()]
         queued_jobs_names = [j['name'] for j in slurm.running_jobs_info()]
         for p in self:
-            # Loaded #
-            if not p.loaded: p.load()
             # Let's see if it didn't fail #
             p.job_state = "Failed"
             # Running #

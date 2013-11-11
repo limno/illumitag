@@ -11,7 +11,7 @@ from illumitag.common.slurm import SLURMJob
 ###############################################################################
 class PoolRunner(Runner):
     """Will run stuff on a pool"""
-    default_time = '1-00:00:00'
+    default_time = '12:00:00'
 
     default_steps = [
         ## Outcomes ###
@@ -26,7 +26,7 @@ class PoolRunner(Runner):
         ### Quality ###
         {'discard_reads_with_n':      {}},
         {'quality_filter':            {}},
-        {'len_filter':                {}},
+        {'length_filter':             {}},
         {'trim_barcodes':             {}},
         ### Early exit ##
         {'filter_unused':             {}},
@@ -39,6 +39,7 @@ class PoolRunner(Runner):
         {'barcode_fastqc':            {}},
         {'assembly_fastqc':           {}},
         ### Plots ###
+        {'make_plots':                {'threads':False}},
         {'make_pool_plots':           {'threads':False}},
         {'make_outcome_plots':        {'threads':False}},
     ]
@@ -67,11 +68,9 @@ class PoolRunner(Runner):
         command = """steps = %s
                      pool = [p for p in illumitag.pools if str(p)=='%s'][0]
                      pool(steps)""" % (steps, self.pool)
-        # Defaults #
+        # Send it #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
         if 'dependency' not in kwargs: kwargs['dependency'] = 'singleton'
-        # Send it #
-        job_name = "illumitag_%s" % self.pool
-        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=job_name, **kwargs)
+        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=str(self.pool), **kwargs)
         return self.pool.slurm_job.launch()

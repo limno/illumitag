@@ -50,9 +50,15 @@ class BarcodeGroup(PairedFASTQ):
         self.samples = self.pool.samples
 
     def assemble(self):
+        """A better term than assemble would be 'join' since there are only pairs"""
         command = 'pandaseq -f %s -r %s -u %s -F 1> %s 2> %s'
         command = command % (self.p.fwd_fastq, self.p.rev_fastq, self.unassembled.path, self.assembled.path, self.assembled.p.out)
         getstatusoutput(command)
+
+    def check_noalign_counts(self):
+        """Check the sanity of pandaseq"""
+        assert self.assembled.stats['noalign'] == self.unassembled.count
+        assert len(self.assembled) + len(self.unassembled) + self.assembled.stats['lowqual'] == len(self)
 
     def barcode_fastqc(self):
         sh.fastqc(self.fwd_path, '-q')
@@ -63,10 +69,6 @@ class BarcodeGroup(PairedFASTQ):
     def assembly_fastqc(self):
         sh.fastqc(self.assembled.path, '-q')
         os.remove(os.path.splitext(self.assembled.path)[0] + '_fastqc.zip')
-
-    def check_noalign_counts(self):
-        assert self.assembled.stats['noalign'] == self.unassembled.count
-        assert len(self.assembled) + len(self.unassembled) + self.assembled.stats['lowqual'] == len(self)
 
     def make_outcome_plots(self):
         for graph in self.graphs: graph.plot()

@@ -121,10 +121,12 @@ class Pool(object):
         return self.runner.run_slurm(*args, **kwargs)
 
     def pool_fastqc(self):
+        """Run fastqc on the all the sequences of the pool"""
         if not self.loaded: self.load()
         self.fastq.fastqc(self.p.fastqc_dir)
 
     def create_outcomes(self):
+        """Sort the sequences depending on their barcode status"""
         if not self.loaded: self.load()
         for o in self.outcomes: o.create()
         for r in self.fastq.parse_barcodes():
@@ -136,22 +138,26 @@ class Pool(object):
         for o in self.outcomes: o.close()
 
     def create_samples(self):
+        """Sort the sequences according to their barcode number (if they have one)"""
         if not self.loaded: self.load()
         for sample in self.samples: sample.create()
         for r in self.quality_reads.parse_barcodes(): r.first.sample.add_read(r.read)
         for sample in self.samples: sample.close()
 
     def check_fastq_version(self):
+        """Let's make sure we are dealing with the Sanger encoding"""
         for o in self.outcomes:
             assert fastqident.detect_encoding(o.fwd_path) == 'sanger'
             assert fastqident.detect_encoding(o.rev_path) == 'sanger'
 
     def make_pool_plots(self):
+        """Call graphs that are in pool_plots.py"""
         if not self.loaded: self.load()
         for graph in self.graphs: graph.plot()
 
     @property_cached
     def loss_statistics(self):
+        """This should be moved to the reporting file"""
         class MessageStat(object):
             def __init__(self, msg, value):
                 self.msg = msg

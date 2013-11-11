@@ -12,18 +12,31 @@ from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.helper.barcodes import bar_len
 
 # Third party modules #
-from Bio import SeqIO
 
 ###############################################################################
 class AssembleGroup(object):
     """A bunch of sequences all having the same type of assembly outcome
     (and barcode outcome)"""
 
+    all_paths = """
+    /orig.fastq
+    /flipped.fastq
+    /pandaseq.out
+    /groups/
+    """
+
     def __iter__(self): return iter(self.children)
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return self.count
+    def __ne__(self, other): return not self.__eq__(other)
 
-    def load(self):
+    def __init__(self, parent):
+        # Save parent #
+        self.parent, self.outcome = parent, parent
+        self.samples = parent.samples
+        # Auto paths #
+        self.base_dir = self.outcome.p.unassembled_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         # Extra #
         self.pool = self.outcome.pool
         self.samples = self.pool.samples
@@ -34,8 +47,18 @@ class AssembleGroup(object):
         self.only_fwd_primers = OnlyFwdPrimers(self)
         self.only_rev_primers = OnlyRevPrimers(self)
         self.no_primers       = NoPrimers(self)
+        # Group them #
         self.children = (self.good_primers, self.wrong_primers, self.only_fwd_primers, self.only_rev_primers, self.no_primers)
         self.first = self.good_primers
+
+    @property
+    def flipped_iterator(self):
+        for r in self.parse_barcodes():
+            if r.first.set == 'R' or r.last.set == 'F': yield reverse_compl_with_name(r.read)
+            else: yield r.read
+
+    def flip_reads(self):
+        self.flipped_reads.write(self.flipped_iterator)
 
     def make_primer_groups(self):
         for g in self.children: g.create()
@@ -47,12 +70,6 @@ class AssembleGroup(object):
             elif r.rev_pos:                                        self.only_rev_primers.add_read(r.read)
             else:                                                  self.no_primers.add_read(r.read)
         for g in self.children: g.close()
-
-    @property
-    def flipped_iterator(self):
-        for r in self.parse_barcodes():
-            if r.first.set == 'R' or r.last.set == 'F': yield reverse_compl_with_name(r.read)
-            else: yield r.read
 
     @property_cached
     def primer_positions(self):
@@ -69,28 +86,13 @@ class AssembleGroup(object):
 
 ###############################################################################
 class Assembled(AssembleGroup, FASTQ):
-    all_paths = """
-    /orig.fastq
-    /flipped.fastq
-    /pandaseq.out
-    /groups/
-    """
-
     def __eq__(self, other): return other == 'assembled'
-    def __ne__(self, other): return not self.__eq__(other)
 
-    def __init__(self, parent):
-        # Save parent #
-        self.parent, self.outcome = parent, parent
-        self.samples = parent.samples
-        # Auto paths #
-        self.base_dir = self.outcome.p.assembled_dir
-        self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Super #
-        self.load()
-        # Make fastq files #
+    def load(self):
+        # Make fasta files #
         self.path = self.p.orig_fastq
         self.flipped_reads = FASTQ(self.p.flipped, self.samples, self.primers)
+        self.cls = FASTQ
 
     @property_cached
     def stats(self):
@@ -104,41 +106,21 @@ class Assembled(AssembleGroup, FASTQ):
         result['loss'] = 100 * sum(result['distrib'][100:]) / sum(result['distrib'])
         return result
 
-    def flip_reads(self):
-        with open(self.flipped_reads.path, 'w') as handle: SeqIO.write(self.flipped_iterator, handle, 'fastq')
-
     def quality_filter(self):
         for g in self.children: g.qual_filter()
 
-    def len_filter(self):
+    def length_filter(self):
         for g in self.children: g.len_filter()
 
     def trim_barcodes(self):
-        for g in self.children: g.trim_barcodes()
+        for g in self.children: g.trim_bc()
 
 #-----------------------------------------------------------------------------#
 class Unassembled(AssembleGroup, FASTA):
-    all_paths = """
-    /orig.fasta
-    /flipped.fasta
-    /groups/
-    """
-
     def __eq__(self, other): return other == 'unassembled'
-    def __ne__(self, other): return not self.__eq__(other)
 
-    def __init__(self, parent):
-        # Save parent #
-        self.parent, self.outcome = parent, parent
-        self.samples = parent.samples
-        # Auto paths #
-        self.base_dir = self.outcome.p.unassembled_dir
-        self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Super #
-        self.load()
+    def load(self):
         # Make fasta files #
         self.path = self.p.orig_fasta
         self.flipped_reads = FASTA(self.p.flipped, self.samples, self.primers)
-
-    def flip_reads(self):
-        with open(self.flipped_reads.path, 'w') as handle: SeqIO.write(self.flipped_iterator, handle, 'fasta')
+        self.cls = FASTA
