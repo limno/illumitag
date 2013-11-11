@@ -55,7 +55,7 @@
         {"name": "II052F",     "used": 1, "group": "JDS_2007", "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
         {"name": "II052A",     "used": 1, "group": "JDS_2007", "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
         {"name": "II053A",     "used": 1, "group": "JDS_2007", "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
-        {"name": "IIntcPOOL5", "used": 1, "group": "JDS_2007", "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
+        {"name": "IIntcPOOL5", "used": 0, "group": "empty",    "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
         {"name": "II055F",     "used": 1, "group": "JDS_2007", "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
         {"name": "II055A",     "used": 1, "group": "JDS_2007", "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
         {"name": "II056F",     "used": 1, "group": "JDS_2007", "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
