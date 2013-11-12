@@ -40,7 +40,7 @@ class AnalysisRunner(Runner):
         command = """steps = %s
                      proj = [pj for pj in illumitag.projects if pj.name=='%s'][0]
                      proj.load()
-                     proj.analysis.run()""" % (steps, self.analysis.aggregate.name)
+                     proj.analysis.run(steps)""" % (steps, self.analysis.aggregate.name)
         # Test case #
         if self.analysis.aggregate.name == 'test':
             kwargs['time'] = '00:15:00'

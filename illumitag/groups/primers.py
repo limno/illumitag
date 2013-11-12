@@ -49,6 +49,10 @@ class PrimerGroup(object):
             self.qual_filtered = FASTQ(self.p.qual_filtered, samples=self.samples)
             self.len_filtered = FASTQ(self.p.len_filtered_fastq, samples=self.samples)
             self.trimmed_barcodes = FASTA(self.p.trimmed_barcodes)
+        # Further #
+        self.load()
+
+    def load(self): pass
 
     def n_filter(self):
         """Called from AssembleGroup.discard_reads_with_n"""

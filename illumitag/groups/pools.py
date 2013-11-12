@@ -141,7 +141,8 @@ class Pool(object):
         """Sort the sequences according to their barcode number (if they have one)"""
         if not self.loaded: self.load()
         for sample in self.samples: sample.create()
-        for r in self.quality_reads.parse_barcodes(): r.first.sample.add_read(r.read)
+        for r in self.good_barcodes.assembled.good_primers.len_filtered.parse_barcodes():
+            r.first.sample.add_read(r.read)
         for sample in self.samples: sample.close()
 
     def check_fastq_version(self):

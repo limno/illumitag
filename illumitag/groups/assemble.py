@@ -18,13 +18,6 @@ class AssembleGroup(object):
     """A bunch of sequences all having the same type of assembly outcome
     (and barcode outcome)"""
 
-    all_paths = """
-    /orig.fastq
-    /flipped.fastq
-    /pandaseq.out
-    /groups/
-    """
-
     def __iter__(self): return iter(self.children)
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return self.count
@@ -34,13 +27,14 @@ class AssembleGroup(object):
         # Save parent #
         self.parent, self.outcome = parent, parent
         self.samples = parent.samples
-        # Auto paths #
-        self.base_dir = self.outcome.p.unassembled_dir
-        self.p = AutoPaths(self.base_dir, self.all_paths)
         # Extra #
         self.pool = self.outcome.pool
         self.samples = self.pool.samples
         self.primers = self.pool.primers
+        # Load #
+        self.load()
+        # Auto paths #
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         # All primer outcomes #
         self.good_primers     = GoodPrimers(self)
         self.wrong_primers    = WrongPrimers(self)
@@ -86,13 +80,21 @@ class AssembleGroup(object):
 
 ###############################################################################
 class Assembled(AssembleGroup, FASTQ):
+    all_paths = """
+    /orig.fastq
+    /flipped.fastq
+    /pandaseq.out
+    /groups/
+    """
+
     def __eq__(self, other): return other == 'assembled'
 
     def load(self):
-        # Make fasta files #
+        self.cls = FASTQ
+        self.base_dir = self.outcome.p.assembled_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         self.path = self.p.orig_fastq
         self.flipped_reads = FASTQ(self.p.flipped, self.samples, self.primers)
-        self.cls = FASTQ
 
     @property_cached
     def stats(self):
@@ -119,8 +121,15 @@ class Assembled(AssembleGroup, FASTQ):
 class Unassembled(AssembleGroup, FASTA):
     def __eq__(self, other): return other == 'unassembled'
 
+    all_paths = """
+    /orig.fasta
+    /flipped.fasta
+    /groups/
+    """
+
     def load(self):
-        # Make fasta files #
+        self.cls = FASTA
+        self.base_dir = self.outcome.p.unassembled_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         self.path = self.p.orig_fasta
         self.flipped_reads = FASTA(self.p.flipped, self.samples, self.primers)
-        self.cls = FASTA

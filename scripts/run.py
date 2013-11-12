@@ -3,6 +3,9 @@
 """
 A script to contain examples commands
 for running the pipeline.
+
+You should run them in ipython:
+$
 """
 
 # Don't run it #
@@ -13,14 +16,18 @@ sys.exit("Copy paste the commands you want in ipython, don't run this script.")
 import illumitag
 
 ###############################################################################
-# A full run #
-illumitag.projects['test'].run_pools_slurm()
+# Create the samples #
+illumitag.runs[4][0].create_samples()
+
+# Make a cluster of samples #
+samples = [s for pool in illumitag.runs[4][0:3] for s in pool.samples if s.used]
+samples += illumitag.runs[4][3][0:13]
+cluster = illumitag.clustering.Cluster(samples, 'domenico')
+cluster.
 
 ###############################################################################
-# One project #
-pj = illumitag.projects['test']; pj.run_pools()
-# One project via slurm #
-pj = illumitag.projects['test']; pj.run_pools_slurm()
+# A full run #
+illumitag.projects['test'].run_pools_slurm()
 
 # Just one pool #
 pj = illumitag.projects['test']; p = pj[0]; p(threads=False)
@@ -29,6 +36,11 @@ pj = illumitag.projects['andrea']; p = pj[2]; p.run_slurm()
 num = illumitag.projects['inga'].first.run_slurm()
 # A few pools #
 pj = illumitag.projects['test']; [pool() for pool in pj.pools[1:]]
+
+# One project #
+pj = illumitag.projects['test']; pj.run_pools()
+# One project via slurm #
+pj = illumitag.projects['test']; pj.run_pools_slurm()
 
 # Just one function for one pool #
 pj = illumitag.projects['test']; p = pj[0]; p(steps=[{'make_pool_plots':{}}], threads=False)

@@ -8,6 +8,7 @@ from collections import Counter, OrderedDict
 # Internal modules #
 from illumitag.common import property_cached, isubsample, Color
 from illumitag.common.autopaths import FilePath
+from illumitag.common.tmpstuff import new_temp_path
 from illumitag.helper.barcodes import ReadWithBarcodes
 from illumitag.helper.primers import ReadWithPrimers
 
@@ -121,6 +122,23 @@ class FASTA(FilePath):
         self.subsampled.close()
         # Did it work #
         assert len(self.subsampled) == down_to
+
+    def rename_with_num(self, prefix, new_path=None, remove_desc=True):
+        # Temporary path #
+        if new_path is None: numbered = FASTA(new_temp_path())
+        else: numbered = FASTA(new_path)
+        # Generator #
+        def numbered_iterator():
+            for i,read in enumerate(self):
+                read.id = prefix + str(i)
+                if remove_desc: read.description = ""
+                yield read
+        # Do it #
+        numbered.write(numbered_iterator())
+        # Replace it #
+        if new_path is None:
+            os.remove(self.path)
+            shutil.move(numbered, self.path)
 
 #-----------------------------------------------------------------------------#
 class FASTQ(FASTA):

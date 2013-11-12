@@ -39,7 +39,6 @@ class PoolRunner(Runner):
         {'barcode_fastqc':            {}},
         {'assembly_fastqc':           {}},
         ### Plots ###
-        {'make_plots':                {'threads':False}},
         {'make_pool_plots':           {'threads':False}},
         {'make_outcome_plots':        {'threads':False}},
     ]
@@ -72,5 +71,6 @@ class PoolRunner(Runner):
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
         if 'dependency' not in kwargs: kwargs['dependency'] = 'singleton'
-        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=str(self.pool), **kwargs)
+        job_name = "illumitag_%s" % self.pool
+        self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=job_name, **kwargs)
         return self.pool.slurm_job.launch()

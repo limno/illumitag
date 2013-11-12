@@ -150,9 +150,12 @@ class PathItems(object):
 
 
 ################################################################################
-class FilePath(object):
+class FilePath(str):
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.path)
+
+    def __new__(cls, path, *args, **kwargs):
+        return str.__new__(cls, path)
 
     def __init__(self, path):
         self.path = path

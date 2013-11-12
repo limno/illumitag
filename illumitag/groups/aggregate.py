@@ -9,6 +9,7 @@ from illumitag.common import AutoPaths
 from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis
+from illumitag.clustering import Cluster
 from illumitag.reporting import Reporter
 from illumitag.fasta.other import CollectionPairedFASTQ
 
@@ -55,6 +56,7 @@ class Aggregate(object):
     def __getitem__(self, key):
         if isinstance(key, basestring): return [c for c in self.children if str(c) == key][0]
         elif isinstance(key, int): return self.children[key]
+        elif isinstance(key, slice): return self.children[key]
         else: raise TypeError('key')
 
     @property
@@ -85,6 +87,8 @@ class Aggregate(object):
         self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
         # Analysis #
         self.analysis = Analysis(self)
+        # Cluster #
+        self.cluster = Cluster(self)
         # Reporting #
         self.reporter = Reporter(self)
         # Graphs #
