@@ -54,4 +54,4 @@ class Cluster(object):
         paths = [sample.fasta.path for sample in self]
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
 
-    def run_uprase(self): self.otu_uparse.run()
+    def run_uparse(self): self.otu_uparse.run()

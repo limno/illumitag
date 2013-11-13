@@ -23,6 +23,7 @@ class UparseOTUs(object):
     http://www.nature.com/doifinder/10.1038/nmeth.2604"""
 
     short_name = 'uparse'
+    title = 'UPARSE denovo picking'
 
     all_paths = """
     /derep.fasta
@@ -30,6 +31,7 @@ class UparseOTUs(object):
     /centers.fasta
     /readmap.uc
     /table.csv
+    /graphs/
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -71,9 +73,13 @@ class UparseOTUs(object):
         # Parse that custom output for the OTU table #
         self.frame = pandas.DataFrame(self.readmap.otu_sample_counts)
         self.frame = self.frame.fillna(0)
+        self.frame = self.frame.astype(int)
         self.frame = self.frame.reindex_axis(sorted(self.frame.columns, key=natural_sort), axis=1)
         # Convert to CSV #
         self.frame.to_csv(self.table, sep='\t')
+
+    def make_plots(self):
+        for graph in self.graphs: graph.plot()
 
 ###############################################################################
 class UClusterFile(FilePath):
