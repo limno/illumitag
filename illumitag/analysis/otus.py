@@ -7,7 +7,7 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.common.tmpstuff import TmpFile
 from illumitag.common.csv_tables import TSVTable
 from illumitag.analysis.statistics import StatsOnOTU
-from illumitag.graphs import otu_plots
+from illumitag.analysis import otu_plots
 
 # Third party modules #
 import shutil, sh

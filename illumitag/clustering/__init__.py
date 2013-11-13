@@ -3,8 +3,9 @@
 # Internal modules #
 import illumitag
 from illumitag.common import AutoPaths
-from illumitag.fasta.single import FASTQ
+from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
+from illumitag.clustering.otus import UparseOTUs
 
 # Third party modules #
 from shell_command import shell_output
@@ -14,7 +15,7 @@ class Cluster(object):
     """Analyzes a group of samples."""
 
     all_paths = """
-    /reads/all_reads.fastq
+    /reads/all_reads.fasta
     /otus/
     /logs/
     """
@@ -39,9 +40,9 @@ class Cluster(object):
         # Runner #
         self.runner = ClusterRunner(self)
         # FASTA #
-        self.reads = FASTQ(self.p.all_reads_fastq)
+        self.reads = FASTA(self.p.all_reads_fasta)
         # OTU picking #
-        #self.otu_uparse = UparseOTUs(self)
+        self.otu_uparse = UparseOTUs(self)
 
     def run(self, *args, **kwargs):
         self.runner.run(*args, **kwargs)
@@ -50,7 +51,7 @@ class Cluster(object):
         self.runner.run_slurm()
 
     def combine_reads(self):
-        paths = [pool.quality_reads.qiime_fasta.path for pool in self]
+        paths = [sample.fasta.path for sample in self]
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
 
     def run_uprase(self): self.otu_uparse.run()

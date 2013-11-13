@@ -82,7 +82,7 @@ class Sample(FASTQ):
         # Paths #
         self.base_dir = self.pool.p.samples_dir + self.bar_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
-        self.path = self.p.orig_fastq
+        self.path = str(self.p.orig_fastq)
         # Distances #
         self.trim_fwd = self.pool.samples.trim_fwd
         self.trim_rev = self.pool.samples.trim_rev

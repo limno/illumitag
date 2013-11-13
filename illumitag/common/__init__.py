@@ -135,6 +135,22 @@ def head(path, window=20):
     with open(path, 'r') as handle:
         return ''.join(handle.next() for line in xrange(window))
 
+###############################################################################
+def natural_sort(item):
+    """
+    Sort strings that contain numbers correctly.
+
+    >>> l = ['v1.3.12', 'v1.3.3', 'v1.2.5', 'v1.2.15', 'v1.2.3', 'v1.2.1']
+    >>> l.sort(key=natural_sort)
+    >>> l.__repr__()
+    "['v1.2.1', 'v1.2.3', 'v1.2.5', 'v1.2.15', 'v1.3.3', 'v1.3.12']"
+    """
+    if item is None: return 0
+    def try_int(s):
+        try: return int(s)
+        except ValueError: return s
+    return map(try_int, re.findall(r'(\d+|\D+)', item))
+
 ################################################################################
 def property_cached(f):
     """Decorator for properties evaluated only once.

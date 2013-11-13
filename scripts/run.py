@@ -23,7 +23,14 @@ illumitag.runs[4][0].create_samples()
 samples = [s for pool in illumitag.runs[4][0:3] for s in pool.samples if s.used]
 samples += illumitag.runs[4][3][0:13]
 cluster = illumitag.clustering.Cluster(samples, 'domenico')
-cluster.
+for s in cluster: s.process()
+
+# Run it #
+cluster.combine_reads()
+cluster.run_uprase()
+
+# Test #
+cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
 
 ###############################################################################
 # A full run #

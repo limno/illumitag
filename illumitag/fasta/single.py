@@ -125,8 +125,8 @@ class FASTA(FilePath):
 
     def rename_with_num(self, prefix, new_path=None, remove_desc=True):
         # Temporary path #
-        if new_path is None: numbered = FASTA(new_temp_path())
-        else: numbered = FASTA(new_path)
+        if new_path is None: numbered = self.__class__(new_temp_path())
+        else: numbered = self.__class__(new_path)
         # Generator #
         def numbered_iterator():
             for i,read in enumerate(self):
