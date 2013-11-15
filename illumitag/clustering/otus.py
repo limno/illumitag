@@ -15,7 +15,6 @@ import sh, pandas
 
 # Constants #
 home = os.environ['HOME'] + '/'
-green_genes_db_path = home + "share/green_genes/rep_set/97_otus.fasta"
 
 ###############################################################################
 class UparseOTUs(object):
@@ -60,16 +59,16 @@ class UparseOTUs(object):
         assert len(self.reads) == len(self.readmap)
 
     def run(self):
-        ## Dereplicate #
-        #sh.usearch7("--derep_fulllength", self.reads, '-output', self.derep, '-sizeout')
-        ## Order by size and kill singeltons #
-        #sh.usearch7("--sortbysize", self.derep, '-output', self.sorted, '-minsize', 2)
-        ## Compute the centers #
-        #sh.usearch7("--cluster_otus", self.sorted, '-otus', self.centers)
-        ## Rename the centers #
-        #self.centers.rename_with_num('OTU_')
-        ## Map the reads back to the centers #
-        #sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
+        # Dereplicate #
+        sh.usearch7("--derep_fulllength", self.reads, '-output', self.derep, '-sizeout')
+        # Order by size and kill singeltons #
+        sh.usearch7("--sortbysize", self.derep, '-output', self.sorted, '-minsize', 2)
+        # Compute the centers #
+        sh.usearch7("--cluster_otus", self.sorted, '-otus', self.centers)
+        # Rename the centers #
+        self.centers.rename_with_num('OTU_')
+        # Map the reads back to the centers #
+        sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
         # Parse that custom output for the OTU table #
         self.frame = pandas.DataFrame(self.readmap.otu_sample_counts)
         self.frame = self.frame.fillna(0)

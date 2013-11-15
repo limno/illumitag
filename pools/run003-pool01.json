@@ -1,6 +1,18 @@
 {
-    "contact":  "Lucas Sinclair",
-    "email":    "lucas.sinclair@ebc.uu.se",
+    "contacts": {
+        "main": {
+            "name": "Omneya Ahmed",
+            "email": "omneya.ahmed@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        },
+        "informatics": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@ebc.uu.se"
+        }
+    },
 
     "uppmax_id":    "b2011032",
     "run_num":       3,
@@ -11,7 +23,7 @@
     "reverse_reads": "STB21_CTTGTA_L001_R2_001.fastq.gz",
 
     "project":       "gbg",
-    "project_name":  "Code name GBG (unknown)",
+    "project_name":  "Unknown Gothenburg study",
     "pool":          "gbg1",
     "pool_name":     "First GBG pool",
 

@@ -1,6 +1,18 @@
 {
-    "contact":  "Lucas Sinclair",
-    "email":    "lucas.sinclair@ebc.uu.se",
+    "contacts": {
+        "main": {
+            "name": "Omneya Ahmed",
+            "email": "omneya.ahmed@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        },
+        "informatics": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@ebc.uu.se"
+        }
+    },
 
     "uppmax_id":    "b2011032",
     "run_num":       3,
@@ -11,7 +23,7 @@
     "reverse_reads": "STB23_AGTTCC_L001_R2_001.fastq.gz",
 
     "project":       "gbg",
-    "project_name":  "Code name GBG (unknown)",
+    "project_name":  "Unknown Gothenburg study",
     "pool":          "gbg3",
     "pool_name":     "Third GBG pool",
 
@@ -61,11 +73,11 @@
         {"name": "gbg143", "used": 1, "group": "None", "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
         {"name": "gbg144", "used": 1, "group": "None", "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
         {"name": "gbg145", "used": 1, "group": "None", "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
-        {"name": "empty", "used": 0, "group": "empty", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
-        {"name": "empty", "used": 0, "group": "empty", "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
-        {"name": "empty", "used": 0, "group": "empty", "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
-        {"name": "empty", "used": 0, "group": "empty", "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
-        {"name": "empty", "used": 0, "group": "empty", "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+        {"name": "empty",  "used": 0, "group": "empty", "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "empty",  "used": 0, "group": "empty", "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
+        {"name": "empty",  "used": 0, "group": "empty", "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
+        {"name": "empty",  "used": 0, "group": "empty", "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
+        {"name": "empty",  "used": 0, "group": "empty", "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
       ],
 
     "primers": {
