@@ -2,7 +2,7 @@
 import os, sys, time, datetime
 
 # Internal modules #
-from illumitag.common import Color
+from illumitag.common.color import Color
 
 # Third party modules #
 import threadpool

@@ -5,7 +5,7 @@ A script to contain examples commands
 for running the pipeline.
 
 You should run them in ipython:
-$
+$ ipython -i -c "import illumitag"
 """
 
 # Don't run it #
@@ -27,8 +27,9 @@ for s in cluster: s.process()
 
 # Run it #
 cluster.combine_reads()
-cluster.run_uprase()
+cluster.run_uparse()
 cluster.otu_uparse.make_plots()
+cluster.otu_uparse.crest.assign()
 
 # Test #
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')

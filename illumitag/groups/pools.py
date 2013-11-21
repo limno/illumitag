@@ -11,12 +11,13 @@ import fastqident
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
 from quality import QualityReads
-from illumitag.common import AutoPaths, property_cached
 from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTQ
 from illumitag.fasta.paired import PairedFASTQ
 from illumitag.running.pool_runner import PoolRunner
 from illumitag.graphs import pool_plots
+from illumitag.common.autopaths import AutoPaths
+from illumitag.common.cache import property_cached
 
 # Constants #
 home = os.environ['HOME'] + '/'

@@ -1,9 +1,9 @@
 # Built-in modules #
 
 # Internal modules #
-from illumitag.common import AutoPaths
 from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.helper.barcodes import bar_len
+from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
 

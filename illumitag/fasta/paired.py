@@ -3,8 +3,9 @@ import os, sys, gzip, tempfile, shutil
 from itertools import izip
 
 # Internal modules #
-from illumitag.common import property_cached, imean
+from illumitag.common import imean
 from illumitag.helper.barcodes import ReadPairWithBarcode
+from illumitag.common.cache import property_cached
 
 # Third party modules #
 import sh

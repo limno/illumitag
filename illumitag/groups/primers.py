@@ -2,10 +2,12 @@
 import sys, os
 
 # Internal modules #
-from illumitag.common import AutoPaths, moving_average, Color
+from illumitag.common import moving_average
 from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
 from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.helper.barcodes import bar_len
+from illumitag.common.autopaths import AutoPaths
+from illumitag.common.color import Color
 
 # Third party modules #
 

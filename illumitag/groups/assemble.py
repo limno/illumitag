@@ -7,9 +7,11 @@ from collections import Counter
 
 # Internal modules #
 from primers import GoodPrimers, WrongPrimers, OnlyFwdPrimers, OnlyRevPrimers, NoPrimers
-from illumitag.common import property_cached, AutoPaths, tail, flatten, reverse_compl_with_name
+from illumitag.common import tail, flatten, reverse_compl_with_name
 from illumitag.fasta.single import FASTQ, FASTA
 from illumitag.helper.barcodes import bar_len
+from illumitag.common.cache import property_cached
+from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
 

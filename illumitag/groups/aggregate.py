@@ -5,7 +5,7 @@ from __future__ import division
 import os, shutil, re
 
 # Internal modules #
-from illumitag.common import AutoPaths
+from illumitag.common.autopaths import AutoPaths
 from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
 from illumitag.analysis import Analysis

@@ -3,10 +3,10 @@ import os
 from collections import defaultdict
 
 # Internal modules #
-from illumitag.common import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.fasta.other import QualFile, GroupFile
 from illumitag.helper.barcodes import bar_len
+from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
 from Bio.SeqIO.FastaIO import FastaWriter

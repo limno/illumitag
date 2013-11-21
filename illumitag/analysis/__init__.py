@@ -1,7 +1,7 @@
 # Built-in modules #
 
 # Internal modules #
-from illumitag.common import AutoPaths
+from illumitag.common.autopaths import AutoPaths
 from illumitag.analysis.otus import UclustOTUs, CdhitOTUs, OpenRefOTUs, StepOTUs
 from illumitag.running.analysis_runner import AnalysisRunner
 from illumitag.fasta.single import FASTA

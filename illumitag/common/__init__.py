@@ -7,11 +7,6 @@ import os, re, glob, random, collections
 # Third party modules #
 import sh, numpy
 
-# Expositions #
-from color import Color
-from autopaths import AutoPaths
-from tmpstuff import TmpFile
-
 ################################################################################
 def get_git_tag(directory):
     if os.path.exists(directory + '/.git'):
@@ -150,32 +145,6 @@ def natural_sort(item):
         try: return int(s)
         except ValueError: return s
     return map(try_int, re.findall(r'(\d+|\D+)', item))
-
-################################################################################
-def property_cached(f):
-    """Decorator for properties evaluated only once.
-    It can be used to created a cached property like this::
-
-        class Employee(object):
-            @property_cached
-            def salary(self):
-                return 8000
-
-        bob = Employee()
-        print bob.salary
-    """
-    def get_method(self):
-        try:
-            return self.__cache__[f.func_name]
-        except AttributeError:
-            self.__cache__ = {}
-            x = self.__cache__[f.func_name] = f(self)
-            return x
-        except KeyError:
-            x = self.__cache__[f.func_name] = f(self)
-            return x
-    get_method.__doc__ = f.__doc__
-    return property(get_method)
 
 ###############################################################################
 def split_thousands(s, tSep='\'', dSep='.'):

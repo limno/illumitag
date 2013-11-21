@@ -6,11 +6,13 @@ import os, gzip, re
 from collections import Counter, OrderedDict
 
 # Internal modules #
-from illumitag.common import property_cached, isubsample, Color
+from illumitag.common import isubsample
 from illumitag.common.autopaths import FilePath
 from illumitag.common.tmpstuff import new_temp_path
 from illumitag.helper.barcodes import ReadWithBarcodes
 from illumitag.helper.primers import ReadWithPrimers
+from illumitag.common.cache import property_cached
+from illumitag.common.color import Color
 
 # Third party modules #
 import sh, shutil

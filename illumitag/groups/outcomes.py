@@ -5,9 +5,10 @@ from commands import getstatusoutput
 
 # Internal modules #
 from assemble import Assembled, Unassembled
-from illumitag.common import property_cached, AutoPaths
 from illumitag.fasta.paired import PairedFASTQ
 from illumitag.graphs import outcome_plots
+from illumitag.common.cache import property_cached
+from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
 import sh, numpy

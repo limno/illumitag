@@ -2,10 +2,10 @@
 
 # Internal modules #
 import illumitag
-from illumitag.common import AutoPaths
+from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
-from illumitag.clustering.otus import UparseOTUs
+from illumitag.clustering.uparse import UparseOTUs
 
 # Third party modules #
 from shell_command import shell_output
@@ -20,8 +20,7 @@ class Cluster(object):
     /logs/
     """
 
-    def __repr__(self): return '<%s object on %s>' % \
-                               (self.__class__.__name__, self.parent)
+    def __repr__(self): return '<%s object on %s>' % (self.__class__.__name__, self.parent)
     def __iter__(self): return iter(self.samples)
     def __len__(self): return len(self.samples)
     def __getitem__(self, key): return self.samples[key]
