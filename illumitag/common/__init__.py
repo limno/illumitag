@@ -176,3 +176,9 @@ def split_thousands(s, tSep='\'', dSep='.'):
         splt= s[-3:] + tSep + splt
         s = s[:-3]
     return lhs + splt[:-1] + rhs
+
+################################################################################
+def is_integer(string):
+    try: int(string)
+    except ValueError: return False
+    return True

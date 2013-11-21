@@ -7,10 +7,10 @@ import illumitag
 from illumitag.common import natural_sort
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.common.csv_tables import CSVTable
+from illumitag.common.cache import property_cached
 from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering import otu_plots
 from illumitag.clustering.taxonomy import CrestTaxonomy
-from illumitag.common.cache import property_cached
 
 # Third party modules #
 import sh, pandas
@@ -119,6 +119,8 @@ class UparseOTUs(object):
                     if not clss.endswith('(class)'): clss += ' (class)'
                     new_columns[clss][sample_name] += count
             new_columns = pandas.DataFrame(new_columns)
+            # Check #
+            assert (new_columns.sum(axis=1) == result[phyla]).all()
             # Switch them in place #
             result = result.drop(phyla, axis=1)
             result = result.join(new_columns)
@@ -127,6 +129,10 @@ class UparseOTUs(object):
         other_count = result.loc[:, low_abundance].sum(axis=1)
         result = result.loc[:, ~low_abundance]
         result['Others'] = other_count
+        # Sort the table by sum #
+        sums = result.sum()
+        sums.sort(ascending=False)
+        result = result.reindex_axis(sums.keys(), axis=1)
         # Return result #
         return result
 

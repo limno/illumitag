@@ -37,6 +37,7 @@ class BarcodeHist(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class ReadsThatPassHist(Graph):
@@ -59,6 +60,7 @@ class ReadsThatPassHist(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'), bottom=0.12)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class SalvageHist(Graph):
@@ -81,6 +83,7 @@ class SalvageHist(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'), bottom=0.12)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class MissmatchReg(Graph):
@@ -128,6 +131,7 @@ class MissmatchReg(Graph):
         # Save it #
         self.save_plot(fig, axes)
         matplotlib.rc('text', usetex=False)
+        pyplot.close(fig)
 
 ################################################################################
 class AssemblyCounts(Graph):
@@ -155,6 +159,7 @@ class AssemblyCounts(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class PrimerCounts(Graph):
@@ -179,6 +184,7 @@ class PrimerCounts(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class ReadsWithN(Graph):
@@ -206,6 +212,7 @@ class ReadsWithN(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class QualityFilter(Graph):
@@ -231,6 +238,7 @@ class QualityFilter(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class LenFilter(Graph):
@@ -256,6 +264,7 @@ class LenFilter(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class UchimeRefBar(Graph):
@@ -279,6 +288,7 @@ class UchimeRefBar(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class UchimeDenovoBar(Graph):
@@ -302,3 +312,4 @@ class UchimeDenovoBar(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.15)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)

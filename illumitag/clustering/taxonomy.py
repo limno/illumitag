@@ -56,7 +56,6 @@ class CrestTaxonomy(Taxonomy):
         shutil.move(self.p.silva_hits[:-4] + '_Composition.txt', self.p.silva_composition)
         shutil.move(self.p.silva_hits[:-4] + '_Tree.txt', self.p.silva_tree)
         shutil.move(self.p.silva_hits[:-4] + '_Assignments.txt', self.p.silva_assignments)
-        # Assignments #
 
     @property_cached
     def assignments(self):

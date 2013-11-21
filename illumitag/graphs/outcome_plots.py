@@ -38,6 +38,7 @@ class AssemblyDistrib(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class AssemblyPrimerPos(Graph):
@@ -67,6 +68,7 @@ class AssemblyPrimerPos(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         json.dump({'fwd':fwd_pos, 'rev':rev_pos}, open(self.json_path, 'w'))
+        pyplot.close(fig)
 
 ################################################################################
 class UnassemblyPrimerPos(Graph):
@@ -96,3 +98,4 @@ class UnassemblyPrimerPos(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         json.dump({'fwd':fwd_pos, 'rev':rev_pos}, open(self.json_path, 'w'))
+        pyplot.close(fig)

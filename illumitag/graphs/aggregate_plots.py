@@ -36,6 +36,7 @@ class BarcodeStack(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('x'), left=0.1, right=0.96)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class AssemblyCounts(Graph):
@@ -63,6 +64,7 @@ class AssemblyCounts(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('x'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class ChimerasSummary(Graph):
@@ -88,6 +90,7 @@ class ChimerasSummary(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('x'), left=0.3)
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
 
 ################################################################################
 class LengthDistribution(Graph):
@@ -115,3 +118,4 @@ class LengthDistribution(Graph):
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
