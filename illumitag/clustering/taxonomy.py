@@ -3,10 +3,10 @@ import os, time, shutil, tempfile
 
 # Internal modules #
 from illumitag.common.autopaths import AutoPaths
-from illumitag.fasta.single import FASTA
-from illumitag.helper.mothur import process_log_file
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
+from illumitag.fasta.single import FASTA
+from illumitag.helper.mothur import process_log_file
 
 # Third party modules #
 import sh
