@@ -29,7 +29,7 @@ for s in cluster: s.process()
 cluster.combine_reads()
 cluster.run_uparse()
 cluster.otu_uparse.make_plots()
-cluster.otu_uparse.crest.assign()
+cluster.otu_uparse.taxonomy.assign()
 
 # Test #
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')

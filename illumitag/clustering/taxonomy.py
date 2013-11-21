@@ -7,7 +7,6 @@ from illumitag.fasta.single import FASTA
 from illumitag.helper.mothur import process_log_file
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
-from illumitag.clustering import taxa_plots
 
 # Third party modules #
 import sh
@@ -24,21 +23,19 @@ silva_db_path = home + "/share/LCAClassifier/parts/flatdb/silvamod/silvamod.fast
 class Taxonomy(object):
     """Can assign taxonomy to a FASTA file of 16S sequences."""
 
-    def __repr__(self): return '<%s object on "%s">' % (self.fasta.path)
+    def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
 
     def __init__(self, fasta_path, parent):
         # Parent #
-        self.otu = self.parent = parent, parent
+        self.otu, self.parent = parent, parent
         # FASTA #
         self.fasta = FASTA(fasta_path)
         # Dir #
         self.base_dir = self.parent.p.taxonomy_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Graphs #
-        self.graphs = [getattr(taxa_plots, cls_name)(self) for cls_name in taxa_plots.__all__]
 
     def at_level(self, level):
-        pass
+        return dict((k,v[level]) for k,v in self.assignments)
 
 ###############################################################################
 class CrestTaxonomy(Taxonomy):

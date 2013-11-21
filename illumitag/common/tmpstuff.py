@@ -2,7 +2,7 @@
 import tempfile
 
 # Internal modules #
-from gefes.common.autopaths import FilePath
+from illumitag.common.autopaths import FilePath
 
 ################################################################################
 def new_temp_path(**kwargs):

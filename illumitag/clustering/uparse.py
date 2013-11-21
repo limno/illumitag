@@ -10,6 +10,7 @@ from illumitag.common.csv_tables import CSVTable
 from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering import otu_plots
 from illumitag.clustering.taxonomy import CrestTaxonomy
+from illumitag.common.cache import property_cached
 
 # Third party modules #
 import sh, pandas
@@ -30,7 +31,8 @@ class UparseOTUs(object):
     /sorted.fasta
     /centers.fasta
     /readmap.uc
-    /table.csv
+    /otu_table.csv
+    /taxa_table.csv
     /graphs/
     /taxonomy/
     """
@@ -52,11 +54,12 @@ class UparseOTUs(object):
         self.sorted = SizesFASTA(self.p.sorted)
         self.centers = FASTA(self.p.centers)
         self.readmap = UClusterFile(self.p.readmap)
-        self.table = CSVTable(self.p.table)
+        self.otu_csv = CSVTable(self.p.otu_csv)
+        self.taxa_csv = CSVTable(self.p.taxa_csv)
         # Graphs #
         self.graphs = [getattr(otu_plots, cls_name)(self) for cls_name in otu_plots.__all__]
         # Taxonomy #
-        self.crest = CrestTaxonomy(self.centers, self)
+        self.taxonomy = CrestTaxonomy(self.centers, self)
 
     def checks(self):
         assert len(self.reads) == len(self.derep)
@@ -73,13 +76,63 @@ class UparseOTUs(object):
         self.centers.rename_with_num('OTU_')
         # Map the reads back to the centers #
         sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
-        # Parse that custom output for the OTU table #
-        self.frame = pandas.DataFrame(self.readmap.otu_sample_counts)
-        self.frame = self.frame.fillna(0)
-        self.frame = self.frame.astype(int)
-        self.frame = self.frame.reindex_axis(sorted(self.frame.columns, key=natural_sort), axis=1)
-        # Convert to CSV #
-        self.frame.to_csv(self.table, sep='\t')
+
+    @property_cached
+    def otu_table(self):
+        """Parse that custom output for the OTU table"""
+        result = pandas.DataFrame(self.readmap.otu_sample_counts)
+        result = result.fillna(0)
+        result = result.astype(int)
+        result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
+        return result
+
+    def make_otu_table(self):
+        """Convert to CSV"""
+        self.otu_table.to_csv(self.otu_csv, sep='\t')
+
+    @property_cached
+    def taxa_table(self):
+        # Build a new frame #
+        result = defaultdict(lambda: defaultdict(int))
+        for sample_name, column in self.otu_table.iterrows():
+            for otu_name, count in column.iteritems():
+                taxa = self.taxonomy.assignments[otu_name]
+                phyla = taxa[2] if len(taxa) > 2 else taxa[-1]
+                result[phyla][sample_name] += count
+        # Fill the holes #
+        result = pandas.DataFrame(result)
+        result = result.fillna(0)
+        result = result.astype(int)
+        # Ungroup high abundance #
+        high_abundance = result.sum() > 300000
+        for phyla in [k for k,v in high_abundance.iteritems() if v]:
+            # Find OTUs #
+            cond = lambda taxa: len(taxa) > 2 and taxa[2] == phyla
+            otus = [otu for otu,taxa in self.taxonomy.assignments.items() if cond(taxa)]
+            # Make new columns #
+            new_columns = defaultdict(lambda: defaultdict(int))
+            for sample_name, column in self.otu_table.iterrows():
+                for otu_name in otus:
+                    count = column[otu_name]
+                    taxa = self.taxonomy.assignments[otu_name]
+                    clss = taxa[3] if len(taxa) > 3 else taxa[-1]
+                    if not clss.endswith('(class)'): clss += ' (class)'
+                    new_columns[clss][sample_name] += count
+            new_columns = pandas.DataFrame(new_columns)
+            # Switch them in place #
+            result = result.drop[phyla]
+            result = result.join(new_columns)
+        # Group low abundant into 'others' #
+        low_abundance = result.sum() < 1000
+        other_count = result.loc[:, low_abundance].sum(axis=1)
+        result = result.loc[:, ~low_abundance]
+        result['Others'] = other_count
+        # Return result #
+        return result
+
+    def make_taxa_table(self):
+        """Convert to CSV"""
+        self.taxa_table.to_csv(self.taxa_csv, sep='\t')
 
     def make_plots(self):
         for graph in self.graphs: graph.plot()
