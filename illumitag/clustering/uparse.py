@@ -120,7 +120,7 @@ class UparseOTUs(object):
                     new_columns[clss][sample_name] += count
             new_columns = pandas.DataFrame(new_columns)
             # Switch them in place #
-            result = result.drop[phyla]
+            result = result.drop(phyla, axis=1)
             result = result.join(new_columns)
         # Group low abundant into 'others' #
         low_abundance = result.sum() < 1000

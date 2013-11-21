@@ -4,11 +4,11 @@ import base64, hashlib, socket
 from collections import OrderedDict
 
 # Internal modules #
-import gefes
-from gefes.common import get_git_tag, flatten, tail, is_integer
-from gefes.common.color import Color
-from gefes.common.tmpstuff import TmpFile, new_temp_path
-from gefes.common.cache import expiry_every
+import illumitag
+from illumitag.common import get_git_tag, flatten, tail, is_integer
+from illumitag.common.color import Color
+from illumitag.common.tmpstuff import TmpFile, new_temp_path
+from illumitag.common.cache import expiry_every
 
 # Third party modules #
 import sh
@@ -226,7 +226,7 @@ class SLURMJob(object):
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
 
-    def __init__(self, command, log_base_dir, module=gefes, **kwargs):
+    def __init__(self, command, log_base_dir, module=illumitag, **kwargs):
         # Log directory #
         dir_name = "%4d-%02d-%02d|%02d-%02d-%02d"
         dir_name = dir_name % time.localtime()[0:6]
