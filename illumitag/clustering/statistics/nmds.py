@@ -1,17 +1,43 @@
 # Internal modules #
-from illumitag.common.tmpstuff import TmpFile
 from illumitag.common.autopaths import AutoPaths
+from illumitag.common.conversion import r_matrix_to_dataframe
+from illumitag.graphs import Graph
 
 # Third party modules #
-import sh
+from rpy2 import robjects as ro
+from matplotlib import pyplot
+
+################################################################################
+class GraphNMDS(Graph):
+    """Lorem"""
+    short_name = 'nmds'
+
+    def plot(self):
+        # Coord #
+        x = self.parent.coords['NMDS1'].values
+        y = self.parent.coords['NMDS2'].values
+        names = self.parent.coords['NMDS1'].keys()
+        # Make scatter #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.plot(x, y, 'ro')
+        axes.set_title('Non-Metric Multidimensional scaling')
+        axes.set_xlabel('Dimension 1')
+        axes.set_ylabel('Dimension 2')
+        # Add annotations #
+        for i in range(len(names)):
+            pyplot.annotate(names[i], size=6, xy = (x[i], y[i]), xytext = (10, 0),
+                            textcoords = 'offset points', ha = 'left', va = 'center',
+                            bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
+        # Save it #
+        self.save_plot(fig, axes, width=20.0, height=20.0, bottom=0.03, top=0.97)
+        pyplot.close(fig)
 
 ###############################################################################
 class NMDS(object):
 
     all_paths = """
-    /nmds/
-    /permanova/
-    /betadis/
+    /lorem
     """
 
     def __init__(self, parent):
@@ -19,38 +45,19 @@ class NMDS(object):
         self.stat, self.parent = parent, parent
         self.otu = parent.otu
         # Paths #
-        self.p = AutoPaths(self.parent.p.betadis_dir, self.all_paths)
+        self.base_dir = self.parent.p.nmds_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Graph #
+        self.graph = GraphNMDS(self, base_dir=self.base_dir)
 
     def run(self):
-        # Script #
-        script = []
-        # Load libs #
-        script += ["library(vegan)"]
-        script += ["library(MASS)"]
-        script += ["library(ggplot2)"]
-        script += ["library(compare)"]
-        # Load data #
-        script += ["data = read.table('%s', header=TRUE, sep='\\t', row.names='OTUID')" % (self.table.path)]
-        script += ["meta = read.table('%s', header=TRUE, sep='\\t', row.names=1)" % (self.meta_data_path)]
-        # Compute nmds #
-        script += ["ord = metaMDS(data, distance='%s', trymax=200)" % self.dist_method]
-        script += ["nmds = scores(ord)"]
-        # Make a dataframe #
-        script += ["df = merge(meta, nmds, by.x='row.names', by.y='row.names')"]
-        # Make factors #
-        script += ["df$barcode = factor(df$barcode)"]
-        script += ["df$pool = factor(df$pool)"]
-        script += ["df$chemistry = factor(df$chemistry)"]
-        # Make plots #
-        script += ["p = ggplot(df, aes(NMDS1, NMDS2)) + xlab('Dimension 1') + ylab('Dimension 2')"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_barcode]
-        script += ["p + geom_point(aes(colour=barcode))"]
-        script += ["dev.off()"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_pool]
-        script += ["p + geom_point(aes(colour=pool))"]
-        script += ["dev.off()"]
-        script += ["pdf(file='%s')" % self.p.nmds_by_chemistry]
-        script += ["p + geom_point(aes(colour=chemistry))"]
-        script += ["dev.off()"]
-        # Run it #
-        sh.R('--no-save', '-f', TmpFile.from_string('\n'.join(script)), _out=self.p.nmds_out)
+        # Call R #
+        ro.r("library(vegan)")
+        ro.r("otu_table = read.table('%s', sep='\t', header=TRUE, row.names='X')" % (self.otu.otu_csv))
+        ro.r("nmds = metaMDS(otu_table, distance='horn', trymax=200)")
+        ro.r("coord = scores(nmds)")
+        ro.r("loadings = nmds$species")
+        # Retrieve values #
+        self.coords = r_matrix_to_dataframe(ro.r.coord)
+        self.loadings = r_matrix_to_dataframe(ro.r.loadings)
+

@@ -5,7 +5,7 @@ import illumitag
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
-from illumitag.clustering.uparse import UparseOTUs
+from illumitag.clustering.otu.uparse import UparseOTUs
 
 # Third party modules #
 from shell_command import shell_output

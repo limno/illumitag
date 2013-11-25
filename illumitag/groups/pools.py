@@ -186,3 +186,8 @@ class Pool(object):
             def len_filter(self):  return MessageStat("Length filter is only %f%% of qual filtered",
             (100*len(self.pool.good_barcodes.assembled.good_primers.len_filtered)/len(self.pool.good_barcodes.assembled.good_primers.qual_filtered)))
         return LossStatistics(self)
+
+    @property
+    def json(self):
+        """Regenerate the JSON string for every sample"""
+        return ',\n\n'.join(s.json for s in self.samples)

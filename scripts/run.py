@@ -31,6 +31,9 @@ cluster.run_uparse()
 cluster.otu_uparse.make_plots()
 cluster.otu_uparse.taxonomy.assign()
 
+# Stats #
+
+
 # Test #
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
 

@@ -1,4 +1,6 @@
 # Built-in modules #
+import json, re
+from collections import OrderedDict
 
 # Internal modules #
 from illumitag.fasta.single import FASTQ, FASTA
@@ -98,3 +100,13 @@ class Sample(FASTQ):
         self.trimmed.write(no_primers_iterator(self))
         self.trimmed.rename_with_num(self.name + '_read', self.renamed)
         self.renamed.to_fasta(self.fasta)
+
+    @property
+    def json(self):
+        """Regenerate the JSON string from the object including extra info"""
+        result = OrderedDict([(k, self.info[k]) for k in ('name', 'used', 'group', 'num', 'fwd', 'rev')])
+        result = json.dumps(result)
+        if self.extra_metadata:
+            result = result[:-1] + ',' + json.dumps(self.extra_metadata, indent=4)[1:]
+            result = re.compile(r'\bNaN\b').sub('null', result)
+        return result

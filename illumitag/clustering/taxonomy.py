@@ -35,7 +35,7 @@ class Taxonomy(object):
         self.p = AutoPaths(self.base_dir, self.all_paths)
 
     def at_level(self, level):
-        return dict((k,v[level]) for k,v in self.assignments)
+        return dict((k,v[level]) for k,v in self.assignments.items() if len(v) > level)
 
 ###############################################################################
 class CrestTaxonomy(Taxonomy):

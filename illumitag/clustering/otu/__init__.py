@@ -13,7 +13,7 @@ class OTUs(object):
 
     @property_cached
     def taxa_table(self):
-        """Uses the self.otu_table and the self.taxanomy to make a new table"""
+        """Uses the self.otu_table and the self.taxonomy to make a new table"""
         # Build a new frame #
         result = defaultdict(lambda: defaultdict(int))
         for sample_name, column in self.otu_table.iterrows():
@@ -47,7 +47,7 @@ class OTUs(object):
             result = result.drop(phyla, axis=1)
             result = result.join(new_columns)
         # Group low abundant into 'others' #
-        low_abundance = result.sum() < 1000
+        low_abundance = result.sum() < 3000
         other_count = result.loc[:, low_abundance].sum(axis=1)
         result = result.loc[:, ~low_abundance]
         result['Others'] = other_count

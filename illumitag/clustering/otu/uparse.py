@@ -4,7 +4,7 @@ from collections import defaultdict
 
 # Internal modules #
 import illumitag
-from illumitag.common import natural_sort
+from illumitag.common import natural_sort, prepend_to_file
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.common.csv_tables import CSVTable
 from illumitag.common.cache import property_cached
@@ -34,6 +34,7 @@ class UparseOTUs(OTUs):
     /taxa_table.csv
     /graphs/
     /taxonomy/
+    /stats/
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -80,16 +81,23 @@ class UparseOTUs(OTUs):
 
     @property_cached
     def otu_table(self):
-        """Parse that custom output for the OTU table"""
+        # Parse that custom output for the OTU table #
         result = pandas.DataFrame(self.readmap.otu_sample_counts)
         result = result.fillna(0)
         result = result.astype(int)
         result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
+        # Remove unwanted #
+        unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
+        for otu_name in result:
+            species = self.taxonomy.assignments[otu_name]
+            if len(species) > 2 and species[2] in unwanted: result = result.drop(otu_name, 1)
+        # Return result #
         return result
 
     def make_otu_table(self):
         """Convert to CSV"""
         self.otu_table.to_csv(self.otu_csv, sep='\t')
+        prepend_to_file(self.otu_csv, 'X')
 
 ###############################################################################
 class UClusterFile(FilePath):

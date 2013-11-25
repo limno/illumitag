@@ -20,12 +20,12 @@ class StatsOnOTUs(object):
     def __init__(self, parent):
         # Save parent #
         self.otu, self.parent = parent, parent
+        # Paths #
+        self.p = AutoPaths(self.parent.p.stats_dir, self.all_paths)
         # Children #
         self.nmds = NMDS(self)
         self.permanova = PERMANOVA(self)
         self.betadis = BetaDispersion(self)
-        # Paths #
-        self.p = AutoPaths(self.parent.p.stats_dir, self.all_paths)
 
     def run(self):
         self.nmds.run()
