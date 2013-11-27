@@ -26,7 +26,7 @@ class GraphNMDS(Graph):
         axes.set_ylabel('Dimension 2')
         # Add annotations #
         for i in range(len(names)):
-            pyplot.annotate(names[i], size=6, xy = (x[i], y[i]), xytext = (10, 0),
+            pyplot.annotate(names[i], size=9, xy = (x[i], y[i]), xytext = (10, 0),
                             textcoords = 'offset points', ha = 'left', va = 'center',
                             bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
         # Save it #
