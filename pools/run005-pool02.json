@@ -1,0 +1,85 @@
+{
+    "contacts": {
+        "main": {
+            "name": "???",
+            "email": "???"
+        },
+        "pi": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        },
+    },
+
+    "uppmax_id":     "b2011035",
+    "run_num":       5,
+    "run_id":        "131126_M00485_0087_000000000-A6GWG",
+    "pool_num":      2,
+    "pool_id":       "Sample_Stebe42",
+    "forward_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R1_001.fastq.gz",
+    "reverse_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R2_001.fastq.gz",
+
+    "project":       "???",
+    "project_name":  "???",
+    "pool":          "???",
+    "pool_name":     "???",
+
+    "samples": [
+        {"name": "Vfd33",       "used": 1, "group": "Vfd3",        "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
+        {"name": "Vfd41",       "used": 1, "group": "Vfd4",        "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
+        {"name": "Vfd42",       "used": 1, "group": "Vfd4",        "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
+        {"name": "Vfd43",       "used": 1, "group": "Vfd4",        "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
+        {"name": "Stobd11",     "used": 1, "group": "Stobd1",      "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "Stobd12",     "used": 1, "group": "Stobd1",      "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
+        {"name": "Stobd13",     "used": 1, "group": "Stobd1",      "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
+        {"name": "Stobd21",     "used": 1, "group": "Stobd2",      "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
+        {"name": "Stobd22",     "used": 1, "group": "Stobd2",      "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
+        {"name": "Stobd23",     "used": 1, "group": "Stobd2",      "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
+        {"name": "Stobd31",     "used": 1, "group": "Stobd3",      "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT"},
+        {"name": "Stobd32",     "used": 1, "group": "Stobd3",      "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT"},
+        {"name": "Stobd33",     "used": 1, "group": "Stobd3",      "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT"},
+        {"name": "Stobd41",     "used": 1, "group": "Stobd4",      "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA"},
+        {"name": "Stobd42",     "used": 1, "group": "Stobd4",      "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC"},
+        {"name": "Stobd43",     "used": 1, "group": "Stobd4",      "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT"},
+        {"name": "Stofd11",     "used": 1, "group": "Stofd1",      "num": 20, "fwd": "AGACACA", "rev": "TACTGAC"},
+        {"name": "Stofd12",     "used": 1, "group": "Stofd1",      "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT"},
+        {"name": "Stofd13",     "used": 1, "group": "Stofd1",      "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT"},
+        {"name": "Stofd21",     "used": 1, "group": "Stofd2",      "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT"},
+        {"name": "Stofd22",     "used": 1, "group": "Stofd2",      "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
+        {"name": "Stofd23",     "used": 1, "group": "Stofd2",      "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
+        {"name": "Stofd31",     "used": 1, "group": "Stofd3",      "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
+        {"name": "Stofd32",     "used": 1, "group": "Stofd3",      "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
+        {"name": "Stofd33",     "used": 1, "group": "Stofd3",      "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
+        {"name": "Stofd41",     "used": 1, "group": "Stofd4",      "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
+        {"name": "Stofd42",     "used": 1, "group": "Stofd4",      "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
+        {"name": "Stofd43",     "used": 1, "group": "Stofd4",      "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA"},
+        {"name": "stendepth1",  "used": 1, "group": "sten_depth",  "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA"},
+        {"name": "stendepth2",  "used": 1, "group": "sten_depth",  "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT"},
+        {"name": "stendepth3",  "used": 1, "group": "sten_depth",  "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA"},
+        {"name": "stendepth4",  "used": 1, "group": "sten_depth",  "num": 38, "fwd": "GACTATG", "rev": "TACTCTC"},
+        {"name": "Vdepth1",     "used": 1, "group": "V_depth",     "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC"},
+        {"name": "Vdepth2",     "used": 1, "group": "V_depth",     "num": 40, "fwd": "GACTGAT", "rev": "TGACACT"},
+        {"name": "Vdepth3",     "used": 1, "group": "V_depth",     "num": 41, "fwd": "GACATCA", "rev": "TGACTCA"},
+        {"name": "Vdepth4",     "used": 1, "group": "V_depth",     "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA"},
+        {"name": "Stodepth1",   "used": 1, "group": "Sto_depth",   "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
+        {"name": "Stodepth2",   "used": 1, "group": "Sto_depth",   "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
+        {"name": "Stodepth3",   "used": 1, "group": "Sto_depth",   "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
+        {"name": "Stodepth4",   "used": 1, "group": "Sto_depth",   "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
+        {"name": "empty",       "used": 0, "group": "empty",       "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+      ],
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}
