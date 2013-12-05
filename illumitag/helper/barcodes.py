@@ -46,6 +46,14 @@ class ReadPairWithBarcode(object):
     def __init__(self, fwd, rev, samples):
         self.fwd = fwd
         self.rev = rev
-        fwd_m = BarcodeMatch(fwd.seq.tostring()[0:bar_len], samples)
-        rev_m = BarcodeMatch(rev.seq.tostring()[0:bar_len], samples)
-        self.matches = [m for m in (fwd_m,rev_m) if m]
+        self.samples = samples
+
+    @property
+    def matches(self):
+        fwd_m = BarcodeMatch(self.fwd.seq.tostring()[0:bar_len], self.samples)
+        rev_m = BarcodeMatch(self.rev.seq.tostring()[0:bar_len], self.samples)
+        return [m for m in (fwd_m,rev_m) if m]
+
+    @property
+    def illumina_mid(self):
+        return self.fwd.description[-16:]

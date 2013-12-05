@@ -1,0 +1,36 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Alexander Eiler",
+            "email": "alexander.eiler@ebc.uu.se"
+        }
+    },
+
+    "uppmax_id":    "b2011035",
+    "run_num":       5,
+    "run_id":        "131126_M00485_0087_000000000-A6GWG",
+    "sample_num":    1,
+    "sample_id":     "Sample_Alex_1",
+    "forward_reads": "Alex_1_TCGCCTTA-TAGATCGC_L001_R1_001.fastq.gz",
+    "reverse_reads": "Alex_1_TCGCCTTA-TAGATCGC_L001_R2_001.fastq.gz",
+
+    "project":       "test",
+    "project_name":  "Test data",
+    "sample":        "new_lab_test_1",
+    "sample_name":   "First sample testing the new lab protocol",
+    "group":         "new_lab_test",
+
+    "forward_mid": "TCGCCTTA",
+    "reverse_mid": "TAGATCGC",
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}

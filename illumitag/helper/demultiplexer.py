@@ -4,6 +4,7 @@ Special module to demultiplex the odd hybrid run number 5
 
 # Built-in modules #
 import os
+from collections import Counter
 
 # Internal modules #
 import illumitag
@@ -34,8 +35,7 @@ class Demultiplexer(object):
 
     @property_cached
     def barcodes(self):
-        for read in self.pair:
-            1/0
+        return Counter(read.illumina_mid for read in self.pair.parse_barcodes())
 
 ###############################################################################
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 """
 A script to contain examples commands
@@ -30,9 +30,6 @@ cluster.combine_reads()
 cluster.run_uparse()
 cluster.otu_uparse.make_plots()
 cluster.otu_uparse.taxonomy.assign()
-
-# Stats #
-
 
 # Test #
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
@@ -76,15 +73,15 @@ pj = illumitag.projects['evaluation']; pj.load(); pj.analysis.run()
 # Just one analysis via slurm #
 job_id = illumitag.projects['evaluation'].run_analysis_slurm()
 
-# All run graphs #
+# All run graphs #
 [r.make_plots() for r in illumitag.runs]
 
-# All pools via slurm #
+# All pools via SLURM #
 job_ids = [p.run_slurm() for p in illumitag.pools]
 # And analyses via slurm #
 ids = [proj.run_analysis_slurm() for proj in illumitag.projects]
 
-# SLURM Report #
+# SLURM Report #
 illumitag.aggregate.make_slurm_report()
 
 # Regenerate the early exit for one pool #

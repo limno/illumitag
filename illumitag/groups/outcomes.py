@@ -47,8 +47,6 @@ class BarcodeGroup(PairedFASTQ):
         self.first = self.assembled
         # Graphs #
         self.graphs = [getattr(outcome_plots, cls_name)(self) for cls_name in outcome_plots.__all__]
-        # Extra #
-        self.samples = self.pool.samples
 
     def assemble(self):
         """A better term than assemble would be 'join' since there are only pairs

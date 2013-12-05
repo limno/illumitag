@@ -39,7 +39,8 @@ class FASTA(FilePath):
     @property_cached
     def count(self):
         """Should probably check file size instead of just caching once #TODO"""
-        return int(sh.grep('-c', "^>", self.path, _ok_code=[0,1]))
+        if self.path.endswith('gz'): return int(sh.zgrep('-c', "^>", self.path, _ok_code=[0,1]))
+        else: return int(sh.grep('-c', "^>", self.path, _ok_code=[0,1]))
 
     def open(self):
         if self.path.endswith('gz'): self.handle = gzip.open(self.path, 'r')
@@ -149,6 +150,7 @@ class FASTQ(FASTA):
 
     @property_cached
     def count(self):
+        if self.path.endswith('gz'): return int(sh.zgrep('-c', "^+$", self.path, _ok_code=[0,1]))
         return int(sh.grep('-c', "^+$", self.path, _ok_code=[0,1]))
 
     def to_fasta(self, path):

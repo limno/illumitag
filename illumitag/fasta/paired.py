@@ -6,6 +6,7 @@ from itertools import izip
 from illumitag.common import imean
 from illumitag.helper.barcodes import ReadPairWithBarcode
 from illumitag.common.cache import property_cached
+from illumitag.fasta.single import FASTQ
 
 # Third party modules #
 import sh
@@ -24,6 +25,9 @@ class PairedFASTQ(object):
         # Basic #
         self.fwd_path = fwd_path
         self.rev_path = rev_path
+        # File objects #
+        self.fwd = FASTQ(fwd_path)
+        self.rev = FASTQ(rev_path)
         # Extra #
         self.pool, self.parent = parent, parent
         self.samples = parent.samples

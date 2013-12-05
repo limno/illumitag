@@ -248,9 +248,17 @@ class FilePath(str):
     def create(self):
         with open(self.path, 'w'): pass
 
-    def link_from(self, path):
-        self.remove()
-        return os.symlink(path, self.path)
+    def link_from(self, path, safe=False):
+        # Standard #
+        if not safe:
+            self.remove()
+            return os.symlink(path, self.path)
+        # No errors #
+        else:
+            try: os.remove(self.path)
+            except OSError: pass
+            try: os.symlink(path, self.path)
+            except OSError: pass
 
     def copy(self, path):
         shutil.copy2(self.path, path)
@@ -276,8 +284,8 @@ class Filesize(object):
         '117.4 MB'
     """
 
-    chunk = 1024
-    units = ['bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']
+    chunk = 1000
+    units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB']
     precisions = [0, 0, 1, 2, 2, 2]
 
     def __init__(self, size):

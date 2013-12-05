@@ -43,10 +43,10 @@ class Pool(object):
     def __getitem__(self, key): return self.samples[key]
 
     def __init__(self, json_path, out_dir):
-        # Output #
+        # Attributes #
         self.out_dir = out_dir
-        # Parse #
         self.json_path = json_path
+        # Parse #
         with open(json_path) as handle: self.info = json.load(handle)
         # Basic #
         self.account = self.info['uppmax_id']

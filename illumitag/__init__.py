@@ -1,7 +1,7 @@
-b"""This module needs Python 2.6 or later."""
+b"""This module needs Python 2.7 or later."""
 
 # Special variables #
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 # Built-in modules #
 import os, sys, glob
@@ -11,6 +11,7 @@ from illumitag.groups.pools import Pool
 from illumitag.groups.runs import Runs, Run
 from illumitag.groups.aggregate import Aggregate
 from illumitag.groups.projects import Projects, Project
+from illumitag.groups.presamples import Presample
 from illumitag.common import dependencies
 
 # Constants #
@@ -28,7 +29,7 @@ view_dir = out_dir = home + 'ILLUMITAG/views/'
 self = sys.modules[__name__]
 module_dir = os.path.dirname(self.__file__)
 repos_dir = os.path.abspath(module_dir + '/../') + '/'
-pools_dir = repos_dir + 'pools/'
+pools_dir = repos_dir + 'json/pools/'
 
 # Load all pools #
 json_paths = glob.glob(pools_dir + '*.json')
@@ -49,3 +50,10 @@ for p in pools: p.project = projects[p.project_short_name]
 
 # Make an aggregate with all pools #
 aggregate = Aggregate('all', pools, view_dir + 'aggregates/')
+
+###############################################################################
+# Load all presamples #
+presamples_dir = repos_dir + 'json/presamples/'
+json_paths = glob.glob(presamples_dir + '*.json')
+presamples = [Presample(j, view_dir + 'presamples/') for j in json_paths]
+presamples.sort(key=lambda x: str(x))
