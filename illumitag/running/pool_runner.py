@@ -54,6 +54,8 @@ class PoolRunner(Runner):
     def find_fns(self, name):
         # Check quality reads #
         if hasattr(self.parent.quality_reads, name): return [getattr(self.parent.quality_reads, name)]
+        # Check samples #
+        elif hasattr(self.parent.samples.first, name): return [getattr(s, name) for s in self.pool.samples]
         # Super #
         return Runner.find_fns(self, name)
 

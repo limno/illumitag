@@ -9,7 +9,6 @@ from collections import Counter
 from primers import GoodPrimers, WrongPrimers, OnlyFwdPrimers, OnlyRevPrimers, NoPrimers
 from illumitag.common import tail, flatten, reverse_compl_with_name
 from illumitag.fasta.single import FASTQ, FASTA
-from illumitag.helper.barcodes import bar_len
 from illumitag.common.cache import property_cached
 from illumitag.common.autopaths import AutoPaths
 
@@ -30,7 +29,7 @@ class AssembleGroup(object):
         self.parent, self.outcome = parent, parent
         self.samples = parent.samples
         # Extra #
-        self.pool = self.outcome.pool
+        self.pool = self.outcome.parent
         self.samples = self.pool.samples
         self.primers = self.pool.primers
         # Load #
@@ -56,10 +55,14 @@ class AssembleGroup(object):
     def flip_reads(self):
         self.flipped_reads.write(self.flipped_iterator)
 
+    def dont_flip_reads(self):
+        self.flipped_reads.link_from(self.path)
+
     def make_primer_groups(self):
+        bar_len = self.parent.parent.bar_len
         for g in self.children: g.create()
         for r in self.flipped_reads.parse_primers():
-            if r.fwd_pos and r.rev_pos:
+            if r.fwd_pos is not None and r.rev_pos is not None:
                 if r.fwd_pos == bar_len and r.rev_pos == -bar_len: self.good_primers.add_read(r.read)
                 else:                                              self.wrong_primers.add_read(r.read)
             elif r.fwd_pos:                                        self.only_fwd_primers.add_read(r.read)

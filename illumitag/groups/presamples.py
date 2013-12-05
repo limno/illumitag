@@ -13,6 +13,7 @@ from illumitag.graphs import outcome_plots
 from illumitag.running.presample_runner import PresampleRunner
 
 # Third party modules #
+from shell_command import shell_output
 
 # Constants #
 home = os.environ['HOME'] + '/'
@@ -27,12 +28,15 @@ class Presample(BarcodeGroup):
     This object is a bit like a *Pool*, a *BarcodeGroup* and a *Sample*."""
 
     all_paths = """
+    /fwd.fastq
+    /rev.fastq
     /logs/
     /graphs/
     /quality_reads/
     /info.json
     /assembled/
     /unassembled/
+    /samples/
     """
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
@@ -64,24 +68,27 @@ class Presample(BarcodeGroup):
         self.id_name = "run%03d-sample%02d" % (self.run_num, self.num)
         self.fwd_mid = self.info['forward_mid']
         self.rev_mid = self.info['forward_mid']
+        # Automatic paths #
+        self.base_dir = self.out_dir + self.id_name + '/'
+        self.p = AutoPaths(self.base_dir, self.all_paths)
         # Special #
         self.primers = TwoPrimers(self)
         # Samples dummy #
-        self.info['samples'] = [{"name": self.short_name, "used": 1, "group":self.group, "num": self.num,
-                                 "fwd": self.fwd_mid, "rev": self.rev_mid}]
+        self.info['samples'] = [{"name":self.short_name, "used":1, "group":self.group,
+                                 "dummy":1, "num":self.num, "fwd":"", "rev":""}]
         self.samples = Samples(self)
+        self.samples.load()
         # Pool dummy #
-        self.pool = self
+        self.pool, self.parent = self, self
+        # Barcode length #
+        self.bar_len = 0
         # Files #
         self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run_label, self.label, self.fwd_name)
         self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run_label, self.label, self.rev_name)
         self.gziped = True if self.fwd_path.endswith('gz') else False
-        self.fwd = FASTQ(self.fwd_path)
-        self.rev = FASTQ(self.rev_path)
+        self.fwd = FASTQ(self.p.fwd)
+        self.rev = FASTQ(self.p.rev)
         self.fastq = PairedFASTQ(self.fwd.path, self.rev.path, self)
-        # Automatic paths #
-        self.base_dir = self.out_dir + self.id_name + '/'
-        self.p = AutoPaths(self.base_dir, self.all_paths)
         # Make an alias to the json #
         self.p.info_json.link_from(self.json_path)
         # Assembly files as children #
@@ -93,6 +100,22 @@ class Presample(BarcodeGroup):
         self.graphs = [getattr(outcome_plots, cls_name)(self) for cls_name in outcome_plots.__all__]
         # Runner #
         self.runner = PresampleRunner(self)
+
+    def uncompress(self):
+        shell_output('gunzip -c %s > %s' % (self.fwd_path, self.fwd))
+        shell_output('gunzip -c %s > %s' % (self.rev_path, self.rev))
+
+    def trim_primers(self):
+        def no_primers_iterator(reads):
+            for read in reads:
+                yield read[self.trim_fwd:-self.trim_rev]
+        self.trimmed.write(no_primers_iterator(self.only_used))
+
+    def make_mothur_output(self):
+        pass
+
+    def make_qiime_output(self):
+        pass
 
     def make_presample_plots(self):
         for graph in self.graphs: graph.plot()

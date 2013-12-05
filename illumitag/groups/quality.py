@@ -3,9 +3,8 @@ import os
 from collections import defaultdict
 
 # Internal modules #
-from illumitag.fasta.single import FASTA
+from illumitag.fasta.single import FASTA, FASTQ
 from illumitag.fasta.other import QualFile, GroupFile
-from illumitag.helper.barcodes import bar_len
 from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
@@ -29,7 +28,7 @@ class QualityReads(object):
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
     def __len__(self): return len(self.orig_reads)
 
-    def __init__(self, parent):
+    def __init__(self, path, parent):
         # Save parent #
         self.parent, self.pool = parent, parent
         self.samples = parent.samples
@@ -37,7 +36,7 @@ class QualityReads(object):
         self.base_dir = parent.p.quality_dir + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Files #
-        self.untrimmed = self.pool.good_barcodes.assembled.good_primers.len_filtered
+        self.untrimmed = FASTQ(path, samples=self.samples)
         self.only_used = FASTA(self.p.only_used, samples=self.samples)
         self.trimmed = FASTA(self.p.trimmed)
         # Qiime output #
@@ -86,7 +85,7 @@ class QualityReads(object):
             sample_name = r.first.sample.short_name
             counter[sample_name] += 1
             r.read.id = '%s_%i %s' % (sample_name, counter[sample_name], r.read.id)
-            bar_seq = r.read.seq[0:bar_len]
+            bar_seq = r.read.seq[0:self.pool.bar_len]
             r.read.description = "orig_bc=%s new_bc=%s bc_diffs=0" % (bar_seq, bar_seq)
             writer.write_record(r.read[self.trim_fwd:-self.trim_rev])
         # Close #

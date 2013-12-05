@@ -2,6 +2,7 @@
 import os, sys, time, datetime
 
 # Internal modules #
+from illumitag.common import flatten
 from illumitag.common.color import Color
 
 # Third party modules #
@@ -35,20 +36,24 @@ class Runner(object):
 
     def find_fns(self, name):
         # Functions #
+        def get_children(obj, name, level):
+            if level == 0:
+                if not hasattr(obj, name): return []
+                else: return [getattr(obj, name)]
+            else: return flatten([get_children(o, name, level-1) for o in obj.children])
+        # Recursive #
         fns = None
-        # Check pool #
-        if hasattr(self.parent, name): fns = [getattr(self.parent, name)]
-        # Check outcomes #
-        elif hasattr(self.parent.first, name): fns = [getattr(o, name) for o in self.parent.children if hasattr(o, name)]
-        # Check assemble groups #
-        elif hasattr(self.parent.first.first, name): fns = [getattr(ag, name) for o in self.parent.children for ag in o.children if hasattr(ag, name)]
-        # Check primer groups #
-        elif hasattr(self.pool.first.first.first, name): fns = [getattr(pg, name) for o in self.pool.outcomes for ag in o.children for pg in ag.children if hasattr(pg, name)]
-        # Check samples #
-        elif hasattr(self.pool.samples.first, name): fns = [getattr(s, name) for s in self.pool.samples]
-        # None found #
-        if not fns: raise Exception("Could not find function '%s'" % name)
-        # Return #
+        level = 0
+        while True:
+            target = self.parent
+            for i in range(level):
+                if hasattr(target, 'first'): target = target.first
+                else: target = None
+            if target is None: raise Exception("Could not find function '%s'" % name)
+            if hasattr(target, name):
+                fns = get_children(self.parent, name, level)
+                break
+            level += 1
         return fns
 
     def run_step(self, name, fns, threads=True):

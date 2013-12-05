@@ -5,7 +5,6 @@ import sys, os
 from illumitag.common import moving_average
 from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
 from illumitag.fasta.single import FASTQ, FASTA
-from illumitag.helper.barcodes import bar_len
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.color import Color
 
@@ -86,7 +85,7 @@ class PrimerGroup(object):
         """Called from Assemble.trim_barcodes"""
         def no_barcodes_iterator(reads):
             for read in reads:
-                yield read[bar_len:-bar_len]
+                yield read[self.pool.bar_len:-self.pool.bar_len]
         self.trimmed_barcodes.write(no_barcodes_iterator(self.len_filtered))
 
 ###############################################################################

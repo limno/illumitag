@@ -63,6 +63,7 @@ class Pool(object):
         # Special #
         self.samples = Samples(self)
         self.primers = TwoPrimers(self)
+        # Second init #
         self.loaded = False
 
     def load(self):
@@ -77,6 +78,8 @@ class Pool(object):
         # Children #
         self.samples.load()
         self.primers.load()
+        # Barcode length #
+        self.bar_len = self.samples.bar_len
         # Raw file pairs #
         self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['forward_reads'])
         self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['reverse_reads'])
@@ -92,7 +95,7 @@ class Pool(object):
         self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
         self.children = self.outcomes
         # The good reads #
-        self.quality_reads = QualityReads(self)
+        self.quality_reads = QualityReads(self.good_barcodes.assembled.good_primers.len_filtered, self)
         # Runner #
         self.runner = PoolRunner(self)
         # Graphs #

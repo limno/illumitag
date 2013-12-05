@@ -22,18 +22,24 @@ class TwoPrimers(object):
         self.info = parent.info['primers']
         # Basic #
         self.name = self.info['name']
+        # Names #
         self.fwd_name = self.info['forward']['name']
         self.rev_name = self.info['reverse']['name']
+        # Strings #
         self.fwd_str = self.info['forward']['sequence']
         self.rev_str = self.info['reverse']['sequence']
+        # Lengths #
         self.fwd_len = len(self.fwd_str)
         self.rev_len = len(self.rev_str)
-
-    def load(self):
+        # Sequences #
         self.fwd_seq = Seq(self.fwd_str, IUPAC.ambiguous_dna)
         self.rev_seq = Seq(self.rev_str, IUPAC.ambiguous_dna)
+        # Search patterns #
         self.fwd_regex = re.compile(''.join(['[' + iupac[char] + ']' for char in self.fwd_seq]))
         self.rev_regex = re.compile(''.join(['[' + iupac[char] + ']' for char in self.rev_seq.reverse_complement()]))
+
+    def load(self):
+        pass
 
 ###############################################################################
 class ReadWithPrimers(object):

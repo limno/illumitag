@@ -4,7 +4,6 @@ from collections import OrderedDict
 
 # Internal modules #
 from illumitag.fasta.single import FASTQ, FASTA
-from illumitag.helper.barcodes import bar_len
 from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
@@ -42,9 +41,11 @@ class Samples(object):
         self.bar_names_F = [name + 'F' for name in self.bar_names]
         self.bar_names_R = [name + 'R' for name in self.bar_names]
         self.all_bar_pairs = [(a,b) for a in self.bar_sided_names for b in self.bar_sided_names if a[:-1] != b[:-1]]
+        # Barcode length #
+        self.bar_len = len(self.first.fwd_str)
         # Primer size #
-        self.trim_fwd = bar_len + self.pool.primers.fwd_len
-        self.trim_rev = bar_len + self.pool.primers.rev_len
+        self.trim_fwd = self.bar_len + self.pool.primers.fwd_len
+        self.trim_rev = self.bar_len + self.pool.primers.rev_len
         # Children #
         for s in self: s.load()
 
@@ -79,6 +80,8 @@ class Sample(FASTQ):
         self.name = 'run%i_pool%i_sample%i' % (self.pool.run_num, self.pool.num, self.num)
 
     def load(self):
+        # Special case for dummy samples #
+        if self.info.get('dummy'): return
         # Paths #
         self.base_dir = self.pool.p.samples_dir + self.bar_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)

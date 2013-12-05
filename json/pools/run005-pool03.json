@@ -30,7 +30,7 @@
     "primers": {
             "name":    "?",
             "sense":   "5' to 3'",
-            "forward": {"name": "?", "sequence": "?"},
-            "reverse": {"name": "?", "sequence": "?"}
+            "forward": {"name": "?", "sequence": "AAA"},
+            "reverse": {"name": "?", "sequence": "AAA"}
     }
 }

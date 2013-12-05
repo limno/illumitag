@@ -2,9 +2,6 @@
 
 # Third party modules #
 
-# Constants #
-bar_len = 7
-
 ###############################################################################
 class BarcodeMatch(object):
     """Given a 7 nucleotide sequence and a collection of samples,
@@ -37,8 +34,9 @@ class BarcodeMatch(object):
 class ReadWithBarcodes(object):
     def __init__(self, read, samples):
         self.read = read
-        self.first = BarcodeMatch(read.seq.tostring()[0:bar_len], samples)
-        self.last = BarcodeMatch(read.reverse_complement().seq.tostring()[0:bar_len], samples)
+        self.bar_len = samples.bar_len
+        self.first = BarcodeMatch(read.seq.tostring()[0:self.bar_len], samples)
+        self.last = BarcodeMatch(read.reverse_complement().seq.tostring()[0:self.bar_len], samples)
         self.matches = (self.first, self.last)
 
 ###############################################################################
@@ -50,6 +48,7 @@ class ReadPairWithBarcode(object):
 
     @property
     def matches(self):
+        bar_len = self.samples.bar_len
         fwd_m = BarcodeMatch(self.fwd.seq.tostring()[0:bar_len], self.samples)
         rev_m = BarcodeMatch(self.rev.seq.tostring()[0:bar_len], self.samples)
         return [m for m in (fwd_m,rev_m) if m]
