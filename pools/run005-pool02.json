@@ -15,9 +15,8 @@
     "run_id":        "131126_M00485_0087_000000000-A6GWG",
     "pool_num":      2,
     "pool_id":       "Sample_Stebe42",
-    "forward_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R1_001.fastq.gz",
-    "reverse_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R2_001.fastq.gz",
-    "illumina_barcode":      "GTTTCGGA-TCTTTCCC",
+    "forward_reads": "Stebe42_GTTTCGGA-TCTTTCCC_L001_R1_001.fastq.gz",
+    "reverse_reads": "Stebe42_GTTTCGGA-TCTTTCCC_L001_R2_001.fastq.gz",
 
     "project":       "moose",
     "project_name":  "Moose and Cow gut and some Alejandro samples",

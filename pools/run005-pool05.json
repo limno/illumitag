@@ -15,9 +15,8 @@
     "run_id":        "131126_M00485_0087_000000000-A6GWG",
     "pool_num":      5,
     "pool_id":       "Sample_Stebe45",
-    "forward_reads": "Stebe45_ACTGATAA-AAAAAAAA_L001_R1_001.fastq.gz",
-    "reverse_reads": "Stebe45_ACTGATAA-AAAAAAAA_L001_R2_001.fastq.gz",
-    "illumina_barcode":      "ACTGATAT-TCTTTCCC",
+    "forward_reads": "Stebe45_ACTGATAT-TCTTTCCC_L001_R1_001.fastq.gz",
+    "reverse_reads": "Stebe45_ACTGATAT-TCTTTCCC_L001_R2_001.fastq.gz",
 
     "project":       "monica",
     "project_name":  "Monica's specialist/generalist study",

@@ -51,7 +51,8 @@ class BarcodeGroup(PairedFASTQ):
         self.samples = self.pool.samples
 
     def assemble(self):
-        """A better term than assemble would be 'join' since there are only pairs"""
+        """A better term than assemble would be 'join' since there are only pairs
+        Uses pandaseq 2.5"""
         command = 'pandaseq -f %s -r %s -u %s -F 1> %s 2> %s'
         command = command % (self.p.fwd_fastq, self.p.rev_fastq, self.unassembled.path, self.assembled.path, self.assembled.p.out)
         getstatusoutput(command)

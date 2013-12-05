@@ -179,6 +179,9 @@ class DirectoryPath(str):
         shutil.rmtree(self.path, ignore_errors=True)
         return True
 
+    def create(self):
+        os.makedirs(self.path)
+
 ################################################################################
 class FilePath(str):
 
@@ -241,6 +244,9 @@ class FilePath(str):
         if not self.exists: return False
         os.remove(self.path)
         return True
+
+    def create(self):
+        with open(self.path, 'w'): pass
 
     def link_from(self, path):
         self.remove()

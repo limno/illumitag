@@ -74,3 +74,7 @@ class PoolRunner(Runner):
         job_name = "illumitag_%s" % self.pool
         self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=job_name, **kwargs)
         return self.pool.slurm_job.run()
+
+    def empty_logs(self):
+        self.pool.p.logs_dir.remove()
+        self.pool.p.logs_dir.create()

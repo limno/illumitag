@@ -15,9 +15,8 @@
     "run_id":        "131126_M00485_0087_000000000-A6GWG",
     "pool_num":      1,
     "pool_id":       "Sample_Stebe41",
-    "forward_reads": "Stebe41_GTGGCCAA-AAAAAAAA_L001_R1_001.fastq.gz",
-    "reverse_reads": "Stebe41_GTGGCCAA-AAAAAAAA_L001_R2_001.fastq.gz",
-    "illumina_barcode":      "GTGGCCTT-TCTTTCCC",
+    "forward_reads": "Stebe41_GTGGCCTT-TCTTTCCC_L001_R1_001.fastq.gz",
+    "reverse_reads": "Stebe41_GTGGCCTT-TCTTTCCC_L001_R2_001.fastq.gz",
 
     "project":       "molydbate",
     "project_name":  "Alejandro's research project (Impact of Molydbate on microbial communities)",
