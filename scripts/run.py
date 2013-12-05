@@ -12,7 +12,7 @@ $ ipython -i -c "import illumitag"
 import sys
 sys.exit("Copy paste the commands you want in ipython, don't run this script.")
 
-# Modules #
+    # Modules #
 import illumitag
 
 ###############################################################################

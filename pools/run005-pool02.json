@@ -7,7 +7,7 @@
         "pi": {
             "name": "Stefan Bertilsson",
             "email": "stebe@ebc.uu.se"
-        },
+        }
     },
 
     "uppmax_id":     "b2011035",
@@ -17,6 +17,7 @@
     "pool_id":       "Sample_Stebe42",
     "forward_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R1_001.fastq.gz",
     "reverse_reads": "Stebe42_GTTTCGAA-AAAAAAAA_L001_R2_001.fastq.gz",
+    "illumina_barcode":      "GTTTCGGA-TCTTTCCC",
 
     "project":       "???",
     "project_name":  "???",

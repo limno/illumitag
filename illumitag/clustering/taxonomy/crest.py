@@ -2,7 +2,7 @@
 import os, shutil
 
 # Internal modules #
-from illumitag.cluster.taxonomy import Taxonomy
+from illumitag.clustering.taxonomy import Taxonomy
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
 

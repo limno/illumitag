@@ -11,7 +11,7 @@ from illumitag.common.cache import property_cached
 from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering.otu import OTUs
 from illumitag.clustering.otu import plots
-from illumitag.clustering.taxonomy import CrestTaxonomy
+from illumitag.clustering.taxonomy.crest import CrestTaxonomy
 from illumitag.clustering.statistics import StatsOnOTUs
 
 # Third party modules #
