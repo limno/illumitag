@@ -36,7 +36,7 @@ pools = [Pool(j, view_dir + 'pools/') for j in json_paths]
 pools.sort(key=lambda x: str(x))
 
 # Compose into runs #
-run_nums = sorted(list(set([p.run_num for p in pools])))
+run_nums = sorted(list(set([p.run_num for p in pools]))) # [1,2,3,4,5]
 runs = [Run(num, [p for p in pools if p.run_num==num], view_dir + 'runs/') for num in run_nums]
 runs = Runs(runs)
 for p in pools: p.run = runs[p.run_num]

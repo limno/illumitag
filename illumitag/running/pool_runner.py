@@ -73,4 +73,4 @@ class PoolRunner(Runner):
         if 'dependency' not in kwargs: kwargs['dependency'] = 'singleton'
         job_name = "illumitag_%s" % self.pool
         self.pool.slurm_job = SLURMJob(command, self.pool.p.logs_dir, job_name=job_name, **kwargs)
-        return self.pool.slurm_job.launch()
+        return self.pool.slurm_job.run()

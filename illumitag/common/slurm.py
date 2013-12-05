@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 # Internal modules #
 import illumitag
-from illumitag.common import get_git_tag, flatten, tail, is_integer
+from illumitag.common import get_git_tag, tail, is_integer, flatten
 from illumitag.common.color import Color
 from illumitag.common.tmpstuff import TmpFile, new_temp_path
 from illumitag.common.cache import expiry_every
@@ -94,7 +94,7 @@ class SLURMCommand(object):
         ('project'   , {'needed': False, 'tag': '#SBATCH -A %s',          'default': os.environ.get('SLURM_ACCOUNT')}),
         ('time'      , {'needed': True,  'tag': '#SBATCH -t %s',          'default': '0:15:00'}),
         ('machines'  , {'needed': True,  'tag': '#SBATCH -N %s',          'default': '1'}),
-        ('cores'     , {'needed': True,  'tag': '#SBATCH -n %s',          'default': '8'}),
+        ('cores'     , {'needed': True,  'tag': '#SBATCH -n %s',          'default': '16'}),
         ('partition' , {'needed': True,  'tag': '#SBATCH -p %s',          'default': 'node'}),
         ('email'     , {'needed': False, 'tag': '#SBATCH --mail-user %s', 'default': os.environ.get('EMAIL')}),
         ('email-when', {'needed': True,  'tag': '#SBATCH --mail-type=%s', 'default': 'END'}),
@@ -111,8 +111,10 @@ class SLURMCommand(object):
         self.command = command
         self.save_script = save_script
         self.language = language
-        # Check command #
-        if isinstance(self.command, list): self.command = ' '.join(map(str, self.command))
+        # Check command is a list #
+        if not isinstance(self.command, list): self.command = [self.command]
+        # Check everything is a string #
+        self.command = map(str, self.command)
         # Check name #
         self.name = kwargs.get('job_name', self.slurm_headers['job_name']['default'])
         # Hash the name if it doesn't fit in the limit #
@@ -167,6 +169,7 @@ class SLURMCommand(object):
         return jobs[self.short_name]
 
     def run(self):
+        """Will call launch after performing some checks"""
         # Check already exists #
         if self.status == "READY": return self.launch()
         # Check already queued #
@@ -249,7 +252,7 @@ class SLURMJob(object):
             print "Using version from {0}".format(os.path.abspath(%s.__file__))
             %s"""
         script = script % (static_module_dir, module_name, module_name, command)
-        script = '\n'.join(l.lstrip(' ') for l in script.split('\n') if l)
+        script = [l.lstrip(' ') for l in script.split('\n') if l]
         script_path = self.log_dir + "run.py"
         # Output #
         output_path = self.log_dir + "run.out"

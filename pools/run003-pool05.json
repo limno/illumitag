@@ -1,6 +1,14 @@
 {
-    "contact":  "Lucas Sinclair",
-    "email":    "lucas.sinclair@ebc.uu.se",
+    "contacts": {
+        "main": {
+            "name": "Andrea Garcia Bravo",
+            "email": "andrea.garcia@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        }
+    },
 
     "uppmax_id":    "b2011032",
     "run_num":       3,

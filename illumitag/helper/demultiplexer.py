@@ -19,7 +19,7 @@ home = os.environ['HOME'] + '/'
 ###############################################################################
 class Demultiplexer(object):
 
-    def __repr__(self): return '<%s object for pool %s>' % (self.__class__.__name__, self.parent.id_name)
+    def __repr__(self): return '<%s object with %i pools>' % (self.__class__.__name__, len(self.pools))
 
     def __init__(self, fwd, rev, pools):
         # Attributes #
