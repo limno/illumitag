@@ -69,6 +69,7 @@ class Presample(BarcodeGroup):
         self.label = self.info['sample_id']
         self.short_name = self.info['sample']
         self.long_name = self.info['sample_name']
+        self.name = 'run%i_sample%i' % (self.run_num, self.num)
         self.group = self.info['group']
         self.id_name = "run%03d-sample%02d" % (self.run_num, self.num)
         self.fwd_mid = self.info['forward_mid']
@@ -95,7 +96,7 @@ class Presample(BarcodeGroup):
         # Barcode length #
         self.bar_len = 0
         # Make an alias to the json #
-        self.p.info_json.link_from(self.json_path)
+        self.p.info_json.link_from(self.json_path, safe=True)
         # Assembly files as children #
         self.assembled = Assembled(self)
         self.unassembled = Unassembled(self)
@@ -126,7 +127,7 @@ class Presample(BarcodeGroup):
                 yield read[self.primers.fwd_len:-self.primers.rev_len]
         reads = self.assembled.good_primers.len_filtered
         self.trimmed.write(no_primers_iterator(reads))
-        self.trimmed.rename_with_num(self.short_name + '_read', self.renamed)
+        self.trimmed.rename_with_num(self.name + '_read', self.renamed)
         self.renamed.to_fasta(self.fasta)
 
     def make_mothur_output(self):

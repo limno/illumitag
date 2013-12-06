@@ -25,18 +25,18 @@ samples += illumitag.runs[4][3][0:13]
 cluster = illumitag.clustering.Cluster(samples, 'domenico')
 for s in cluster: s.process()
 
+# Other clusters #
+cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
+cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test_with')
+
 # Run it #
 cluster.combine_reads()
 cluster.run_uparse()
-cluster.otu_uparse.make_plots()
 cluster.otu_uparse.taxonomy.assign()
-
-# Test #
-cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
-
-###############################################################################
-cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test')
-
+cluster.otu_uparse.make_otu_table()
+cluster.otu_uparse.make_plots()
+cluster.otu_uparse.taxonomy_silva.make_plots()
+cluster.otu_uparse.stats.nmds.run()
 
 ###############################################################################
 # A full run #

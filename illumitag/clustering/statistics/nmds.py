@@ -60,4 +60,5 @@ class NMDS(object):
         # Retrieve values #
         self.coords = r_matrix_to_dataframe(ro.r.coord)
         self.loadings = r_matrix_to_dataframe(ro.r.loadings)
-
+        # Plot it #
+        self.graph.plot()

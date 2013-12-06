@@ -75,8 +75,8 @@ class AssembleGroup(object):
         # Count positions #
         all_fwd_pos, all_rev_pos = Counter(), Counter()
         for r in self.flipped_reads.parse_primers():
-            if r.fwd_pos: all_fwd_pos.update((r.fwd_pos,))
-            if r.rev_pos: all_rev_pos.update((r.rev_pos,))
+            if r.fwd_pos is not None: all_fwd_pos.update((r.fwd_pos,))
+            if r.rev_pos is not None: all_rev_pos.update((r.rev_pos,))
         # Return results #
         return all_fwd_pos, all_rev_pos
 

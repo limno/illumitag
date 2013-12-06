@@ -103,6 +103,8 @@ class PairedFASTQ(object):
         sh.fastqc(sym_fwd_path, '-q')
         sh.fastqc(sym_rev_path, '-q')
         # Move #
+        shutil.rmtree(directory + "fwd_fastqc/", ignore_errors=True)
+        shutil.rmtree(directory + "rev_fastqc/", ignore_errors=True)
         shutil.move(tmp_dir + 'fwd_fastqc/', directory + "fwd_fastqc/")
         shutil.move(tmp_dir + 'rev_fastqc/', directory + "rev_fastqc/")
         # Clean up #

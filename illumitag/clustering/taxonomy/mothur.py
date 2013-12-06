@@ -15,7 +15,6 @@ home = os.environ['HOME'] + '/'
 # Databases #
 train_db_path = home + 'glob/16s/trainset/trainset9_032012.pds.fasta'
 train_tax_path = home + 'glob/16s/trainset/trainset9_032012.pds.tax'
-silva_db_path = home + "/share/LCAClassifier/parts/flatdb/silvamod/silvamod.fasta"
 
 ###############################################################################
 class MothurTaxonomy(Taxonomy):

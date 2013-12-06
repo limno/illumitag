@@ -12,6 +12,7 @@ from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering.otu import OTUs
 from illumitag.clustering.otu import plots
 from illumitag.clustering.taxonomy.crest import CrestTaxonomy
+from illumitag.clustering.taxonomy.rdp import RdpTaxonomy
 from illumitag.clustering.statistics import StatsOnOTUs
 
 # Third party modules #
@@ -31,10 +32,11 @@ class UparseOTUs(OTUs):
     /centers.fasta
     /readmap.uc
     /otu_table.csv
-    /taxa_table.csv
-    /graphs/
-    /taxonomy/
+    /taxonomy_silva/
+    /taxonomy_fw/
+    /taxonomy_rdp/
     /stats/
+    /graphs/
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -55,11 +57,14 @@ class UparseOTUs(OTUs):
         self.centers = FASTA(self.p.centers)
         self.readmap = UClusterFile(self.p.readmap)
         self.otu_csv = CSVTable(self.p.otu_csv)
-        self.taxa_csv = CSVTable(self.p.taxa_csv)
         # Graphs #
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # Taxonomy #
-        self.taxonomy = CrestTaxonomy(self.centers, self)
+        self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silva', self.p.silva)
+        self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'fw', self.p.fw)
+        self.taxonomy_rpd = RdpTaxonomy(self.centers, self)
+        # Preferred one #
+        self.taxonomy = self.taxonomy_silva
         # Stats #
         self.stats = StatsOnOTUs(self)
 
@@ -129,10 +134,16 @@ class UClusterFile(FilePath):
             if target == '*': continue
             # Parse the hit #
             nums = re.findall("run([0-9]+)_pool([0-9]+)_sample([0-9]+)_read([0-9]+)", query)
-            run_num, pool_num, sample_num, read_num = map(int, nums[0])
-            # Get the object #
-            sample = illumitag.runs[run_num][pool_num-1][sample_num-1]
+            if nums:
+                run_num, pool_num, sample_num, read_num = map(int, nums[0])
+                sample = illumitag.runs[run_num][pool_num-1][sample_num-1]
+                name = sample.name
+            else:
+                nums = re.findall("run([0-9]+)_sample([0-9]+)_read([0-9]+)", query)
+                run_num, sample_num, read_num = map(int, nums[0])
+                #sample = [s for s in illumitag.presamples if s.run_num==run_num and s.num==sample_num][0]
+                name = 'test_run_%i' % sample_num
             # Count #
-            result[target][sample.short_name] += 1
+            result[target][name] += 1
         # Return #
         return result

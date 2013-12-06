@@ -33,7 +33,7 @@ class PresampleRunner(Runner):
         ### Chimeras ###
         {'check_chimeras':            {}},
         ### FastQC ###
-        {'presample_fastqc':           {}},
+        {'presample_fastqc':          {}},
         ### Plots ###
         {'make_presample_plots':      {'threads':False}},
     ]
