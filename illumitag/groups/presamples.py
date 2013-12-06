@@ -38,6 +38,7 @@ class Presample(BarcodeGroup):
     /quality/reads.fasta
     /assembled/
     /unassembled/
+    /fastqc/
     """
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
@@ -45,6 +46,9 @@ class Presample(BarcodeGroup):
     def __iter__(self): return iter(self.children)
     def __len__(self): return self.count
     def __getitem__(self, key): return self.samples[key]
+
+    @property
+    def seq_len(self): return len(self.fwd.first_read)
 
     def __init__(self, json_path, out_dir):
         # Attributes #
@@ -81,8 +85,6 @@ class Presample(BarcodeGroup):
         self.samples.load()
         # Pool dummy #
         self.pool, self.parent = self, self
-        # Barcode length #
-        self.bar_len = 0
         # Files #
         self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run_label, self.label, self.fwd_name)
         self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run_label, self.label, self.rev_name)
@@ -90,6 +92,8 @@ class Presample(BarcodeGroup):
         self.fwd = FASTQ(self.p.fwd)
         self.rev = FASTQ(self.p.rev)
         self.fastq = PairedFASTQ(self.fwd.path, self.rev.path, self)
+        # Barcode length #
+        self.bar_len = 0
         # Make an alias to the json #
         self.p.info_json.link_from(self.json_path)
         # Assembly files as children #
@@ -112,6 +116,9 @@ class Presample(BarcodeGroup):
     def uncompress(self):
         shell_output('gunzip -c %s > %s' % (self.fwd_path, self.fwd))
         shell_output('gunzip -c %s > %s' % (self.rev_path, self.rev))
+
+    def presample_fastqc(self):
+        self.fastq.fastqc(self.p.fastqc_dir)
 
     def process(self):
         def no_primers_iterator(reads):

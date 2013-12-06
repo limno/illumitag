@@ -36,6 +36,13 @@ class FASTA(FilePath):
         self.samples = samples
         self.primers = primers
 
+    @property
+    def first_read(self):
+        self.open()
+        seq = SeqIO.parse(self.handle, self.extension).next()
+        self.close()
+        return seq
+
     @property_cached
     def count(self):
         """Should probably check file size instead of just caching once #TODO"""
@@ -47,7 +54,7 @@ class FASTA(FilePath):
         else: self.handle = open(self.path, 'r')
 
     def close(self):
-        self.flush()
+        if hasattr(self, 'buffer'): self.flush()
         self.handle.close()
 
     def copy(self, path):

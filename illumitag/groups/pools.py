@@ -42,6 +42,9 @@ class Pool(object):
     def __len__(self): return self.count
     def __getitem__(self, key): return self.samples[key]
 
+    @property
+    def seq_len(self): return len(self.fwd.first_read)
+
     def __init__(self, json_path, out_dir):
         # Attributes #
         self.out_dir = out_dir
@@ -78,14 +81,14 @@ class Pool(object):
         # Children #
         self.samples.load()
         self.primers.load()
-        # Barcode length #
-        self.bar_len = self.samples.bar_len
         # Raw file pairs #
         self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['forward_reads'])
         self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['reverse_reads'])
         self.fwd = FASTQ(self.fwd_path)
         self.rev = FASTQ(self.rev_path)
         self.fastq = PairedFASTQ(self.fwd.path, self.rev.path, self)
+        # Barcode length #
+        self.bar_len = self.samples.bar_len
         # Make Outcomes #
         self.no_barcodes   = NoBarcode(self)
         self.one_barcodes  = OneBarcode(self)

@@ -26,14 +26,14 @@ class PresampleRunner(Runner):
         {'quality_filter':            {}},
         {'length_filter':             {}},
         {'trim_barcodes':             {}},
-        ### Chimeras ###
-        {'check_chimeras':            {}},
         ### Early exit ##
         {'process':                   {}},
         {'make_mothur_output':        {}},
         {'make_qiime_output':         {}},
+        ### Chimeras ###
+        {'check_chimeras':            {}},
         ### FastQC ###
-        #{'assembly_fastqc':           {}},
+        {'presample_fastqc':           {}},
         ### Plots ###
         {'make_presample_plots':      {'threads':False}},
     ]
