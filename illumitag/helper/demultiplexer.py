@@ -39,7 +39,9 @@ class Demultiplexer(object):
 
 ###############################################################################
 if __name__ == "__main__":
+    # Check the unused reads #
     path = home + "proj35/INBOX/131126_M00485_0087_000000000-A6GWG/Undetermined_indices/Sample_lane1/"
     fwd = "lane1_Undetermined_L001_R1_001.fastq.gz"
     rev = "lane1_Undetermined_L001_R2_001.fastq.gz"
     demulti = Demultiplexer(path+fwd, path+rev, illumitag.runs[5])
+    print demulti.barcodes.most_common(15)

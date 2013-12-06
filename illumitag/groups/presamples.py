@@ -5,7 +5,7 @@ import os, json
 from illumitag.groups.outcomes import BarcodeGroup
 from illumitag.groups.assemble import Assembled, Unassembled
 from illumitag.groups.samples import Samples
-from illumitag.fasta.single import FASTQ
+from illumitag.fasta.single import FASTA, FASTQ
 from illumitag.fasta.paired import PairedFASTQ
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.helper.primers import TwoPrimers
@@ -28,15 +28,16 @@ class Presample(BarcodeGroup):
     This object is a bit like a *Pool*, a *BarcodeGroup* and a *Sample*."""
 
     all_paths = """
-    /fwd.fastq
-    /rev.fastq
     /logs/
     /graphs/
-    /quality_reads/
     /info.json
+    /fwd.fastq
+    /rev.fastq
+    /quality/trimmed.fastq
+    /quality/renamed.fastq
+    /quality/reads.fasta
     /assembled/
     /unassembled/
-    /samples/
     """
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
@@ -100,16 +101,26 @@ class Presample(BarcodeGroup):
         self.graphs = [getattr(outcome_plots, cls_name)(self) for cls_name in outcome_plots.__all__]
         # Runner #
         self.runner = PresampleRunner(self)
+        # Final #
+        self.trimmed = FASTQ(self.p.trimmed)
+        self.renamed = FASTQ(self.p.renamed)
+        self.fasta = FASTA(self.p.reads_fasta)
+
+    def load(self):
+        pass
 
     def uncompress(self):
         shell_output('gunzip -c %s > %s' % (self.fwd_path, self.fwd))
         shell_output('gunzip -c %s > %s' % (self.rev_path, self.rev))
 
-    def trim_primers(self):
+    def process(self):
         def no_primers_iterator(reads):
             for read in reads:
-                yield read[self.trim_fwd:-self.trim_rev]
-        self.trimmed.write(no_primers_iterator(self.only_used))
+                yield read[self.primers.fwd_len:-self.primers.rev_len]
+        reads = self.assembled.good_primers.len_filtered
+        self.trimmed.write(no_primers_iterator(reads))
+        self.trimmed.rename_with_num(self.short_name + '_read', self.renamed)
+        self.renamed.to_fasta(self.fasta)
 
     def make_mothur_output(self):
         pass

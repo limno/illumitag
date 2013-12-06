@@ -1,3 +1,7 @@
+"""
+This submodule is deprecated and is replaced by illumitag.clustering
+"""
+
 # Built-in modules #
 
 # Internal modules #

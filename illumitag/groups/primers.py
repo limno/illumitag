@@ -86,7 +86,10 @@ class PrimerGroup(object):
         def no_barcodes_iterator(reads):
             for read in reads:
                 yield read[self.pool.bar_len:-self.pool.bar_len]
-        self.trimmed_barcodes.write(no_barcodes_iterator(self.len_filtered))
+        if self.pool.bar_len == 0:
+            self.len_filtered.to_fasta(self.trimmed_barcodes)
+        else:
+            self.trimmed_barcodes.write(no_barcodes_iterator(self.len_filtered))
 
 ###############################################################################
 class GoodPrimers(PrimerGroup):

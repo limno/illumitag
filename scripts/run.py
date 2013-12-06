@@ -35,6 +35,10 @@ cluster.otu_uparse.taxonomy.assign()
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
 
 ###############################################################################
+cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test')
+
+
+###############################################################################
 # A full run #
 illumitag.projects['test'].run_pools_slurm()
 

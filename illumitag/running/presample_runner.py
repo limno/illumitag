@@ -29,7 +29,7 @@ class PresampleRunner(Runner):
         ### Chimeras ###
         {'check_chimeras':            {}},
         ### Early exit ##
-        {'trim_primers':              {}},
+        {'process':                   {}},
         {'make_mothur_output':        {}},
         {'make_qiime_output':         {}},
         ### FastQC ###
@@ -47,15 +47,10 @@ class PresampleRunner(Runner):
         self.job_runtime = None
 
     def run_slurm(self, steps=None, **kwargs):
-        # Test case #
-        if self.parent.project.name == 'test':
-            kwargs['time'] = '00:15:00'
-            kwargs['qos'] = False
-            kwargs['email'] = '/dev/null'
         # Script #
         command = """steps = %s
-                     presample = [p for p in illumitag.presample if str(p)=='%s'][0]
-                     presample(steps)""" % (steps, self.parent)
+                     presample = [p for p in illumitag.presamples if str(p)=='%s'][0]
+                     presample.runner.run(steps)""" % (steps, self.parent)
         # Send it #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
