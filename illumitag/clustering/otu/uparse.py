@@ -4,19 +4,14 @@ from collections import defaultdict
 
 # Internal modules #
 import illumitag
-from illumitag.common import natural_sort, prepend_to_file
 from illumitag.common.autopaths import AutoPaths, FilePath
-from illumitag.common.csv_tables import CSVTable
-from illumitag.common.cache import property_cached
 from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering.otu import OTUs
-from illumitag.clustering.otu import plots
 from illumitag.clustering.taxonomy.crest import CrestTaxonomy
 from illumitag.clustering.taxonomy.rdp import RdpTaxonomy
-from illumitag.clustering.statistics import StatsOnOTUs
 
 # Third party modules #
-import sh, pandas
+import sh
 
 ###############################################################################
 class UparseOTUs(OTUs):
@@ -31,11 +26,9 @@ class UparseOTUs(OTUs):
     /sorted.fasta
     /centers.fasta
     /readmap.uc
-    /otu_table.csv
     /taxonomy_silva/
     /taxonomy_fw/
     /taxonomy_rdp/
-    /stats/
     /graphs/
     """
 
@@ -56,17 +49,12 @@ class UparseOTUs(OTUs):
         self.sorted = SizesFASTA(self.p.sorted)
         self.centers = FASTA(self.p.centers)
         self.readmap = UClusterFile(self.p.readmap)
-        self.otu_csv = CSVTable(self.p.otu_csv)
-        # Graphs #
-        self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # Taxonomy #
         self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silvamod', self.p.silva)
         self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'freshwater', self.p.fw)
         self.taxonomy_rpd = RdpTaxonomy(self.centers, self)
         # Preferred one #
         self.taxonomy = self.taxonomy_silva
-        # Stats #
-        self.stats = StatsOnOTUs(self)
 
     def checks(self):
         assert len(self.reads) == len(self.derep)
@@ -83,26 +71,6 @@ class UparseOTUs(OTUs):
         self.centers.rename_with_num('OTU_')
         # Map the reads back to the centers #
         sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
-
-    @property_cached
-    def otu_table(self):
-        # Parse that custom output for the OTU table #
-        result = pandas.DataFrame(self.readmap.otu_sample_counts)
-        result = result.fillna(0)
-        result = result.astype(int)
-        result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
-        # Remove unwanted #
-        unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
-        for otu_name in result:
-            species = self.taxonomy.assignments[otu_name]
-            if len(species) > 2 and species[2] in unwanted: result = result.drop(otu_name, 1)
-        # Return result #
-        return result
-
-    def make_otu_table(self):
-        """Convert to CSV"""
-        self.otu_table.to_csv(self.otu_csv, sep='\t')
-        prepend_to_file(self.otu_csv, 'X')
 
 ###############################################################################
 class UClusterFile(FilePath):

@@ -40,14 +40,10 @@ cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test_with'
 cluster.combine_reads()
 cluster.run_uparse()
 cluster.otu_uparse.taxonomy_silva.assign()
-cluster.otu_uparse.make_otu_table()
-cluster.otu_uparse.make_plots()
+cluster.otu_uparse.taxonomy_silva.make_otu_table()
+cluster.otu_uparse.taxonomy_silva.make_taxa_table()
 cluster.otu_uparse.taxonomy_silva.make_plots()
-cluster.otu_uparse.stats.nmds.run()
-
-# Fresh water #
-cluster.otu_uparse.taxonomy_fw.assign()
-cluster.otu_uparse.taxonomy_fw.make_plots()
+cluster.otu_uparse.taxonomy_silva.stats.nmds.run()
 
 ###############################################################################
 # A full run #

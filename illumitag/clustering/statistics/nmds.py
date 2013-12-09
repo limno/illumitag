@@ -9,7 +9,7 @@ from matplotlib import pyplot
 
 ################################################################################
 class GraphNMDS(Graph):
-    """Lorem"""
+    """Non-metric dimensional scaling"""
     short_name = 'nmds'
 
     def plot(self):

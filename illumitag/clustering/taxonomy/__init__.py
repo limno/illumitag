@@ -3,6 +3,7 @@ from collections import defaultdict
 
 # Internal modules #
 from illumitag.common.cache import property_cached
+from illumitag.common import natural_sort, prepend_to_file
 
 # Third party modules #
 import pandas
@@ -24,7 +25,7 @@ class Taxonomy(object):
         """Uses the otu_table and the taxonomy.assignments to make a new table"""
         # Build a new frame #
         result = defaultdict(lambda: defaultdict(int))
-        for sample_name, column in self.otu.otu_table.iterrows():
+        for sample_name, column in self.otu_table.iterrows():
             for otu_name, count in column.iteritems():
                 taxa = self.assignments[otu_name]
                 phyla = taxa[2] if len(taxa) > 2 else taxa[-1]
@@ -33,6 +34,8 @@ class Taxonomy(object):
         result = pandas.DataFrame(result)
         result = result.fillna(0)
         result = result.astype(int)
+        # Condition #
+        if len(result.columns) > 12: pass
         # Ungroup high abundance #
         high_abundance = result.sum() > 300000
         for phyla in [k for k,v in high_abundance.iteritems() if v]:
@@ -41,7 +44,7 @@ class Taxonomy(object):
             otus = [otu for otu,taxa in self.assignments.items() if cond(taxa)]
             # Make new columns #
             new_columns = defaultdict(lambda: defaultdict(int))
-            for sample_name, column in self.otu.otu_table.iterrows():
+            for sample_name, column in self.otu_table.iterrows():
                 for otu_name in otus:
                     count = column[otu_name]
                     taxa = self.assignments[otu_name]
@@ -69,3 +72,23 @@ class Taxonomy(object):
     def make_taxa_table(self):
         """Convert to CSV"""
         self.taxa_table.to_csv(self.taxa_csv, sep='\t')
+
+    @property_cached
+    def otu_table(self):
+        # Parse that custom output for the OTU table #
+        result = pandas.DataFrame(self.otu.readmap.otu_sample_counts)
+        result = result.fillna(0)
+        result = result.astype(int)
+        result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
+        # Remove unwanted #
+        unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
+        for otu_name in result:
+            species = self.assignments[otu_name]
+            if len(species) > 2 and species[2] in unwanted: result = result.drop(otu_name, 1)
+        # Return result #
+        return result
+
+    def make_otu_table(self):
+        """Convert to CSV"""
+        self.otu_table.to_csv(self.otu_csv, sep='\t')
+        prepend_to_file(self.otu_csv, 'X')

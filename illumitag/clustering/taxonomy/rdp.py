@@ -8,6 +8,7 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.clustering.taxonomy import plots
 from illumitag.fasta.single import FASTA
 from illumitag.common.csv_tables import CSVTable
+from illumitag.clustering.statistics import StatsOnOTUs
 
 # Third party modules #
 import sh
@@ -20,8 +21,10 @@ home = os.environ['HOME'] + '/'
 ###############################################################################
 class RdpTaxonomy(Taxonomy):
     all_paths = """
-    /graphs/
     /taxa_table.csv
+    /otu_table.csv
+    /graphs/
+    /stats/
     /reads.taxonomy
     """
 
@@ -37,8 +40,11 @@ class RdpTaxonomy(Taxonomy):
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Graphs #
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
-        # Table #
+        # Tables #
         self.taxa_csv = CSVTable(self.p.taxa_csv)
+        self.otu_csv = CSVTable(self.p.otu_csv)
+        # Stats #
+        self.stats = StatsOnOTUs(self)
 
     def assign(self):
         sh.rdp_multiclassifier('--conf=0.5','--hier_outfile='+self.composition_path,'--assign_outfile='+self.assignement_path)

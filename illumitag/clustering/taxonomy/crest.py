@@ -5,10 +5,11 @@ import os, shutil
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.clustering.taxonomy import Taxonomy
-from illumitag.clustering.taxonomy import plots
+from illumitag.clustering.taxonomy import plots_taxa, plots_otu
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
 from illumitag.common.csv_tables import CSVTable
+from illumitag.clustering.statistics import StatsOnOTUs
 
 # Third party modules #
 import sh
@@ -25,13 +26,14 @@ databases = {
 ###############################################################################
 class CrestTaxonomy(Taxonomy):
     all_paths = """
-    /graphs/
     /taxa_table.csv
-    /reads.taxonomy
+    /otu_table.csv
+    /graphs/
+    /stats/
     /crest_hits.xml
     /crest_composition.txt
     /crest_tree.txt
-    /ctest_assignments.txt
+    /crest_assignments.txt
     """
 
     def __init__(self, fasta_path, parent, database='silvamod', base_dir=None):
@@ -49,14 +51,18 @@ class CrestTaxonomy(Taxonomy):
         else: self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Graphs #
-        self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
-        # Table #
+        self.graphs = [getattr(plots_taxa, cls_name)(self) for cls_name in plots_taxa.__all__]
+        self.graphs += [getattr(plots_otu, cls_name)(self) for cls_name in plots_otu.__all__]
+        # Tables #
         self.taxa_csv = CSVTable(self.p.taxa_csv)
+        self.otu_csv = CSVTable(self.p.otu_csv)
+        # Stats #
+        self.stats = StatsOnOTUs(self)
 
     def assign(self):
         # Run #
-        #sh.megablast('-a', nr_threads, '-i', self.fasta, '-d', self.database_path, '-b100', '-v100', '-m7', '-o', self.p.crest_hits)
-        #if os.path.getsize(self.p.crest_hits) == 0: raise Exception("Hits file empty. The MEGABLAST process was probably killed.")
+        sh.megablast('-a', nr_threads, '-i', self.fasta, '-d', self.database_path, '-b100', '-v100', '-m7', '-o', self.p.crest_hits)
+        if os.path.getsize(self.p.crest_hits) == 0: raise Exception("Hits file empty. The MEGABLAST process was probably killed.")
         # CREST #
         sh.classify(self.p.crest_hits, '-p', '-o', '-d', self.database)
         shutil.move(self.p.crest_hits[:-4] + '_Composition.txt', self.p.crest_composition)
