@@ -12,7 +12,7 @@ import numpy
 import brewer2mpl
 
 # Constants #
-__all__ = ['TaxaBarstack', 'TaxaHeatmap']
+__all__ = ['TaxaBarstack', 'TaxaHeatmap', 'TaxaPiechart']
 
 ################################################################################
 class TaxaBarstack(Graph):
@@ -36,7 +36,7 @@ class TaxaBarstack(Graph):
         axes = self.frame.plot(kind='bar', stacked=True, color=colors)
         fig = pyplot.gcf()
         # Other #
-        axes.set_title('Species relative abundances per sample')
+        axes.set_title('Species relative abundances per sample (blasting against "%s" database)' % self.parent.taxonomy.database)
         axes.set_ylabel('Relative abundances in percent')
         axes.xaxis.grid(False)
         axes.yaxis.grid(False)
@@ -52,6 +52,7 @@ class TaxaBarstack(Graph):
 class TaxaHeatmap(Graph):
     """Abundance of most abundant species for every sample"""
     short_name = 'taxa_heatmap'
+    targets = ['LD12', 'acI-B1', 'acI-A7', 'acI-C2', 'Pnec', 'Luna1-A2', 'Algor', 'Iluma-A1', 'acI-A4', 'acSTL-A1', 'Iluma-C1']
 
     def plot(self):
         # Data #
@@ -60,10 +61,10 @@ class TaxaHeatmap(Graph):
         if self.parent.samples[0].info.get('Filter_fraction'):
             samples = sorted(self.parent.samples, key = lambda s: (s.info['Filter_fraction'], s.short_name))
             self.frame = self.frame.reindex(index=[s.short_name for s in samples])
+        # Take only our targets #
+        if self.parent.taxonomy.database == 'freshwater': self.frame = self.frame[self.targets]
         # Transpose #
         self.frame = self.frame.transpose()
-        # Take only most abundant #
-        #__import__('IPython').core.debugger.Pdb(color_scheme='Linux').set_trace()
         # Plot #
         fig = pyplot.figure()
         axes = fig.add_subplot(111)
@@ -72,7 +73,7 @@ class TaxaHeatmap(Graph):
         axes.grid(False)
         axes.invert_yaxis()
         axes.set_frame_on(False)
-        axes.set_title('Species relative abundances per sample (blasting against "%s" database)' % self.parent.database)
+        axes.set_title('Species relative abundances per sample (blasting against "%s" database)' % self.parent.taxonomy.database)
         # X and Y parameters #
         axes.set_yticks(numpy.arange(0.5, len(self.frame.index), 1), minor=False)
         axes.set_xticks(numpy.arange(0.5, len(self.frame.columns), 1), minor=False)
@@ -83,7 +84,28 @@ class TaxaHeatmap(Graph):
         axes.get_yaxis().set_tick_params(which='both', direction='out')
         #axes.get_xaxis().set_tick_params(which='both', pad=-100)
         # Scale #
-        fig.colorbar(heatmap, pad=0, fraction=0.1, shrink=0.6)
+        cbar = fig.colorbar(heatmap, pad=0, fraction=0.1, shrink=0.6)
+        cbar.ax.yaxis.set_major_formatter(lambda x: x + '%')
+        # Save it #
+        self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.08, top=0.95, left=0.13, right=0.98)
+        self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
+
+################################################################################
+class TaxaPiechart(Graph):
+    """Abundance of classification types"""
+    short_name = 'taxa_piechart'
+
+    def plot(self):
+        # Data #
+        self.frame = self.parent.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
+        # Plot #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.pie([15, 30, 45, 10])
+        # Other #
+        axes.set_title('OTU classification types')
+        # X and Y parameters #
         # Save it #
         self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.08, top=0.95, left=0.13, right=0.98)
         self.frame.to_csv(self.csv_path)
