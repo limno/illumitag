@@ -2,14 +2,16 @@
 import os, shutil
 
 # Internal modules #
-from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
-from illumitag.clustering.taxonomy import Taxonomy
-from illumitag.clustering.taxonomy import plots_taxa, plots_otu
+from illumitag.common.autopaths import AutoPaths
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
 from illumitag.common.csv_tables import CSVTable
 from illumitag.clustering.statistics import StatsOnOTUs
+from illumitag.clustering.taxonomy import Taxonomy
+from illumitag.clustering.taxonomy import plots
+from illumitag.clustering.composition.phyla import CompositionPhyla
+from illumitag.clustering.composition.tips import CompositionTips
 
 # Third party modules #
 import sh
@@ -26,10 +28,11 @@ databases = {
 ###############################################################################
 class CrestTaxonomy(Taxonomy):
     all_paths = """
-    /taxa_table.csv
     /otu_table.csv
     /graphs/
     /stats/
+    /comp_phyla/
+    /comp_tips/
     /crest_hits.xml
     /crest_composition.txt
     /crest_tree.txt
@@ -51,11 +54,12 @@ class CrestTaxonomy(Taxonomy):
         else: self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Graphs #
-        self.graphs = [getattr(plots_taxa, cls_name)(self) for cls_name in plots_taxa.__all__]
-        self.graphs += [getattr(plots_otu, cls_name)(self) for cls_name in plots_otu.__all__]
-        # Tables #
-        self.taxa_csv = CSVTable(self.p.taxa_csv)
+        self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
+        # OTU table #
         self.otu_csv = CSVTable(self.p.otu_csv)
+        # Composition tables #
+        self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
+        self.comp_tips = CompositionTips(self, self.p.comp_tips)
         # Stats #
         self.stats = StatsOnOTUs(self)
 

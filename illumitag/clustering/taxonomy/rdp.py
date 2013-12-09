@@ -47,7 +47,7 @@ class RdpTaxonomy(Taxonomy):
         self.stats = StatsOnOTUs(self)
 
     def assign(self):
-        sh.rdp_multiclassifier('--conf=0.5','--hier_outfile='+self.composition_path,'--assign_outfile='+self.assignement_path)
+        sh.rdp_multiclassifier('--conf=0.5','--hier_outfile='+self.p.composition, '--assign_outfile='+self.p.assignment)
 
     @property_cached
     def assignments(self):
