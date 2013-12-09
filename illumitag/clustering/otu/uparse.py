@@ -60,8 +60,8 @@ class UparseOTUs(OTUs):
         # Graphs #
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # Taxonomy #
-        self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silva', self.p.silva)
-        self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'fw', self.p.fw)
+        self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silvamod', self.p.silva)
+        self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'freshwater', self.p.fw)
         self.taxonomy_rpd = RdpTaxonomy(self.centers, self)
         # Preferred one #
         self.taxonomy = self.taxonomy_silva
@@ -137,7 +137,7 @@ class UClusterFile(FilePath):
             if nums:
                 run_num, pool_num, sample_num, read_num = map(int, nums[0])
                 sample = illumitag.runs[run_num][pool_num-1][sample_num-1]
-                name = sample.name
+                name = sample.short_name
             else:
                 nums = re.findall("run([0-9]+)_sample([0-9]+)_read([0-9]+)", query)
                 run_num, sample_num, read_num = map(int, nums[0])

@@ -17,8 +17,10 @@ import sh
 home = os.environ['HOME'] + '/'
 
 # Databases #
-silva_db_path = home + "/share/LCAClassifier/parts/flatdb/silvamod/silvamod.fasta"
-fw_db_path = home + "/share/LCAClassifier/parts/flatdb/freshwater/freshwater.fasta"
+databases = {
+    'silvamod': home + "share/LCAClassifier/parts/flatdb/silvamod/silvamod.fasta",
+    'freshwater': home + "share/LCAClassifier/parts/flatdb/freshwater/freshwater.fasta"
+}
 
 ###############################################################################
 class CrestTaxonomy(Taxonomy):
@@ -26,13 +28,13 @@ class CrestTaxonomy(Taxonomy):
     /graphs/
     /taxa_table.csv
     /reads.taxonomy
-    /silva_hits.xml
-    /silva_composition.txt
-    /silva_tree.txt
-    /silva_assignments.txt
+    /crest_hits.xml
+    /crest_composition.txt
+    /crest_tree.txt
+    /ctest_assignments.txt
     """
 
-    def __init__(self, fasta_path, parent, database=None, base_dir=None):
+    def __init__(self, fasta_path, parent, database='silvamod', base_dir=None):
         # Parent #
         self.otu, self.parent = parent, parent
         # Inherited #
@@ -40,10 +42,8 @@ class CrestTaxonomy(Taxonomy):
         # FASTA #
         self.fasta = FASTA(fasta_path)
         # The database to use #
-        if database is None:      self.database = silva_db_path
-        elif database == 'silva': self.database = silva_db_path
-        elif database == 'fw':    self.database = fw_db_path
-        else:                     self.database = database
+        self.database = database
+        self.database_path = databases[database]
         # Dir #
         if base_dir is None: self.base_dir = self.parent.p.crest_dir
         else: self.base_dir = base_dir
@@ -55,13 +55,13 @@ class CrestTaxonomy(Taxonomy):
 
     def assign(self):
         # Run #
-        sh.megablast('-a', nr_threads, '-i', self.fasta, '-d', self.database, '-b100', '-v100', '-m7', '-o', self.p.silva_hits)
-        if os.path.getsize(self.p.silva_hits) == 0: raise Exception("Hits file empty. The MEGABLAST process was probably killed.")
+        #sh.megablast('-a', nr_threads, '-i', self.fasta, '-d', self.database_path, '-b100', '-v100', '-m7', '-o', self.p.crest_hits)
+        #if os.path.getsize(self.p.crest_hits) == 0: raise Exception("Hits file empty. The MEGABLAST process was probably killed.")
         # CREST #
-        sh.classify(self.p.silva_hits, '-p', '-o', '-d', 'silvamod')
-        shutil.move(self.p.silva_hits[:-4] + '_Composition.txt', self.p.silva_composition)
-        shutil.move(self.p.silva_hits[:-4] + '_Tree.txt', self.p.silva_tree)
-        shutil.move(self.p.silva_hits[:-4] + '_Assignments.txt', self.p.silva_assignments)
+        sh.classify(self.p.crest_hits, '-p', '-o', '-d', self.database)
+        shutil.move(self.p.crest_hits[:-4] + '_Composition.txt', self.p.crest_composition)
+        shutil.move(self.p.crest_hits[:-4] + '_Tree.txt', self.p.crest_tree)
+        shutil.move(self.p.crest_hits[:-4] + '_Assignments.txt', self.p.crest_assignments)
 
     @property_cached
     def assignments(self):

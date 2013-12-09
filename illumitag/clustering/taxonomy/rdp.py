@@ -41,7 +41,7 @@ class RdpTaxonomy(Taxonomy):
         self.taxa_csv = CSVTable(self.p.taxa_csv)
 
     def assign(self):
-        sh.echo('hi')
+        sh.rdp_multiclassifier('--conf=0.5','--hier_outfile='+self.composition_path,'--assign_outfile='+self.assignement_path)
 
     @property_cached
     def assignments(self):

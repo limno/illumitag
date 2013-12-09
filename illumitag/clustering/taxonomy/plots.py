@@ -8,10 +8,11 @@ from illumitag.graphs import Graph
 
 # Third party modules #
 from matplotlib import pyplot
+import numpy
 import brewer2mpl
 
 # Constants #
-__all__ = ['TaxaBarstack']
+__all__ = ['TaxaBarstack', 'TaxaHeatmap']
 
 ################################################################################
 class TaxaBarstack(Graph):
@@ -49,8 +50,26 @@ class TaxaBarstack(Graph):
 
 ################################################################################
 class TaxaHeatmap(Graph):
-    """Distribution of named species by sample"""
+    """Abundance of most abundant species for every sample"""
     short_name = 'taxa_heatmap'
 
     def plot(self):
-        pass
+        # Data #
+        self.frame = self.parent.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
+        # Sorting by fraction #
+        if self.parent.samples[0].info.get('Filter_fraction'):
+            samples = sorted(self.parent.samples, key = lambda s: (s.info['Filter_fraction'], s.short_name))
+            self.frame = self.frame.reindex(index=[s.short_name for s in samples])
+        # Take only most abundant #
+        #__import__('IPython').core.debugger.Pdb(color_scheme='Linux').set_trace()
+        # Plot #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.pcolor(self.frame, cmap=pyplot.cm.Blues, alpha=0.8)
+        # Other #
+        axes.grid(False)
+        axes.invert_yaxis()
+        axes.set_frame_on(False)
+        axes.yticks(numpy.arange(0.5, len(self.frame.index), 1), self.frame.index)
+        axes.xticks(numpy.arange(0.5, len(self.frame.columns), 1), self.frame.columns)
+        axes.set_title('Species relative abundances per sample')

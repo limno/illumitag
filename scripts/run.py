@@ -25,6 +25,13 @@ samples += illumitag.runs[4][3][0:13]
 cluster = illumitag.clustering.Cluster(samples, 'domenico')
 for s in cluster: s.process()
 
+# Mixed eval #
+samples = [s for s in illumitag.presamples]
+samples += illumitag.runs[1][0][0:8]
+samples += illumitag.runs[1][1][0:8]
+samples += illumitag.runs[2][0][0:8]
+cluster = illumitag.clustering.Cluster(samples, 'mixed_evaluation')
+
 # Other clusters #
 cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 'test')
 cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test_with')
@@ -32,11 +39,15 @@ cluster = illumitag.clustering.Cluster(illumitag.presamples, 'new_lab_test_with'
 # Run it #
 cluster.combine_reads()
 cluster.run_uparse()
-cluster.otu_uparse.taxonomy.assign()
+cluster.otu_uparse.taxonomy_silva.assign()
 cluster.otu_uparse.make_otu_table()
 cluster.otu_uparse.make_plots()
 cluster.otu_uparse.taxonomy_silva.make_plots()
 cluster.otu_uparse.stats.nmds.run()
+
+# Fresh water #
+cluster.otu_uparse.taxonomy_fw.assign()
+cluster.otu_uparse.taxonomy_fw.make_plots()
 
 ###############################################################################
 # A full run #

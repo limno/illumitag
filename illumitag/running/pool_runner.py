@@ -34,6 +34,8 @@ class PoolRunner(Runner):
         {'make_mothur_output':        {}},
         {'make_qiime_output':         {}},
         ### Chimeras ###
+        {'create_samples':            {}},
+        ### Chimeras ###
         {'check_chimeras':            {}},
         ### FastQC ###
         {'barcode_fastqc':            {}},
