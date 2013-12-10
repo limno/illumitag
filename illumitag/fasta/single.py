@@ -84,9 +84,7 @@ class FASTA(FilePath):
     def write(self, reads):
         self.dir = os.path.dirname(self.path)
         if not os.path.exists(self.dir): os.makedirs(self.dir)
-        self.handle = open(self.path, 'w')
-        SeqIO.write(reads, self.handle, self.extension)
-        self.handle.close()
+        with open(self.path, 'w') as self.handle: SeqIO.write(reads, self.handle, self.extension)
 
     def parse(self):
         self.open()
