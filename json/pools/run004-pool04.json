@@ -2595,13 +2595,13 @@
             "temperature": [1.5,  "Celsius"],
             "pH":          [9.3,  "-log10([H+])"],
             "conductance": [4.3,  "mS/cm"],
-            "sodium":      [null, "mg/l", "Na"],
-            "sulfate":     [null, "mg/l", "SO4"],
-            "bicarbonate": [null, "mg/l", "HCO3"],
-            "carbonate":   [null, "mg/l", "CO3"],
+            "sodium":      null,
+            "sulfate":     null,
+            "bicarbonate": null,
+            "carbonate":   null,
             "phosphorus":  [170,  "mg/l", "Ptot"],
             "chla":        [36.6, "mg/l"],
-            "microbes":    [null, "cells/ml"]
+            "microbes":    null
         },
 
     {"name": "OS22",  "used": 1, "group": "feb03", "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA",
@@ -2614,13 +2614,13 @@
             "temperature": [1.6,  "Celsius"],
             "pH":          [9.4,  "-log10([H+])"],
             "conductance": [3.1,  "mS/cm"],
-            "sodium":      [null, "mg/l", "Na"],
-            "sulfate":     [null, "mg/l", "SO4"],
-            "bicarbonate": [null, "mg/l", "HCO3"],
-            "carbonate":   [null, "mg/l", "CO3"],
+            "sodium":      null,
+            "sulfate":     null,
+            "bicarbonate": null,
+            "carbonate":   null,
             "phosphorus":  [1430, "mg/l", "Ptot"],
             "chla":        [12.9, "mg/l"],
-            "microbes":    [null, "cells/ml"]
+            "microbes":    null
     },
 
     {"name": "US23",  "used": 1, "group": "feb03", "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA",
@@ -2633,13 +2633,13 @@
             "temperature": [1.8,  "Celsius"],
             "pH":          [9,    "-log10([H+])"],
             "conductance": [3.3,  "mS/cm"],
-            "sodium":      [null, "mg/l", "Na"],
-            "sulfate":     [null, "mg/l", "SO4"],
-            "bicarbonate": [null, "mg/l", "HCO3"],
-            "carbonate":   [null, "mg/l", "CO3"],
+            "sodium":      null,
+            "sulfate":     null,
+            "bicarbonate": null,
+            "carbonate":   null,
             "phosphorus":  [220,  "mg/l", "Ptot"],
             "chla":        [24.7, "mg/l"],
-            "microbes":    [null, "cells/ml"]
+            "microbes":    null
     },
 
     {"name": "ZL24",  "used": 1, "group": "feb03", "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA",
@@ -2653,12 +2653,12 @@
             "pH":          [1.4,  "-log10([H+])"],
             "conductance": [8.9,  "mS/cm"],
             "sodium":      [1.9,  "mg/l", "Na"],
-            "sulfate":     [null, "mg/l", "SO4"],
-            "bicarbonate": [null, "mg/l", "HCO3"],
-            "carbonate":   [null, "mg/l", "CO3"],
+            "sulfate":     null,
+            "bicarbonate": null,
+            "carbonate":   null,
             "phosphorus":  [240,  "mg/l", "Ptot"],
             "chla":        [31.4, "mg/l"],
-            "microbes":    [null, "cells/ml"]
+            "microbes":    null
     },
 
     {"name": "empty", "used": 0, "group": "empty", "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
