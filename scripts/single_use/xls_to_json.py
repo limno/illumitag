@@ -31,7 +31,7 @@ units = {
         "pH": ['pH', '-log10([H+])'],
         "TSS": ['TSS', 'g/L', '±50'],
         "Oxygen (O2).1": ['oxygen_sat', '%', '±0.2'],
-        "HCO3": ['temperature', 'mg/l', 'HCO3'],
+        "HCO3": ['bicarbonate', 'mg/l', 'HCO3'],
         "Wind strength": ['wind strength', 'beaufort scale'],
         "Hardness": ['hardness', '°dH'],
         "Mg": ['magnesium', 'mg/l', 'Mg'],
