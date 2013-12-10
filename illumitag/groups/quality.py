@@ -1,5 +1,4 @@
 # Built-in modules #
-import os
 from collections import defaultdict
 
 # Internal modules #
@@ -63,8 +62,7 @@ class QualityReads(object):
 
     def make_mothur_output(self):
         # Trimmed fasta #
-        if os.path.exists(self.mothur_fasta.path): os.remove(self.mothur_fasta.path)
-        os.symlink(self.trimmed.path, self.mothur_fasta.path)
+        self.mothur_fasta.link_from(self.trimmed.path)
         # The groups file #
         self.mothur_groups.create()
         for r in self.untrimmed.parse_barcodes():

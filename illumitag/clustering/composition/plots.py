@@ -8,11 +8,11 @@ from illumitag.graphs import Graph
 
 # Third party modules #
 from matplotlib import pyplot
-import numpy
-import brewer2mpl
+import matplotlib.gridspec as gridspec
+import numpy, matplotlib, brewer2mpl
 
 # Constants #
-__all__ = ['TaxaBarstack', 'TaxaHeatmap', 'TaxaPiechart']
+__all__ = ['TaxaBarstack', 'TaxaHeatmap']
 
 ################################################################################
 class TaxaBarstack(Graph):
@@ -67,14 +67,14 @@ class TaxaHeatmap(Graph):
         self.frame = self.frame.transpose()
         # Plot #
         fig = pyplot.figure()
-        axes = fig.add_subplot(111)
+        gs = gridspec.GridSpec(2, 2, height_ratios=[1,4], width_ratios=[4,1])
+        axes = fig.add_subplot(gs[2])
         heatmap = axes.pcolor(self.frame, cmap=pyplot.cm.Blues, alpha=0.8, edgecolors='#ACABFE')
         # Other #
         axes.grid(False)
         axes.invert_yaxis()
         axes.set_frame_on(False)
         axes.set_title('Species relative abundances per sample (blasting against "%s" database)' % self.parent.taxonomy.database)
-        # X and Y parameters #
         axes.set_yticks(numpy.arange(0.5, len(self.frame.index), 1), minor=False)
         axes.set_xticks(numpy.arange(0.5, len(self.frame.columns), 1), minor=False)
         axes.set_yticklabels(self.frame.index, minor=False)
@@ -83,29 +83,27 @@ class TaxaHeatmap(Graph):
         axes.yaxis.tick_left()
         axes.get_yaxis().set_tick_params(which='both', direction='out')
         #axes.get_xaxis().set_tick_params(which='both', pad=-100)
+        # Extra barstack #
+        axes = fig.add_subplot(gs[0], sharex=axes)
+        df = 1/0
+        df.plot(kind='bar', stacked=True, ax=axes)
+        axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        axes.xaxis.grid(False)
+        axes.yaxis.grid(False)
+        axes.patch.set_alpha(0.0)
+        axes.spines['right'].set_visible(False)
+        axes.spines['top'].set_visible(False)
+        axes.spines['bottom'].set_visible(False)
+        axes.tick_params(axis='both', direction='out')
+        axes.get_xaxis().tick_bottom()
+        axes.get_yaxis().tick_left()
+        axes.set_title('Title extra', size=11)
         # Scale #
-        cbar = fig.colorbar(heatmap, pad=0, fraction=0.1, shrink=0.6)
-        cbar.ax.yaxis.set_major_formatter(lambda x: x + '%')
-        # Save it #
-        self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.08, top=0.95, left=0.13, right=0.98)
-        self.frame.to_csv(self.csv_path)
-        pyplot.close(fig)
-
-################################################################################
-class TaxaPiechart(Graph):
-    """Abundance of classification types"""
-    short_name = 'taxa_piechart'
-
-    def plot(self):
-        # Data #
-        self.frame = self.parent.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
-        # Plot #
-        fig = pyplot.figure()
-        axes = fig.add_subplot(111)
-        axes.pie([15, 30, 45, 10])
-        # Other #
-        axes.set_title('OTU classification types')
-        # X and Y parameters #
+        axes = fig.add_subplot(gs[3])
+        cbar = fig.colorbar(heatmap, pad=0.1, fraction=1.0, shrink=1.0)
+        def percentage(x, pos): return '%1.0f%%' % (x*100.0)
+        cbar.ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(percentage))
+        axes.set_axis_off()
         # Save it #
         self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.08, top=0.95, left=0.13, right=0.98)
         self.frame.to_csv(self.csv_path)
