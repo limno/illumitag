@@ -8,6 +8,7 @@ from illumitag.running.cluster_runner import ClusterRunner
 from illumitag.clustering.otu.uparse import UparseOTUs
 
 # Third party modules #
+import pandas
 from shell_command import shell_output
 
 ###############################################################################
@@ -18,6 +19,7 @@ class Cluster(object):
     /reads/all_reads.fasta
     /otus/
     /logs/
+    /metadata.csv
     """
 
     def __repr__(self): return '<%s object with %i samples>' % (self.__class__.__name__, len(self.samples))
@@ -29,6 +31,9 @@ class Cluster(object):
         # Save samples #
         self.name = name
         self.samples, self.children = samples, samples
+        # Check names are unique #
+        names = [s.short_name for s in samples if s.used]
+        assert len(names) == len(set(names))
         # Figure out pools #
         self.pools = list(set([s.pool for s in self.samples]))
         # Load them #
@@ -54,3 +59,12 @@ class Cluster(object):
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
 
     def run_uparse(self): self.otu_uparse.run()
+
+    @property
+    def metadata(self):
+        return pandas.DataFrame([s.info for s in self], index=[s.short_name for s in self])
+
+    def export_metadata(self):
+        self.metadata.to_csv(self.p.metadata, sep='\t', encoding='utf-8')
+
+
