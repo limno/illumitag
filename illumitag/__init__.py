@@ -17,6 +17,10 @@ from illumitag.common import dependencies
 # Constants #
 home = os.environ['HOME'] + '/'
 
+# No need for an X display #
+import matplotlib
+matplotlib.use('Agg', warn=False)
+
 ###############################################################################
 # Check dependencies #
 dependencies.check_modules()
