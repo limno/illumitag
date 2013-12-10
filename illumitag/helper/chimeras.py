@@ -76,13 +76,13 @@ class UchimeRef(ChimerasChecker):
         if self.verbose: print Color.l_ylw + "----> Running derep_prefix on %s" % (self.subsampled.path,) + Color.end
         sys.stdout.flush()
         command = ("-derep_prefix", self.subsampled.path, "-output", self.derep_cluster.path, "-sizeout")
-        sh.usearch(command)
+        sh.usearch6(command)
         # Detect #
         if self.verbose: print Color.l_ylw + "----> Running uchime_ref on %s" % (self.derep_cluster.path,) + Color.end
         sys.stdout.flush()
         command = ("-uchime_ref", self.derep_cluster.path, "-db", chimera_ref_path, "-strand", "plus",
                    "-chimeras", self.positive.path, "-nonchimeras", self.negative.path)
-        sh.usearch(command)
+        sh.usearch6(command)
 
 ################################################################################
 class UchimeDenovo(ChimerasChecker):
@@ -101,13 +101,13 @@ class UchimeDenovo(ChimerasChecker):
         sys.stdout.flush()
         command = ("-cluster_fast", self.subsampled.path, "-id", '0.99',
                    "-consout", self.cluster_99.path, "-sizeout")
-        sh.usearch(command)
+        sh.usearch6(command)
         # Detect #
         if self.verbose: print Color.l_ylw + "----> Running uchime_denovo on %s" % (self.cluster_99.path,) + Color.end
         sys.stdout.flush()
         command = ("-uchime_denovo", self.cluster_99.path,
                    "-chimeras", self.positive.path, "-nonchimeras", self.negative.path)
-        sh.usearch(command)
+        sh.usearch6(command)
 
 ################################################################################
 class Mothur(ChimerasChecker):
