@@ -31,6 +31,8 @@ class Taxonomy(object):
         for otu_name in result:
             species = self.assignments[otu_name]
             if len(species) > 2 and species[2] in unwanted: result = result.drop(otu_name, 1)
+        # Merge samples #
+        pass #TODO
         # Return result #
         return result
 
