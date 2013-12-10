@@ -18,9 +18,9 @@
     "run_num":       3,
     "run_id":        "130527_M00485_0050_000000000-A4D9Y",
     "pool_num":      8,
-    "pool_id":       "Sample_STB34",
-    "forward_reads": "STB34_ACAGTG_L001_R1_001.fastq.gz",
-    "reverse_reads": "STB34_ACAGTG_L001_R2_001.fastq.gz",
+    "pool_id":       "Sample_AL01",
+    "forward_reads": "AL01_GATCAG_L001_R1_001.fastq.gz",
+    "reverse_reads": "AL01_GATCAG_L001_R2_001.fastq.gz",
 
     "project":       "soda",
     "project_name":  "Soda lakes study",
