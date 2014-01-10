@@ -8,7 +8,7 @@ from illumitag.common.cache import property_cached
 
 ###############################################################################
 class CompositionTips(Composition):
-    """Base class for taxonomical compositioning"""
+    """..."""
 
     @property_cached
     def taxa_table(self):

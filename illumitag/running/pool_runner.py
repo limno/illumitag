@@ -33,7 +33,7 @@ class PoolRunner(Runner):
         {'trim_primers':              {}},
         {'make_mothur_output':        {}},
         {'make_qiime_output':         {}},
-        ### Chimeras ###
+        ### Samples ###
         {'create_samples':            {}},
         ### Chimeras ###
         {'check_chimeras':            {}},

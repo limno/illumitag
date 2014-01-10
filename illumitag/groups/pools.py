@@ -4,9 +4,6 @@ from __future__ import division
 # Built-in modules #
 import os, json
 
-# Third party modules #
-import fastqident
-
 # Internal modules #
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
@@ -18,6 +15,10 @@ from illumitag.running.pool_runner import PoolRunner
 from illumitag.graphs import pool_plots
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.cache import property_cached
+
+# Third party modules #
+import fastqident
+from tqdm import tqdm
 
 # Constants #
 home = os.environ['HOME'] + '/'
@@ -148,7 +149,7 @@ class Pool(object):
         """Sort the sequences according to their barcode number (if they have one)"""
         if not self.loaded: self.load()
         for sample in self.samples: sample.create()
-        for r in self.good_barcodes.assembled.good_primers.len_filtered.parse_barcodes():
+        for r in tqdm(self.good_barcodes.assembled.good_primers.len_filtered.parse_barcodes()):
             r.first.sample.add_read(r.read)
         for sample in self.samples: sample.close()
 

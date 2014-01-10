@@ -6,7 +6,7 @@ import os, gzip, re
 from collections import Counter, OrderedDict
 
 # Internal modules #
-from illumitag.common import isubsample
+from illumitag.common import isubsample, GenWithLength
 from illumitag.common.autopaths import FilePath
 from illumitag.common.tmpstuff import new_temp_path
 from illumitag.helper.barcodes import ReadWithBarcodes
@@ -91,10 +91,12 @@ class FASTA(FilePath):
         return SeqIO.parse(self.handle, self.extension)
 
     def parse_barcodes(self):
-        return (ReadWithBarcodes(r, self.samples) for r in self.parse())
+        generator = (ReadWithBarcodes(r, self.samples) for r in self.parse())
+        return GenWithLength(generator, len(self))
 
     def parse_primers(self):
-        return (ReadWithPrimers(r, self.primers) for r in self.parse())
+        generator = (ReadWithPrimers(r, self.primers) for r in self.parse())
+        return GenWithLength(generator, len(self))
 
     @property_cached
     def barcode_counter(self):

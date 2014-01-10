@@ -3,7 +3,7 @@ import os, sys, gzip, tempfile, shutil
 from itertools import izip
 
 # Internal modules #
-from illumitag.common import imean
+from illumitag.common import imean, GenWithLength
 from illumitag.helper.barcodes import ReadPairWithBarcode
 from illumitag.common.cache import property_cached
 from illumitag.fasta.single import FASTQ
@@ -116,4 +116,5 @@ class PairedFASTQ(object):
                     SeqIO.parse(self.rev_handle, 'fastq'))
 
     def parse_barcodes(self):
-        return (ReadPairWithBarcode(f, r, self.samples) for f,r in self.parse())
+        generator = (ReadPairWithBarcode(f, r, self.samples) for f,r in self.parse())
+        return GenWithLength(generator, len(self))

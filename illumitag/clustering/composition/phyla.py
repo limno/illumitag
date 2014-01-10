@@ -10,7 +10,7 @@ import pandas
 
 ###############################################################################
 class CompositionPhyla(Composition):
-    """Base class for taxonomical compositioning"""
+    """..."""
 
     @property_cached
     def taxa_table(self):
