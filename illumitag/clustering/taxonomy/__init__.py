@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 
 # Internal modules #
@@ -6,7 +9,7 @@ from illumitag.common.cache import property_cached
 from illumitag.common import natural_sort, prepend_to_file
 
 # Third party modules #
-import pandas
+import pandas, numpy
 
 ###############################################################################
 class Taxonomy(object):
@@ -46,8 +49,13 @@ class Taxonomy(object):
         # Return result #
         return result
 
+    @property
+    def otu_table_norm(self):
+        """The same thing as otu_table but normalized so that sum of a sample is always one"""
+        return self.otu_table.apply(lambda x: x/x.sum(), axis=1).replace(numpy.inf, 0,0)
+
     def resample_otu_table(self, down_to=5000):
-        # Eliminate samples #
+        # Eliminate samples that are under down_to #
         are_high = self.otu_table.sum(axis=1) > down_to
         old_frame = self.otu_table.loc[are_high,:]
         # Make a new table #
@@ -61,4 +69,8 @@ class Taxonomy(object):
     def make_otu_table(self):
         """Convert to CSV"""
         self.otu_table.to_csv(self.otu_csv, sep='\t')
+        prepend_to_file(self.otu_csv, 'X')
+
+    def make_otu_table_norm(self):
+        self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t')
         prepend_to_file(self.otu_csv, 'X')

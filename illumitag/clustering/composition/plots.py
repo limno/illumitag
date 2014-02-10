@@ -65,7 +65,7 @@ class TaxaHeatmap(Graph):
             self.frame = self.frame.reindex(index=[s.short_name for s in samples])
         # Take only our targets and transpose #
         if self.parent.taxonomy.database == 'freshwater': frame = self.frame[self.targets]
-        else: self.frame
+        else: frame = self.frame
         frame = frame.transpose()
         # Plot #
         fig = pyplot.figure()
@@ -91,7 +91,6 @@ class TaxaHeatmap(Graph):
         axes = fig.add_subplot(gs[0], sharex=axes)
         frame = self.frame
         df = pandas.DataFrame(numpy.random.rand(self.frame.shape[0], 5), columns=('Lorem', 'ipsum', 'dolor', 'sit', 'amet'))
-        1/0
         df.plot(kind='bar', stacked=True, ax=axes)
         axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         axes.xaxis.grid(False)

@@ -9,6 +9,7 @@ from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering.otu import OTUs
 from illumitag.clustering.taxonomy.crest import CrestTaxonomy
 from illumitag.clustering.taxonomy.rdp import RdpTaxonomy
+from illumitag.clustering.source.seqenv import Seqenv
 
 # Third party modules #
 import sh
@@ -30,6 +31,7 @@ class UparseOTUs(OTUs):
     /taxonomy_fw/
     /taxonomy_rdp/
     /graphs/
+    /seqenv/
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
@@ -55,6 +57,8 @@ class UparseOTUs(OTUs):
         self.taxonomy_rpd = RdpTaxonomy(self.centers, self)
         # Preferred one #
         self.taxonomy = self.taxonomy_silva
+        # Source tracking #
+        self.seqenv = Seqenv(self)
 
     def checks(self):
         assert len(self.reads) == len(self.derep)

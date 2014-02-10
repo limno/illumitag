@@ -29,6 +29,7 @@ databases = {
 class CrestTaxonomy(Taxonomy):
     all_paths = """
     /otu_table.csv
+    /otu_table_norm.csv
     /graphs/
     /stats/
     /comp_phyla/
@@ -57,6 +58,7 @@ class CrestTaxonomy(Taxonomy):
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # OTU table #
         self.otu_csv = CSVTable(self.p.otu_csv)
+        self.otu_csv_norm = CSVTable(self.p.otu_csv_norm)
         # Composition tables #
         self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
         self.comp_tips = CompositionTips(self, self.p.comp_tips)
