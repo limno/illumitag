@@ -27,7 +27,7 @@ class Cluster(object):
     def __len__(self): return len(self.samples)
     def __getitem__(self, key): return self.samples[key]
 
-    def __init__(self, samples, name):
+    def __init__(self, samples, name, base_dir=None):
         # Save samples #
         self.name = name
         self.samples, self.children = samples, samples
@@ -39,7 +39,8 @@ class Cluster(object):
         # Load them #
         for p in self.pools: p.load()
         # Dir #
-        self.base_dir = illumitag.view_dir + "clusters/" + self.name + '/'
+        if base_dir: self.base_dir = base_dir
+        else: self.base_dir = illumitag.view_dir + "clusters/" + self.name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Runner #
         self.runner = ClusterRunner(self)

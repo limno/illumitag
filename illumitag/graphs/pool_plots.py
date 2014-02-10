@@ -12,12 +12,15 @@ from illumitag.helper.chimeras import UchimeRef, UchimeDenovo
 import matplotlib, pandas
 from matplotlib import pyplot
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
+import matplotlib.ticker as mticker
+
+# Special stats #
 __import__('statsmodels.api')
 from statsmodels.formula.api import ols
 import statsmodels.graphics as smgraphics
 
 # Constants #
-__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MissmatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter', 'UchimeRefBar', 'UchimeDenovoBar']
+__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MissmatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter', 'UchimeRefBar', 'UchimeDenovoBar', 'LengthHist']
 
 ################################################################################
 class BarcodeHist(Graph):
@@ -311,5 +314,29 @@ class UchimeDenovoBar(Graph):
         axes.yaxis.grid(False)
         # Save it #
         self.save_plot(fig, axes, left=0.15)
+        self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
+
+################################################################################
+class LengthHist(Graph):
+    """Distribution of sequence lengths"""
+    short_name = 'length_hist'
+
+    def plot(self):
+        # Data #
+        counter = self.parent.quality_reads.only_used.lengths
+        self.frame = pandas.Series(sum(([k]*v for k,v in counter.items()), []))
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.hist(color='gray', bins=max(self.frame)-min(self.frame)+1)
+        fig = pyplot.gcf()
+        axes.set_title('Distribution of quality reads length for pool %i ' % self.parent.num)
+        axes.set_ylabel('Number of paired reads')
+        axes.xaxis.grid(False)
+        # Change ticks #
+        myLocator = mticker.MultipleLocator(10)
+        axes.xaxis.set_major_locator(myLocator)
+        # Save it #
+        self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)

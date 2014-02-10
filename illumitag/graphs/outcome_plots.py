@@ -14,7 +14,7 @@ __all__ = ['AssemblyDistrib', 'AssemblyPrimerPos', 'UnassemblyPrimerPos']
 
 ################################################################################
 class AssemblyDistrib(Graph):
-    """Distribution of assembly lengths"""
+    """Distribution of assembly overlap lengths"""
     short_name = 'assembly_distrib'
 
     def plot(self):

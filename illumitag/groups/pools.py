@@ -71,14 +71,12 @@ class Pool(object):
         self.loaded = False
 
     def load(self):
+        """A second __init__ that is delayed, solves some circular references"""
         # Automatic paths #
         self.base_dir = self.out_dir + self.id_name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Make an alias to the json #
-        try: os.remove(self.p.info_json)
-        except OSError: pass
-        try: os.symlink(self.json_path, self.p.info_json)
-        except OSError: pass
+        self.p.info_json.link_from(self.json_path, safe=True)
         # Children #
         self.samples.load()
         self.primers.load()
@@ -106,6 +104,8 @@ class Pool(object):
         self.graphs = [getattr(pool_plots, cls_name)(self) for cls_name in pool_plots.__all__]
         # Loaded #
         self.loaded = True
+        # Return self for convenience #
+        return self
 
     @property
     def first(self): return self.children[0]

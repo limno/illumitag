@@ -27,7 +27,7 @@ class FASTA(FilePath):
     def __len__(self): return self.count
     def __iter__(self): return self.parse()
     def __repr__(self): return '<%s object on "%s">' % (self.__class__.__name__, self.path)
-    def __nonzero__(self): return os.path.getsize(self.path) != 0
+    def __nonzero__(self): return os.path.exists(self.path) and os.path.getsize(self.path) != 0
 
     def __init__(self, path, samples=None, primers=None):
         # Basic #
@@ -110,6 +110,9 @@ class FASTA(FilePath):
     def lengths(self):
         return Counter((len(s) for s in self.parse()))
 
+    def lengths_gen(self):
+        for s in self.parse(): yield len(s)
+
     def shorter_than(self, value):
         return 100 * sum((v for k,v in self.lengths.items() if k < value)) / self.count
 
@@ -134,9 +137,9 @@ class FASTA(FilePath):
         assert len(self.subsampled) == down_to
 
     def rename_with_num(self, prefix, new_path=None, remove_desc=True):
+        """Rename every sequence based on a prefix and a number"""
         # Temporary path #
-        if new_path is None: numbered = self.__class__(new_temp_path())
-        else: numbered = self.__class__(new_path)
+        numbered = self.__class__(new_path or new_temp_path())
         # Generator #
         def numbered_iterator():
             for i,read in enumerate(self):
@@ -149,6 +152,16 @@ class FASTA(FilePath):
         if new_path is None:
             os.remove(self.path)
             shutil.move(numbered, self.path)
+
+    def extract_length(self, lower_bound, upper_bound, new_path=None):
+        """Extract a certain length fraction and place them in a new file"""
+        fraction = self.__class__(new_path or new_temp_path())
+        def fraction_iterator():
+            for read in self:
+                if lower_bound <= len(read) <= upper_bound: yield read
+        fraction.write(fraction_iterator())
+        fraction.close()
+        return fraction
 
 #-----------------------------------------------------------------------------#
 class FASTQ(FASTA):

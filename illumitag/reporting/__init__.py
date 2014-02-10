@@ -26,6 +26,7 @@ class Reporter(object):
 
     @property
     def count(self):
+        """The read counts per pool"""
         return sum(map(lambda p: p.count, self.pools))
         return sum(playdoh.map(lambda p: p.count, self.pools, cpu=len(self)))
 
@@ -44,18 +45,22 @@ class Reporter(object):
     def avg_assembly_stat(self):
         for bc_outcome in self.aggregate.first.outcomes:
             outcomes = [getattr(p, bc_outcome.short_name) for p in self]
-            fails_ratio = [1.0 - len(o.assembled)/len(o) for o in outcomes]
-            avg_fail = 100*sum(fails_ratio)/len(fails_ratio)
+            fail_ratios = [1.0 - len(o.assembled)/len(o) for o in outcomes]
+            avg_fail = 100*sum(fail_ratios)/len(fail_ratios)
             print '%s: %.2f %%' % (o.doc, avg_fail)
 
     @property
     def avg_chimera_test(self):
         for bc_outcome in self.aggregate.first.outcomes:
             outcomes = [getattr(p, bc_outcome.short_name) for p in self]
-            print "UCHIME ref", [len(o.assembled)/len(o) for o in outcomes]
-            print "UCHIME denovo", [p for p in self]
-            avg_fail = 100*sum(fails_ratio)/len(fails_ratio)
-            print '%s: %.2f %%' % (o.doc, avg_fail)
+            uchime_refs =    [o.assembled.good_primers.uchime_ref    for o in outcomes]
+            uchime_denovos = [o.assembled.good_primers.uchime_denovo for o in outcomes]
+            ref_ratios =    [len(u.positive)/u.downto for u in uchime_refs]
+            denovo_ratios = [len(u.positive)/u.downto for u in uchime_denovos]
+            avg_ref    = 100*sum(ref_ratios)/len(ref_ratios)
+            avg_denovo = 100*sum(denovo_ratios)/len(denovo_ratios)
+            print '%s UCHIME ref: %.2f %%' % (o.doc, avg_ref)
+            print '%s UCHIME denovo: %.2f %%' % (o.doc, avg_denovo)
 
     @property
     def loss_statistics(self):

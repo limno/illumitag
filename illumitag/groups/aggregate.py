@@ -46,6 +46,7 @@ class Aggregate(object):
     all_paths = """
     /graphs/
     /logs/
+    /cluster/
     /results/slurm_report.csv
     """
 
@@ -88,7 +89,8 @@ class Aggregate(object):
         # Analysis #
         self.analysis = Analysis(self)
         # Cluster #
-        self.cluster = Cluster(self)
+        self.samples = [s for p in self.pools for s in p.samples]
+        self.cluster = Cluster(self.samples, self.name, self.p.cluster_dir)
         # Reporting #
         self.reporter = Reporter(self)
         # Graphs #
