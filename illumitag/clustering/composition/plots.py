@@ -4,12 +4,12 @@ from __future__ import division
 # Built-in modules #
 
 # Internal modules #
-from illumitag.graphs import Graph
+from illumitag.graphs import Graph, cool_colors
 
 # Third party modules #
 from matplotlib import pyplot
 import matplotlib.gridspec as gridspec
-import numpy, matplotlib, brewer2mpl, pandas
+import numpy, matplotlib, pandas
 
 # Constants #
 __all__ = ['TaxaBarstack', 'TaxaHeatmap']
@@ -26,14 +26,9 @@ class TaxaBarstack(Graph):
         if self.parent.samples[0].info.get('Filter_fraction'):
             samples = sorted(self.parent.samples, key = lambda s: (s.info['Filter_fraction'], s.short_name))
             self.frame = self.frame.reindex(index=[s.short_name for s in samples])
-        # Colors #
-        colors = brewer2mpl.get_map('Set1', 'qualitative', 8).mpl_colors
-        colors.reverse()
-        colors += brewer2mpl.get_map('Set2', 'qualitative', 8).mpl_colors
-        colors += brewer2mpl.get_map('Set3', 'qualitative', 8).mpl_colors
         # Plot #
         fig = pyplot.figure()
-        axes = self.frame.plot(kind='bar', stacked=True, color=colors)
+        axes = self.frame.plot(kind='bar', stacked=True, color=cool_colors)
         fig = pyplot.gcf()
         # Other #
         axes.set_title('Species relative abundances per sample (blasting against "%s" database)' % self.parent.taxonomy.database)

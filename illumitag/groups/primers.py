@@ -99,32 +99,12 @@ class GoodPrimers(PrimerGroup):
     /
     /chimeras_ref/
     /chimeras_denovo/
-    /size_fractions/low/low.fasta
-    /size_fractions/low/refere/
-    /size_fractions/low/denovo/
-    /size_fractions/med/med.fasta
-    /size_fractions/med/refere/
-    /size_fractions/med/denovo/
-    /size_fractions/big/big.fasta
-    /size_fractions/big/refere/
-    /size_fractions/big/denovo/
     """
 
     def load(self):
         if self.parent == 'assembled':
-            # Chimeras #
             self.uchime_ref = UchimeRef(self.trimmed_barcodes.path, self.p.chimeras_ref_dir, self)
             self.uchime_denovo = UchimeDenovo(self.trimmed_barcodes.path, self.p.chimeras_denovo_dir, self)
-            # Size fractions #
-            self.low_length = FASTA(self.p.low_fasta)
-            self.low_refere = UchimeRef(self.p.low_fasta, self.p.low_refere_dir, self)
-            self.low_denovo = UchimeDenovo(self.p.low_fasta, self.p.low_denovo_dir, self)
-            self.med_length = FASTA(self.p.med_fasta)
-            self.med_refere = UchimeRef(self.p.med_fasta, self.p.med_refere_dir, self)
-            self.med_denovo = UchimeDenovo(self.p.med_fasta, self.p.med_denovo_dir, self)
-            self.big_length = FASTA(self.p.big_fasta)
-            self.big_refere = UchimeRef(self.p.big_fasta, self.p.big_refere_dir, self)
-            self.big_denovo = UchimeDenovo(self.p.big_fasta, self.p.big_denovo_dir, self)
 
     def check_chimeras(self):
         # Only assembled sequences #
@@ -141,11 +121,6 @@ class GoodPrimers(PrimerGroup):
         # Call #
         self.uchime_ref.check()
         self.uchime_denovo.check()
-
-    def check_size_fractions(self):
-        self.len_filtered.extract_length(430, 446, self.low_length)
-        self.len_filtered.extract_length(447, 464, self.med_length)
-        self.len_filtered.extract_length(465, 488, self.big_length)
 
 #-----------------------------------------------------------------------------#
 class WrongPrimers(PrimerGroup):

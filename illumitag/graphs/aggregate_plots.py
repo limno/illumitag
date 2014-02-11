@@ -1,8 +1,8 @@
 # Built-in modules #
-from collections import Counter
+from collections import Counter, OrderedDict
 
 # Internal modules #
-from illumitag.graphs import Graph
+from illumitag.graphs import Graph, cool_colors
 from illumitag.common import flatten
 
 # Third party modules #
@@ -10,7 +10,7 @@ import pandas
 from matplotlib import pyplot
 
 # Constants #
-__all__ = ['BarcodeStack', 'AssemblyCounts', 'ChimerasSummary', 'LengthDistribution']
+__all__ = ['BarcodeStack', 'AssemblyCounts', 'ChimerasSummary', 'LengthDistribution', 'FractionTaxaBarStack']
 
 ################################################################################
 class BarcodeStack(Graph):
@@ -117,5 +117,38 @@ class LengthDistribution(Graph):
         axes.set_xlim(400, 500)
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
+        self.frame.to_csv(self.csv_path)
+        pyplot.close(fig)
+
+################################################################################
+class FractionTaxaBarStack(Graph):
+    """Comparing all fractions across all pools in a barstack"""
+    short_name = 'fraction_taxa_barstack'
+
+    def plot(self):
+        self.frame = OrderedDict((('%s - %s' % (p,f), getattr(p.fractions, f).rdp.phyla)
+                     for f in ('low', 'med', 'big') for p in self.parent.pools))
+        self.frame = pandas.DataFrame(self.frame)
+        self.frame = self.frame.fillna(0)
+        self.frame = self.frame.transpose()
+        self.frame = self.frame.apply(lambda x: 100*x/x.sum(), axis=1)
+        # Sort the table by sum #
+        sums = self.frame.sum()
+        sums.sort(ascending=False)
+        self.frame = self.frame.reindex_axis(sums.keys(), axis=1)
+        # Plot #
+        fig = pyplot.figure()
+        axes = self.frame.plot(kind='bar', stacked=True, color=cool_colors)
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_title('Species relative abundances per fraction per pool')
+        axes.set_ylabel('Relative abundances in percent')
+        axes.xaxis.grid(False)
+        axes.yaxis.grid(False)
+        axes.set_ylim([0,100])
+        # Put a legend below current axis
+        axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.20), fancybox=True, shadow=True, ncol=5)
+        # Save it #
+        self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.30, top=0.97, left=0.04, right=0.98)
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)

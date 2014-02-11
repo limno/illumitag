@@ -2,7 +2,16 @@
 import os, time, getpass, locale
 
 # Third party modules #
-import matplotlib
+import matplotlib, brewer2mpl
+
+# Constants #
+cool_colors = brewer2mpl.get_map('Set1', 'qualitative', 8).mpl_colors
+cool_colors.reverse()
+cool_colors += brewer2mpl.get_map('Set2',    'qualitative', 8).mpl_colors
+cool_colors += brewer2mpl.get_map('Set3',    'qualitative', 8).mpl_colors
+cool_colors += brewer2mpl.get_map('Pastel1', 'qualitative', 8).mpl_colors
+cool_colors += brewer2mpl.get_map('Pastel2', 'qualitative', 8).mpl_colors
+cool_colors += brewer2mpl.get_map('Greys',   'sequential', 8).mpl_colors
 
 ################################################################################
 class Graph(object):

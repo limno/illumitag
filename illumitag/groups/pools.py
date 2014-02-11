@@ -8,6 +8,7 @@ import os, json
 from samples import Samples
 from outcomes import NoBarcode, OneBarcode, SameBarcode, BadBarcode, GoodBarcode
 from quality import QualityReads
+from illumitag.groups.fractions import Fractions
 from illumitag.helper.primers import TwoPrimers
 from illumitag.fasta.single import FASTQ
 from illumitag.fasta.paired import PairedFASTQ
@@ -34,6 +35,7 @@ class Pool(object):
     /fastqc/
     /logs/
     /quality_reads/
+    /quality_reads/fractions/
     /info.json
     """
 
@@ -98,6 +100,7 @@ class Pool(object):
         self.children = self.outcomes
         # The good reads #
         self.quality_reads = QualityReads(self.good_barcodes.assembled.good_primers.len_filtered, self)
+        self.fractions = Fractions(self)
         # Runner #
         self.runner = PoolRunner(self)
         # Graphs #

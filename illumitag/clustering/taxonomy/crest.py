@@ -8,7 +8,7 @@ from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
 from illumitag.common.csv_tables import CSVTable
 from illumitag.clustering.statistics import StatsOnOTUs
-from illumitag.clustering.taxonomy import Taxonomy
+from illumitag.clustering.taxonomy import Taxonomy, SimpleTaxonomy
 from illumitag.clustering.taxonomy import plots
 from illumitag.clustering.composition.phyla import CompositionPhyla
 from illumitag.clustering.composition.tips import CompositionTips
@@ -74,6 +74,8 @@ class CrestTaxonomy(Taxonomy):
         shutil.move(self.p.crest_hits[:-4] + '_Composition.txt', self.p.crest_composition)
         shutil.move(self.p.crest_hits[:-4] + '_Tree.txt', self.p.crest_tree)
         shutil.move(self.p.crest_hits[:-4] + '_Assignments.txt', self.p.crest_assignments)
+        # Return #
+        return self
 
     @property_cached
     def assignments(self):
@@ -83,3 +85,11 @@ class CrestTaxonomy(Taxonomy):
                 code, species = line.split('\t')
                 result[code] = tuple(species.strip('\n').split(';'))[:8]
         return result
+
+###############################################################################
+class SimpleCrestTaxonomy(SimpleTaxonomy, CrestTaxonomy):
+
+    def __init__(self, fasta, base_dir, database='silvamod'):
+        SimpleTaxonomy.__init__(self, fasta, base_dir)
+        self.database = database
+        self.database_path = databases[database]

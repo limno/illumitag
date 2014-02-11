@@ -56,9 +56,12 @@ class ChimerasChecker(object):
         open(self.subsampled.path, 'w').close()
 
     @property
-    def percent(self):
+    def ratio(self):
         if not self.fasta: return -1
-        return (len(self.positive) / len(self.subsampled)) * 100.0
+        return (len(self.positive) / len(self.subsampled))
+
+    @property
+    def percent(self): return self.ratio * 100.0
 
 ################################################################################
 class UchimeRef(ChimerasChecker):

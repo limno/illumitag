@@ -51,6 +51,10 @@ pj = illumitag.projects['evaluation']; pj.load(); pj.graphs[-1].plot()
 # Just one function for one project #
 pj = illumitag.projects['evaluation']; pj.load(); [x(steps=[{'check_noalign_counts':{}}]) for x in pj]
 
+# Just one function for one object #
+pj = illumitag.projects['evaluation']; pj.load(); p = pj.first.load(); [f.extract() for f in p.fractions]
+[f.extract() for f in illumitag.projects['evaluation'].first.load().fractions]
+
 # One graphs for one run #
 run = illumitag.runs[2]; run.load(); run.graphs[0].plot()
 for p in run: p.graphs[0].plot()
@@ -67,4 +71,4 @@ job_id = illumitag.projects['evaluation'].run_analysis_slurm()
 illumitag.aggregate.make_slurm_report()
 
 # Assembly statistics #
-pj = illumitag.projects['evaluation']; pj.load(); pj.reporter.outcome_percentage
+pj = illumitag.projects['evaluation']; pj.load(); pj.reporter.size_fraction_chimeras

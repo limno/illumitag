@@ -2,11 +2,14 @@
 from __future__ import division
 
 # Built-in modules #
+from collections import Counter
 
 # Internal modules #
 import illumitag
 from illumitag.common.cache import property_cached
 from illumitag.common import natural_sort, prepend_to_file
+from illumitag.common.autopaths import AutoPaths
+from illumitag.fasta.single import FASTA
 
 # Third party modules #
 import pandas, numpy
@@ -63,7 +66,7 @@ class Taxonomy(object):
         for i, sample in old_frame.iterrows():
             pop = flatten([[key]*val for key,val in freq.items()])
             smaller_pop = random.sample(pop, down_to)
-            return collections.Counter(smaller_pop)
+            return Counter(smaller_pop)
             new_frame[sample] = sample
 
     def make_otu_table(self):
@@ -74,3 +77,17 @@ class Taxonomy(object):
     def make_otu_table_norm(self):
         self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t')
         prepend_to_file(self.otu_csv, 'X')
+
+###############################################################################
+class SimpleTaxonomy(object):
+
+    def __repr__(self): return '<%s object on %s>' % (self.__class__.__name__, self.fasta)
+
+    def __init__(self, fasta, base_dir):
+        self.fasta = fasta if isinstance(fasta, FASTA) else FASTA(fasta)
+        self.base_dir = base_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
+
+    @property_cached
+    def phyla(self):
+        return Counter(taxa[2] if len(taxa) > 2 else taxa[-1] for taxa in self.assignments.values())

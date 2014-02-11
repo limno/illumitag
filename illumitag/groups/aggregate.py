@@ -97,6 +97,8 @@ class Aggregate(object):
         self.graphs = [getattr(aggregate_plots, cls_name)(self) for cls_name in aggregate_plots.__all__]
         # Save state #
         self.loaded = True
+        # Return self for convenience #
+        return self
 
     def run_pools(self, steps=None, **kwargs):
         # Check loaded #

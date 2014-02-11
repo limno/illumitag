@@ -139,7 +139,8 @@ class FASTA(FilePath):
     def rename_with_num(self, prefix, new_path=None, remove_desc=True):
         """Rename every sequence based on a prefix and a number"""
         # Temporary path #
-        numbered = self.__class__(new_path or new_temp_path())
+        if new_path is None: numbered = self.__class__(new_temp_path())
+        else: numbered = self.__class__(new_path)
         # Generator #
         def numbered_iterator():
             for i,read in enumerate(self):
@@ -148,17 +149,23 @@ class FASTA(FilePath):
                 yield read
         # Do it #
         numbered.write(numbered_iterator())
+        numbered.close()
         # Replace it #
         if new_path is None:
             os.remove(self.path)
             shutil.move(numbered, self.path)
 
-    def extract_length(self, lower_bound, upper_bound, new_path=None):
+    def extract_length(self, lower_bound, upper_bound, new_path=None, cls=None):
         """Extract a certain length fraction and place them in a new file"""
-        fraction = self.__class__(new_path or new_temp_path())
+        # Temporary path #
+        cls = cls or self.__class__
+        fraction = cls(new_temp_path()) if new_path is None else cls(new_path)
+        # Generator #
         def fraction_iterator():
             for read in self:
-                if lower_bound <= len(read) <= upper_bound: yield read
+                if lower_bound <= len(read) <= upper_bound:
+                    yield read
+        # Do it #
         fraction.write(fraction_iterator())
         fraction.close()
         return fraction
