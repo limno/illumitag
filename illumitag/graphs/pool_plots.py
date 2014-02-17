@@ -331,7 +331,8 @@ class LengthHist(Graph):
         axes = self.frame.hist(color='gray', bins=max(self.frame)-min(self.frame)+1)
         fig = pyplot.gcf()
         axes.set_title('Distribution of quality reads length for pool %i ' % self.parent.num)
-        axes.set_ylabel('Number of paired reads')
+        axes.set_xlabel('Length of sequence in nucleotides')
+        axes.set_ylabel('Number of sequences with this length')
         axes.xaxis.grid(False)
         # Change ticks #
         myLocator = mticker.MultipleLocator(10)

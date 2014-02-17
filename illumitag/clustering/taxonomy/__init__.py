@@ -55,7 +55,7 @@ class Taxonomy(object):
     @property
     def otu_table_norm(self):
         """The same thing as otu_table but normalized so that sum of a sample is always one"""
-        return self.otu_table.apply(lambda x: x/x.sum(), axis=1).replace(numpy.inf, 0,0)
+        return self.otu_table.apply(lambda x: x/x.sum(), axis=1).replace(numpy.inf, 0.0)
 
     def resample_otu_table(self, down_to=5000):
         # Eliminate samples that are under down_to #
@@ -75,7 +75,7 @@ class Taxonomy(object):
         prepend_to_file(self.otu_csv, 'X')
 
     def make_otu_table_norm(self):
-        self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t')
+        self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t', float_format='%.5g')
         prepend_to_file(self.otu_csv, 'X')
 
 ###############################################################################

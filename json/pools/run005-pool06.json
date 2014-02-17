@@ -23,7 +23,7 @@
     "pool":          "monica3",
     "pool_name":     "Third of Monica's pools",
 
-    "comments":         "The first 13 samples are Monica's and then Valerie's",
+    "comments":         "The first 11 samples are Monica's and then Valerie's",
 
     "samples": [
         {"name": "E28",         "used": 1, "group": "Erken",       "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},

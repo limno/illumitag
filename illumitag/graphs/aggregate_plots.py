@@ -1,12 +1,14 @@
 # Built-in modules #
 from collections import Counter, OrderedDict
+import locale
 
 # Internal modules #
 from illumitag.graphs import Graph, cool_colors
 from illumitag.common import flatten
+from illumitag.helper.silvamod import amplified
 
 # Third party modules #
-import pandas
+import pandas, matplotlib
 from matplotlib import pyplot
 
 # Constants #
@@ -94,29 +96,46 @@ class ChimerasSummary(Graph):
 
 ################################################################################
 class LengthDistribution(Graph):
-    """Distribution of assembly lengths"""
+    """Distribution of assembly lengths with added
+    distribution from the Silvamod database"""
     short_name = 'length_distribution'
 
     def plot(self):
         # Data #
-        counts = sum((p.good_barcodes.assembled.lengths for p in self.parent), Counter())
-        self.frame = pandas.Series(counts.get(i,0) for i in range(max(counts.keys())+1))
+        counts = sum((p.quality_reads.only_used.lengths for p in self.parent), Counter())
         # Plot #
         fig = pyplot.figure()
-        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray')
-        title = 'Distribution of sequence lengths for reads that assemble.'
+        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray', align='center',
+                   label='Reads from soil sample')
+        title = 'Distribution of sequence lengths for quality filtered reads.'
         axes = pyplot.gca()
         axes.set_title(title)
         axes.set_xlabel('Length of sequence in nucleotides')
         axes.set_ylabel('Number of sequences with this length')
-        axes.xaxis.grid(False)
+        axes.yaxis.grid(True)
+        # Add Silvamod lengths on second scale #
+        silva_counts = amplified.lengths
+        silvas_axes = axes.twinx()
+        silvas_axes.plot(silva_counts.keys(), silva_counts.values(), 'r-',
+                         label='Reads from the silvamod database')
+        silvas_axes.set_ylabel('Number of sequences from the silvamod database', color='r')
+        for tick in silvas_axes.get_yticklabels(): tick.set_color('r')
+        # Legends #
+        axes.legend(loc='upper left')
+        silvas_axes.legend(loc='upper right')
+        # Add separator #
+        locale.setlocale(locale.LC_ALL, '')
+        seperate = lambda x,pos: locale.format("%d", x, grouping=True)
+        silvas_axes.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(seperate))
         # Change ticks #
         import matplotlib.ticker as mticker
         myLocator = mticker.MultipleLocator(10)
         axes.xaxis.set_major_locator(myLocator)
         axes.set_xlim(400, 500)
         # Save it #
-        self.save_plot(fig, axes, sep=('y'))
+        self.save_plot(fig, axes, sep=('y'), width=14.0, height=8.0, bottom=0.08, top=0.95, left=0.08, right=0.92)
+        # Save CSV #
+        self.frame = pandas.Series(counts.get(i,0) for i in range(max(counts.keys())+1))
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
 

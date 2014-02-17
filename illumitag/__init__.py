@@ -12,6 +12,7 @@ from illumitag.groups.runs import Runs, Run
 from illumitag.groups.aggregate import Aggregate
 from illumitag.groups.projects import Projects, Project
 from illumitag.groups.presamples import Presample
+from illumitag.groups.pyrosample import Pyrosample
 from illumitag.common import dependencies
 
 # Constants #
@@ -60,4 +61,10 @@ aggregate = Aggregate('all', pools, view_dir + 'aggregates/')
 presamples_dir = repos_dir + 'json/presamples/'
 json_paths = glob.glob(presamples_dir + '*.json')
 presamples = [Presample(j, view_dir + 'presamples/') for j in json_paths]
+presamples.sort(key=lambda x: str(x))
+
+# Load all legacy pyrosamples #
+presamples_dir = repos_dir + 'json/pyrosample/'
+json_paths = glob.glob(presamples_dir + '*.json')
+presamples = [Pyrosample(j, view_dir + 'pyrosamples/') for j in json_paths]
 presamples.sort(key=lambda x: str(x))

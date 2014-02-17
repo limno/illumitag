@@ -56,8 +56,10 @@ class Tributaries(Graph):
     def plot(self):
         # Data #
         self.frame = self.parent.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
-        # Drop the river #
-        self.frame = self.frame.loc[[s.short_name for s in self.parent.samples if s.info['Tributary']=='1']]
+        # Drop tributaries #
+        key = lambda s: (s.info['Filter_fraction'], s.short_name)
+        samples = sorted([s for s in self.parent.samples if s.info['Tributary']=='1'], key=key)
+        self.frame = self.frame.reindex(index=[s.short_name for s in samples])
         # Colors #
         colors = brewer2mpl.get_map('Set1', 'qualitative', 8).mpl_colors
         colors.reverse()

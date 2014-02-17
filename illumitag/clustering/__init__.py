@@ -22,7 +22,7 @@ class Cluster(object):
     /metadata.csv
     """
 
-    def __repr__(self): return '<%s object with %i samples>' % (self.__class__.__name__, len(self.samples))
+    def __repr__(self): return '<%s object "%s" with %i samples>' % (self.__class__.__name__, self.name, len(self.samples))
     def __iter__(self): return iter(self.samples)
     def __len__(self): return len(self.samples)
     def __getitem__(self, key): return self.samples[key]

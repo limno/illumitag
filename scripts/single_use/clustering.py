@@ -58,8 +58,38 @@ cluster.export_metadata()
 
 ###############################################################################
 # Inga's cluster #
-illumitag.runs[3][6].create_samples()
 samples = [s for s in illumitag.runs[3][6].samples if s.used]
 cluster = illumitag.clustering.Cluster(samples, 'inga')
 for s in tqdm(cluster): s.process()
 cluster.combine_reads()
+
+# Anna's cluster #
+from tqdm import tqdm
+samples = [s for s in illumitag.runs[4][4].samples if s.used]
+samples += [s for s in illumitag.runs[4][5].samples if s.used]
+cluster = illumitag.clustering.Cluster(samples, 'anna')
+for s in tqdm(cluster): s.process()
+cluster.combine_reads()
+cluster.otu_uparse.run()
+cluster.otu_uparse.taxonomy_silva.assign()
+
+# Jerome's cluster #
+from tqdm import tqdm
+samples = [s for s in illumitag.runs[4][6].samples if s.used]
+samples += [s for s in illumitag.runs[4][7].samples if s.used]
+cluster = illumitag.clustering.Cluster(samples, 'jerome')
+for s in tqdm(cluster): s.process()
+cluster.combine_reads()
+cluster.otu_uparse.run()
+cluster.otu_uparse.taxonomy_silva.assign()
+
+# Monica's cluster #
+from tqdm import tqdm
+illumitag.runs[5][3].create_samples()
+illumitag.runs[5][4].create_samples()
+illumitag.runs[5][5].create_samples()
+samples =  [s for s in illumitag.runs[5][3].samples if s.used]
+samples += [s for s in illumitag.runs[5][4].samples if s.used]
+samples += [s for s in illumitag.runs[5][5][0:11] if s.used]
+cluster = illumitag.clustering.Cluster(samples, 'monica')
+for s in tqdm(cluster): s.process()

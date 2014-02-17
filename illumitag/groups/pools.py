@@ -81,7 +81,6 @@ class Pool(object):
         self.p.info_json.link_from(self.json_path, safe=True)
         # Children #
         self.samples.load()
-        self.primers.load()
         # Raw file pairs #
         self.fwd_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['forward_reads'])
         self.rev_path = home + "ILLUMITAG/INBOX/%s/%s/%s" % (self.run.label, self.label, self.info['reverse_reads'])

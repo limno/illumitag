@@ -1,0 +1,26 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Alexander Eiler",
+            "email": "alexander.eiler@ebc.uu.se"
+        }
+    },
+
+    "uppmax_id":    "b2011032",
+    "run_num":       -2,
+    "run_id":        "x",
+    "sample_num":    1,
+    "sample_id":     "sff",
+    "reads":         "x.sff",
+
+    "project":       "454",
+    "project_name":  "454 sequencing",
+    "sample":        "soda_454_SS1",
+    "sample_name":   "454 sequencing of the soda lakes code SS1",
+    "group":         "pyro",
+
+}

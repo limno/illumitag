@@ -1,0 +1,26 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Lucas Sinclair",
+            "email": "lucas.sinclair@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Alexander Eiler",
+            "email": "alexander.eiler@ebc.uu.se"
+        }
+    },
+
+    "uppmax_id":    "b2011032",
+    "run_num":       -1,
+    "run_id":        "D_2012_06_16_01_28_05_tank_signalProcessingAmplicons",
+    "sample_num":    2,
+    "sample_id":     "sff",
+    "reads":         "HPQTMO402.sff",
+
+    "project":       "454",
+    "project_name":  "454 sequencing",
+    "sample":        "soil_454_AB2",
+    "sample_name":   "454 sequencing of the soil sample code AB2",
+    "group":         "pyro",
+
+}

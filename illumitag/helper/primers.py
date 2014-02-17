@@ -37,9 +37,9 @@ class TwoPrimers(object):
         # Search patterns #
         self.fwd_regex = re.compile(''.join(['[' + iupac[char] + ']' for char in self.fwd_seq]))
         self.rev_regex = re.compile(''.join(['[' + iupac[char] + ']' for char in self.rev_seq.reverse_complement()]))
-
-    def load(self):
-        pass
+        # Uracil instead of thymine #
+        self.fwd_regex_uracil = re.compile(self.fwd_regex.pattern.replace('T', 'U'))
+        self.rev_regex_uracil = re.compile(self.rev_regex.pattern.replace('T', 'U'))
 
 ###############################################################################
 class ReadWithPrimers(object):
