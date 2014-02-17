@@ -6,7 +6,7 @@ import illumitag
 from illumitag.common import natural_sort
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.common.tmpstuff import TmpFile
-from illumitag.fasta.single import FASTQ
+from illumitag.fasta.single import FASTA, FASTQ
 
 # Third party modules #
 import sh, pandas, commands
@@ -22,6 +22,8 @@ class Pyrosample(object):
     all_paths = """
     /info.json
     /reads.fastq
+    /reads.fasta
+    /raw.sff
     """
 
     def __init__(self, json_path, out_dir):
@@ -56,7 +58,12 @@ class Pyrosample(object):
         self.bar_len = 0
         self.gziped = False
         # FASTQ #
-        self.fastq = FASTQ(self.p.reads)
+        self.reads = FASTQ(self.p.reads_fastq)
+        # Pre-denoised #
+        if self.info['predenoised']:
+            self.sff_files_info = []
+            self.p.reads_fasta.link_from(self.info['predenoised'], safe=True)
+            self.reads = FASTA(self.p.reads_fasta)
 
 ###############################################################################
 class Demultiplexer454(object):
@@ -64,7 +71,7 @@ class Demultiplexer454(object):
 
     def __init__(self, samples):
         # Save samples #
-        self.samples = samples
+        self.samples = [s for s in samples if s.sff_files_info]
         # Get all unique SFF files #
         self.sff_paths = set([f['path'] for s in self.samples for f in s.sff_files_info])
         # Make objects of them #
@@ -102,7 +109,7 @@ class Demultiplexer454(object):
                 sh.sfffile("-o", sample.p.raw_sff, *[p.path for p in sample.pieces])
                 for p in sample.pieces: os.remove(p.path)
         # Save report #
-        self.frame.to_csv(self.parent.p.demultiplexing)
+        self.frame.to_csv(illumitag.view_dir + 'pyrosamples/report.csv')
 
 ###############################################################################
 class MultiplexedSFF(FilePath):
@@ -118,10 +125,10 @@ class MultiplexedSFF(FilePath):
         self.path = path
         self.name = os.path.basename(path)
         # Optional raw output #
-        prefix = illumitag.view_dir + 'pyrosamples/raw/' + self.prefix
-        self.raw_fasta_path = prefix + ".fasta"
-        self.raw_qual_path = prefix + ".qual"
-        self.fastq = FASTQ(prefix + ".fastq")
+        path = illumitag.view_dir + 'pyrosamples/raw/' + self.prefix
+        self.raw_fasta_path = path + ".fasta"
+        self.raw_qual_path = path + ".qual"
+        self.fastq = FASTQ(path + ".fastq")
 
     @property
     def barcode_text(self):
@@ -162,7 +169,7 @@ class MultiplexedSFF(FilePath):
 ###############################################################################
 class SamplePiece(object):
     """The SamplePiece object represents a piece of a sample extracted
-    from a multiplexed file."""
+    from a multiplexed file. It is linked to an SFF and to a Sample."""
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
 

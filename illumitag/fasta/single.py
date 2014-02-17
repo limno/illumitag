@@ -13,6 +13,7 @@ from illumitag.helper.barcodes import ReadWithBarcodes
 from illumitag.helper.primers import ReadWithPrimers
 from illumitag.common.cache import property_cached
 from illumitag.common.color import Color
+from illumitag.fasta import single_plots
 
 # Third party modules #
 import sh, shutil
@@ -35,6 +36,8 @@ class FASTA(FilePath):
         # Extra #
         self.samples = samples
         self.primers = primers
+        # Graphs #
+        self.graphs = [getattr(single_plots, cls_name)(self, self.path + '.') for cls_name in single_plots.__all__]
 
     @property
     def first_read(self):
