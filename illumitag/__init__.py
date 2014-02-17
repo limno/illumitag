@@ -12,7 +12,7 @@ from illumitag.groups.runs import Runs, Run
 from illumitag.groups.aggregate import Aggregate
 from illumitag.groups.projects import Projects, Project
 from illumitag.groups.presamples import Presample
-from illumitag.groups.pyrosample import Pyrosample
+from illumitag.groups.pyrosample import Pyrosample, Demultiplexer454
 from illumitag.common import dependencies
 
 # Constants #
@@ -64,7 +64,8 @@ presamples = [Presample(j, view_dir + 'presamples/') for j in json_paths]
 presamples.sort(key=lambda x: str(x))
 
 # Load all legacy pyrosamples #
-presamples_dir = repos_dir + 'json/pyrosample/'
-json_paths = glob.glob(presamples_dir + '*.json')
-presamples = [Pyrosample(j, view_dir + 'pyrosamples/') for j in json_paths]
-presamples.sort(key=lambda x: str(x))
+pyrosamples_dir = repos_dir + 'json/pyrosamples/'
+json_paths = glob.glob(pyrosamples_dir + '*.json')
+pyrosamples = [Pyrosample(j, view_dir + 'pyrosamples/') for j in json_paths]
+pyrosamples.sort(key=lambda x: str(x))
+demultiplexer = Demultiplexer454(pyrosamples)

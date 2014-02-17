@@ -10,17 +10,18 @@
         }
     },
 
-    "uppmax_id":    "b2011032",
     "run_num":       -2,
-    "run_id":        "x",
     "sample_num":    1,
-    "sample_id":     "sff",
-    "reads":         "x.sff",
-
     "project":       "454",
     "project_name":  "454 sequencing",
     "sample":        "soda_454_SS1",
     "sample_name":   "454 sequencing of the soda lakes code SS1",
     "group":         "pyro",
 
+    "files": [
+        {"path": "/proj/b2011032/INBOX/D_2012_06_16_01_28_05_tank_signalProcessingAmplicons/sff/HPQTMO401.sff",
+            "mid": "ACACGACGACT", "midnum": 1},
+        {"path": "/proj/b2011032/INBOX/D_2012_06_16_01_28_05_tank_signalProcessingAmplicons/sff/HPQTMO402.sff",
+            "mid": "ACACGACGACT", "midnum": 1}
+    ]
 }
