@@ -3,7 +3,7 @@ import os, json, glob, shutil, re
 
 # Internal modules #
 import illumitag
-from illumitag.common import natural_sort
+from illumitag.common import natural_sort, moving_average
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.common.tmpstuff import TmpFile
 from illumitag.fasta.single import FASTA, FASTQ
@@ -17,14 +17,20 @@ home = os.environ['HOME'] + '/'
 
 ###############################################################################
 class Pyrosample(object):
-    """A Pyrosample is a legacy object for the few 454 samples we have"""
+    """A Pyrosample is a legacy object for the few 454 samples we still have."""
 
     all_paths = """
     /info.json
-    /reads.fastq
     /reads.fasta
-    /raw.sff
+    /renamed.fasta
+    /raw/raw.sff
+    /raw/raw.fastq
+    /raw/raw.fasta
+    /raw/raw.qual
+    /raw/manifest.txt
     """
+
+    def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
 
     def __init__(self, json_path, out_dir):
         # Attributes #
@@ -57,17 +63,60 @@ class Pyrosample(object):
         # Other dummy variables #
         self.bar_len = 0
         self.gziped = False
+        self.used = True
+        # Primer #
+        self.primer_regex = re.compile(self.info['primer'])
         # FASTQ #
-        self.reads = FASTQ(self.p.reads_fastq)
-        # Pre-denoised #
+        self.reads = FASTA(self.p.reads_fasta)
+        self.fasta = FASTA(self.p.renamed)
+        self.raw_fasta = FASTA(self.p.raw_fasta)
+        self.raw_fastq = FASTQ(self.p.raw_fastq)
+        # Pre-denoised special case #
         if self.info['predenoised']:
             self.sff_files_info = []
-            self.p.reads_fasta.link_from(self.info['predenoised'], safe=True)
-            self.reads = FASTA(self.p.reads_fasta)
+            self.reads.link_from(self.info['predenoised'], safe=True)
+
+    def load(self):
+        pass
+
+    def extract(self):
+        # Call extraction #
+        shell_output('sffinfo -s %s > %s' % (self.p.raw_sff, self.p.raw_fasta))
+        shell_output('sffinfo -q %s > %s' % (self.p.raw_sff, self.p.raw_qual))
+        shell_output('sffinfo -m %s > %s' % (self.p.raw_sff, self.p.manifest))
+        # Convert #
+        sh.fasta_to_fastq(self.p.raw_fasta, self.p.raw_qual, self.p.raw_fastq)
+
+    def clean(self, minlength=150, threshold=21, windowsize=20):
+        def clean_iterator(reads):
+            for read in reads:
+                # Length #
+                if len(read) < minlength: continue
+                # Primer #
+                match = self.primer_regex.search(str(read.seq))
+                if not match: continue
+                # PHRED score #
+                scores = read.letter_annotations["phred_quality"]
+                averaged = moving_average(scores, windowsize)
+                discard = False
+                for i,value in enumerate(averaged):
+                    if value < threshold:
+                        read = read[:i+windowsize-1]
+                        if len(read) < minlength: discard = True
+                        break
+                if discard: continue
+                # Undetermined bases #
+                if 'N' in read: continue
+                # Remove primer #
+                yield read[match.end():]
+        self.reads.write(clean_iterator(self.raw_fastq))
+
+    def process(self):
+        self.reads.rename_with_num(self.name + '_read', self.fasta)
 
 ###############################################################################
 class Demultiplexer454(object):
-    """Will demultiplex a bunch of SFF files"""
+    """Will demultiplex a bunch of SFF files from Roche"""
 
     def __init__(self, samples):
         # Save samples #
@@ -167,11 +216,9 @@ class MultiplexedSFF(FilePath):
         sh.fasta_to_fastq(self.raw_fasta_path, self.raw_qual_path, self.fastq)
 
 ###############################################################################
-class SamplePiece(object):
+class SamplePiece(FilePath):
     """The SamplePiece object represents a piece of a sample extracted
     from a multiplexed file. It is linked to an SFF and to a Sample."""
-
-    def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
 
     def __init__(self, path, sff):
         self.path = path

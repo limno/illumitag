@@ -10,7 +10,7 @@
         }
     },
 
-    "run_num":       -2,
+    "run_num":       9999,
     "sample_num":    5,
     "project":       "454",
     "project_name":  "454 sequencing",
@@ -25,8 +25,9 @@
             "mid": "ACACGACGACT", "midnum": 1}
     ],
 
-    "predenoised": "/proj/b2011138/454amplicons_SODA/US2.fasta",
+    "predenoised": "/proj/b2011138/454amplicons_SODA/US2_qiime.fa",
 
     "date": "2012-02-06",
-    "mate": {"name": "run003pool08num15", "run": 3, "pool": 8, "num": 15, "code": "US16"}
+    "mate": {"name": "run003pool08num15", "run": 3, "pool": 8, "num": 15, "code": "US16"},
+    "primer": "GACTAC[ATC][GAC]GGGTATCTAATCC"
 }

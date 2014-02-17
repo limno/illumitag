@@ -10,7 +10,7 @@
         }
     },
 
-    "run_num":       -1,
+    "run_num":       9998,
     "sample_num":    1,
     "project":       "454",
     "project_name":  "454 sequencing",
@@ -23,5 +23,6 @@
             "mid": "TCAGAGA", "midnum": 66}
     ],
 
-    "predenoised": null
+    "predenoised": null,
+    "primer": "GACTAC[ATC][GAC]GGGTATCTAATCC"
 }
