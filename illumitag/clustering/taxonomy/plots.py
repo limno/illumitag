@@ -5,13 +5,14 @@ from __future__ import division
 
 # Internal modules #
 from illumitag.graphs import Graph
+from illumitag.graphs.hierarchical_heatmap import HiearchicalHeatmap
 from illumitag.common import split_thousands
 
 # Third party modules #
 from matplotlib import pyplot
 
 # Constants #
-__all__ = ['ClusterSizes', 'PresencePerSample', 'PresencePerOTU']
+__all__ = ['ClusterSizes', 'PresencePerSample', 'PresencePerOTU', 'HeatmapOTU']
 
 ################################################################################
 class ClusterSizes(Graph):
@@ -86,3 +87,20 @@ class PresencePerOTU(Graph):
         self.save_plot(fig, axes)
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
+
+################################################################################
+class HeatmapOTU(HiearchicalHeatmap):
+    """Heatmap of the whole OTU table, with hierarchical clustering"""
+    short_name = 'otu_heatmap'
+
+    def plot(self):
+        # Reference #
+        self.frame = self.parent.otu_table.transpose()
+        self.row_method = None
+        self.fig_height = 200
+
+        # Super #
+        fig, axm, axcb, cb = super(HeatmapOTU, self).plot()
+        cb.set_label("Number of sequences in cluster")
+        # Save #
+        pyplot.savefig(self.path)

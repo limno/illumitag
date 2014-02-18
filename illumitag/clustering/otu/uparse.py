@@ -16,7 +16,7 @@ import sh
 
 ###############################################################################
 class UparseOTUs(OTUs):
-    """Will use uparse to create an OTU table from a given FASTA file
+    """Will use uparse to create an OTU clusters from a given FASTA file
     http://www.nature.com/doifinder/10.1038/nmeth.2604"""
 
     short_name = 'uparse'
@@ -113,8 +113,8 @@ class UClusterFile(FilePath):
             else:
                 nums = re.findall("run([0-9]+)_sample([0-9]+)_read([0-9]+)", query)
                 run_num, sample_num, read_num = map(int, nums[0])
-                #sample = [s for s in illumitag.presamples if s.run_num==run_num and s.num==sample_num][0]
-                name = 'test_run_%i' % sample_num
+                sample = [s for s in illumitag.presamples+illumitag.pyrosamples if s.run_num==run_num and s.num==sample_num][0]
+                name = sample.short_name
             # Count #
             result[target][name] += 1
         # Return #

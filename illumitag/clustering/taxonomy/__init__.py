@@ -6,8 +6,8 @@ from collections import Counter
 
 # Internal modules #
 import illumitag
+from illumitag.common import natural_sort, prepend_to_file, flatten
 from illumitag.common.cache import property_cached
-from illumitag.common import natural_sort, prepend_to_file
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 

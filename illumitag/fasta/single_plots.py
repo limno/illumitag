@@ -35,3 +35,24 @@ class UniqueStarts(Graph):
         self.save_plot(fig, axes, sep=('y'))
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
+
+################################################################################
+class LengthDistribution(Graph):
+    """Simple length distribution"""
+    short_name = 'length_distribution'
+
+    def plot(self):
+        # Data #
+        counts = self.parent.lengths
+        # Plot #
+        fig = pyplot.figure()
+        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray', align='center')
+        title = 'Distribution of sequence lengths.'
+        axes = pyplot.gca()
+        axes.set_title(title)
+        axes.set_xlabel('Length of sequence in nucleotides')
+        axes.set_ylabel('Number of sequences with this length')
+        axes.yaxis.grid(True)
+        # Save it #
+        self.save_plot(fig, axes, sep=('y'))
+        pyplot.close(fig)
