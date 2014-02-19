@@ -1,5 +1,6 @@
 # Built-in modules #
 import os, json, glob, shutil, re
+from collections import OrderedDict
 
 # Internal modules #
 import illumitag
@@ -72,7 +73,7 @@ class Pyrosample(object):
         self.raw_fasta = FASTA(self.p.raw_fasta)
         self.raw_fastq = FASTQ(self.p.raw_fastq)
         # Pre-denoised special case #
-        if self.info['predenoised']:
+        if self.info['predenoised'] and False:
             self.sff_files_info = []
             self.reads.link_from(self.info['predenoised'], safe=True)
 
@@ -127,8 +128,8 @@ class Demultiplexer454(object):
         self.sff_files = [MultiplexedSFF(path) for path in self.sff_paths]
         self.sff_files.sort(key = lambda x: natural_sort(x.name))
         # Two way linked graph #
-        for sample in self.samples: sample.sff_links = {}
-        for sff in self.sff_files:  sff.sample_links = {}
+        for sample in self.samples: sample.sff_links = OrderedDict()
+        for sff in self.sff_files:  sff.sample_links = OrderedDict()
         # Draw links #
         for sample in self.samples:
             for f in sample.sff_files_info:

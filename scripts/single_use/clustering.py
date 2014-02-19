@@ -22,6 +22,7 @@ cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 't
 # Run it #
 for s in cluster: s.process()
 cluster.combine_reads()
+cluster.set_size()
 cluster.otu_uparse.run()
 cluster.otu_uparse.taxonomy_silva.assign()
 cluster.otu_uparse.taxonomy_silva.make_otu_table()

@@ -19,10 +19,8 @@
     "group":         "pyro",
 
     "files": [
-        {"path": "/proj/b2011032/INBOX/D_2012_06_16_01_28_05_tank_signalProcessingAmplicons/sff/HPQTMO401.sff",
-            "mid": "ACACGACGACT", "midnum": 1},
-        {"path": "/proj/b2011032/INBOX/D_2012_06_16_01_28_05_tank_signalProcessingAmplicons/sff/HPQTMO402.sff",
-            "mid": "ACACGACGACT", "midnum": 1}
+        {"path": "/proj/b2011032/INBOX/D_2012_10_24_23_40_42_tank_signalProcessingAmplicons/sff/HWSCU2302.sff",
+            "mid": "ACTGATC", "midnum": 1}
     ],
 
     "predenoised": "/proj/b2011138/454amplicons_SODA/ZL3_qiime.fa",

@@ -1,7 +1,9 @@
 # Built-in modules #
+import shutil
 
 # Internal modules #
 import illumitag
+from illumitag.common.tmpstuff import new_temp_path
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
@@ -26,6 +28,9 @@ class Cluster(object):
     def __iter__(self): return iter(self.samples)
     def __len__(self): return len(self.samples)
     def __getitem__(self, key): return self.samples[key]
+
+    @property
+    def first(self): return self.children[0]
 
     def __init__(self, samples, name, base_dir=None):
         # Save samples #
@@ -58,6 +63,19 @@ class Cluster(object):
     def combine_reads(self):
         paths = [sample.fasta.path for sample in self]
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
+
+    def set_size(self, length=None):
+        if length is None: return
+        self.size_set = FASTA(new_temp_path())
+        def sized_iterator(reads):
+            for read in reads:
+                if len(read) < length: continue
+                yield read[:length]
+        self.size_set.write(sized_iterator(self.reads))
+        self.size_set.close()
+        # Replace it #
+        self.reads.remove()
+        shutil.move(self.size_set, self.reads)
 
     def run_uparse(self): self.otu_uparse.run()
 

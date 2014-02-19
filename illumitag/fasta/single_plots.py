@@ -6,7 +6,7 @@ import pandas
 from matplotlib import pyplot
 
 # Constants #
-__all__ = ['UniqueStarts']
+__all__ = ['UniqueStarts', 'LengthDistribution']
 
 ################################################################################
 class UniqueStarts(Graph):
