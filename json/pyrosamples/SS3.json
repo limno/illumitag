@@ -20,7 +20,7 @@
 
     "files": [
         {"path": "/proj/b2011032/INBOX/D_2012_10_24_23_40_42_tank_signalProcessingAmplicons/sff/HWSCU2302.sff",
-            "mid": "ACTGCAT", "midnum": 1}
+            "mid": "ACTGCAT", "midnum": 114}
     ],
 
     "predenoised": "/proj/b2011138/454amplicons_SODA/SS3_qiime.fa",

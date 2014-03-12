@@ -109,7 +109,11 @@ class Pyrosample(object):
                 # Undetermined bases #
                 if 'N' in read: continue
                 # Remove primer #
-                yield read[match.end():]
+                read = read[match.end():]
+                # Flip them like pancakes #
+                read = read.reverse_complement()
+                # Return #
+                yield read
         self.reads.write(clean_iterator(self.raw_fastq))
 
     def process(self):

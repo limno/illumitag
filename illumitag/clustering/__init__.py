@@ -85,5 +85,3 @@ class Cluster(object):
 
     def export_metadata(self):
         self.metadata.to_csv(self.p.metadata, sep='\t', encoding='utf-8')
-
-

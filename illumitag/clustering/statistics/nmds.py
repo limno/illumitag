@@ -1,6 +1,6 @@
 # Internal modules #
 from illumitag.common.autopaths import AutoPaths
-from illumitag.common.conversion import r_matrix_to_dataframe
+from illumitag.common.conversion import r_matrix_to_dataframe, pandas_df_to_r_df
 from illumitag.graphs import Graph
 
 # Third party modules #
@@ -40,10 +40,10 @@ class NMDS(object):
     /lorem
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, csv):
         # Save parent #
         self.stat, self.parent = parent, parent
-        self.otu = parent.otu
+        self.csv = csv
         # Paths #
         self.base_dir = self.parent.p.nmds_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
@@ -53,12 +53,26 @@ class NMDS(object):
     def run(self):
         # Call R #
         ro.r("library(vegan)")
-        ro.r("otu_table = read.table('%s', sep='\t', header=TRUE, row.names='X')" % (self.otu.otu_csv))
-        ro.r("nmds = metaMDS(otu_table, distance='horn', trymax=200)")
+        ro.r("table = read.table('%s', sep='\t', header=TRUE, row.names='X')" % (self.csv))
+        ro.r("nmds = metaMDS(table, distance='horn', trymax=200)")
         ro.r("coord = scores(nmds)")
         ro.r("loadings = nmds$species")
         # Retrieve values #
         self.coords = r_matrix_to_dataframe(ro.r.coord)
         self.loadings = r_matrix_to_dataframe(ro.r.loadings)
+        # Plot it #
+        self.graph.plot()
+
+    def run_df(self):
+        """Unfortunately this doesn't seem to work"""
+        # Get frame #
+        self.frame = self.parent.parent.frame
+        # Call R #
+        rframe = pandas_df_to_r_df(self.frame)
+        ro.r("library(vegan)")
+        nmds = ro.r['metaMDS'](rframe, distance='horn', trymax=200)
+        # Retrieve values #
+        self.coords = r_matrix_to_dataframe(ro.r['scores'](nmds))
+        self.loadings = list(nmds.rx2('species'))
         # Plot it #
         self.graph.plot()

@@ -3,9 +3,10 @@ from collections import defaultdict
 
 # Internal modules #
 from illumitag.common.autopaths import AutoPaths
-from illumitag.clustering.composition import plots
 from illumitag.common.csv_tables import CSVTable
 from illumitag.common.cache import property_cached
+from illumitag.clustering.composition import plots
+from illumitag.clustering.statistics import StatsOnComposition
 
 # Third party modules #
 import pandas
@@ -17,6 +18,7 @@ class Composition(object):
     all_paths = """
     /taxa_table.csv
     /graphs/
+    /stats/
     """
 
     def __init__(self, parent, base_dir=None):
@@ -32,6 +34,8 @@ class Composition(object):
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # Taxa table #
         self.taxa_csv = CSVTable(self.p.taxa_csv)
+        # Stats #
+        self.stats = StatsOnComposition(self)
 
     @property_cached
     def frame(self):

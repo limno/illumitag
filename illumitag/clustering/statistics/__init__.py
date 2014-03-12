@@ -23,7 +23,7 @@ class StatsOnOTUs(object):
         # Paths #
         self.p = AutoPaths(self.parent.p.stats_dir, self.all_paths)
         # Children #
-        self.nmds = NMDS(self)
+        self.nmds = NMDS(self, self.parent.otu_csv)
         self.permanova = PERMANOVA(self)
         self.betadis = BetaDispersion(self)
 
@@ -31,3 +31,23 @@ class StatsOnOTUs(object):
         self.nmds.run()
         self.permanova.run()
         self.betadis.run()
+
+###############################################################################
+class StatsOnComposition(object):
+
+    all_paths = """
+    /nmds/
+    /permanova/
+    /betadis/
+    """
+
+    def __init__(self, parent):
+        # Save parent #
+        self.composition, self.parent = parent, parent
+        # Paths #
+        self.p = AutoPaths(self.parent.p.stats_dir, self.all_paths)
+        # Children #
+        self.nmds = NMDS(self, self.parent.taxa_csv)
+
+    def run(self):
+        self.nmds.run()

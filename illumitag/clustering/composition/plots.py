@@ -5,6 +5,7 @@ from __future__ import division
 
 # Internal modules #
 from illumitag.graphs import Graph, cool_colors
+from illumitag.helper.freshwater import names as freshwater_names
 
 # Third party modules #
 from matplotlib import pyplot

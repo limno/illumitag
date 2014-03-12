@@ -10,7 +10,7 @@ import pandas
 
 ###############################################################################
 class CompositionPhyla(Composition):
-    """The taxa table contains only the phyla level, and sometimes
+    """This taxa table contains only the phyla level, and sometimes
     the class levels, when phyla are over a certain threshold.
     Additionally, low abundance taxa are grouped into 'Others'"""
 

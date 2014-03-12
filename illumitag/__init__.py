@@ -69,3 +69,7 @@ json_paths = glob.glob(pyrosamples_dir + '*.json')
 pyrosamples = [Pyrosample(j, view_dir + 'pyrosamples/') for j in json_paths]
 pyrosamples.sort(key=lambda x: str(x))
 demultiplexer = Demultiplexer454(pyrosamples)
+
+# Make our favorite clusters #
+__import__("illumitag.clustering.favorites")
+
