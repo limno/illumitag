@@ -121,12 +121,10 @@ class TaxaHeatmap(Graph):
         axes.xaxis.tick_bottom()
         axes.yaxis.tick_left()
         axes.get_yaxis().set_tick_params(which='both', direction='out')
-        #axes.get_xaxis().set_tick_params(which='both', pad=-100)
         axes.set_title('Species relative abundances per sample (top 12 species-level only)')
         # Extra barstack #
         categories = ['Species level', 'Clade or lineage level', 'Other']
         colors = [(1.0, 0.49, 0.0), (1.0, 1.0, 0.2), (0.4, 0.76, 0.64)]
-        self.breakdown = pandas.DataFrame(numpy.random.rand(self.targ_frame.shape[0], len(categories)), columns=categories)
         self.breakdown = defaultdict(lambda: defaultdict(int))
         for sample_name, column in self.orig_frame.iterrows():
             for taxa_name, count in column.iteritems():
@@ -136,9 +134,12 @@ class TaxaHeatmap(Graph):
                 self.breakdown[category][sample_name] += count
         self.breakdown = pandas.DataFrame(self.breakdown)
         self.breakdown = self.breakdown.fillna(0)
+        self.breakdown = self.breakdown.apply(lambda x: x/x.sum(), axis=1)
         axes = fig.add_subplot(gs[0], sharex=axes)
         self.breakdown.plot(kind='bar', stacked=True, ax=axes, color=colors)
-        axes.set_ylim([0,100])
+        percentage = lambda x, pos: '%1.0f%%' % (x*100.0)
+        axes.set_ylim([0,1])
+        axes.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(percentage))
         axes.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         axes.xaxis.grid(False)
         axes.yaxis.grid(False)
@@ -152,7 +153,6 @@ class TaxaHeatmap(Graph):
         axes.set_title('Classification level breakdown per sample (blasting against "%s" database)' % self.parent.taxonomy.database)
         # Extra scale #
         axes = fig.add_subplot(gs[3])
-        percentage = lambda x, pos: '%1.0f%%' % (x*100.0)
         fig.colorbar(heatmap, pad=0.1, fraction=1.0, shrink=1.0, format=matplotlib.ticker.FuncFormatter(percentage))
         axes.set_axis_off()
         # Save it #
