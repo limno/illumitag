@@ -94,12 +94,11 @@ class TaxaHeatmap(Graph):
     def plot(self):
         # Data #
         self.orig_frame = self.parent.taxa_table
-        self.norm_frame = self.orig_frame.apply(lambda x: x/x.sum(), axis=1)
+        self.norm_frame = self.orig_frame.apply(lambda x: x/x.sum(), axis=1) # Try different normalisation
         # Sorting by fraction #
-        if self.parent.samples[0].info.get('Filter_fraction'):
-            samples = sorted(self.parent.samples, key = lambda s: (s.info['Filter_fraction'], s.short_name))
-            new_index = [s.short_name for s in samples if s.short_name in self.norm_frame.index]
-            self.sort_frame = self.norm_frame.reindex(index=new_index)
+        self.samples = sorted(self.parent.samples, key = lambda s: (s.info['Filter_fraction'], s.info['Tributary'], s.short_name))
+        new_index = [s.short_name for s in self.samples if s.short_name in self.norm_frame.index]
+        self.sort_frame = self.norm_frame.reindex(index=new_index)
         # Take only our targets and transpose #
         self.targ_frame = self.sort_frame[self.targets]
         self.targ_frame = self.targ_frame.transpose()
@@ -135,6 +134,7 @@ class TaxaHeatmap(Graph):
         self.breakdown = pandas.DataFrame(self.breakdown)
         self.breakdown = self.breakdown.fillna(0)
         self.breakdown = self.breakdown.apply(lambda x: x/x.sum(), axis=1)
+        self.breakdown = self.breakdown.reindex(index=new_index)
         axes = fig.add_subplot(gs[0], sharex=axes)
         self.breakdown.plot(kind='bar', stacked=True, ax=axes, color=colors)
         percentage = lambda x, pos: '%1.0f%%' % (x*100.0)
