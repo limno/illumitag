@@ -111,3 +111,8 @@ class Sample(FASTQ):
             result = result[:-1] + ',' + json.dumps(self.extra_metadata, indent=4)[1:]
             result = re.compile(r'\bNaN\b').sub('null', result)
         return result
+
+    @property
+    def count_raw_reads(self):
+        """The number of reads the sample originally had right after barcode processing and before any other quality filtering"""
+        return self.pool.good_barcodes.breakdown[self.bar_name]

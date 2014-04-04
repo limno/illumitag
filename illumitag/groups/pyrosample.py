@@ -18,7 +18,7 @@ home = os.environ['HOME'] + '/'
 
 ###############################################################################
 class Pyrosample(object):
-    """A Pyrosample is a legacy object for the few 454 samples we still have."""
+    """A Pyrosample is a legacy object for the few 454 samples we still have and that we need to compare the new Illumina technology with."""
 
     all_paths = """
     /info.json

@@ -21,6 +21,15 @@ samples = [s for pool in illumitag.runs[4][0:3] for s in pool.samples if s.used]
 samples += illumitag.runs[4][3][0:13]
 domenico = illumitag.clustering.Cluster(samples, 'domenico')
 
+# Domenico with 4 undesirables #
+samples = [s for pool in illumitag.runs[4][0:3] for s in pool.samples if s.used]
+samples += illumitag.runs[4][3][0:13]
+samples.remove([s for s in samples if s.short_name == 'II001Fbr2'][0])
+samples.remove([s for s in samples if s.short_name == 'II018A'][0])
+samples.remove([s for s in samples if s.short_name == 'II053A'][0])
+samples.remove([s for s in samples if s.short_name == 'II078F'][0])
+danube = illumitag.clustering.Cluster(samples, 'danube')
+
 # Mixed eval #
 #samples = [s for s in illumitag.presamples]
 #samples += illumitag.runs[1][0][0:8]

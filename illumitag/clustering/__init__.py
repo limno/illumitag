@@ -8,6 +8,7 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
 from illumitag.clustering.otu.uparse import UparseOTUs
+from illumitag.clustering.reporting import ClusterReporter
 
 # Third party modules #
 import pandas
@@ -32,6 +33,10 @@ class Cluster(object):
     @property
     def first(self): return self.children[0]
 
+    @property
+    def count_seq(self):
+        return sum([len(sample) for sample in self])
+
     def __init__(self, samples, name, base_dir=None):
         # Save samples #
         self.name = name
@@ -41,6 +46,7 @@ class Cluster(object):
         assert len(names) == len(set(names))
         # Figure out pools #
         self.pools = list(set([s.pool for s in self.samples]))
+        self.pools.sort(key = lambda x: x.id_name)
         # Load them #
         for p in self.pools: p.load()
         # Dir #
@@ -53,6 +59,8 @@ class Cluster(object):
         self.reads = FASTA(self.p.all_reads_fasta)
         # OTU picking #
         self.otu_uparse = UparseOTUs(self)
+        # Reporting #
+        self.reporter = ClusterReporter(self)
 
     def run(self, *args, **kwargs):
         self.runner.run(*args, **kwargs)
@@ -65,6 +73,7 @@ class Cluster(object):
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
 
     def set_size(self, length=None):
+        """Trim all sequences to a specific length"""
         if length is None: return
         self.size_set = FASTA(new_temp_path())
         def sized_iterator(reads):

@@ -137,7 +137,7 @@ class GoodBarcode(BarcodeGroup):
 
     @property_cached
     def counter(self):
-        """Keys are of type 'barcode42A'"""
+        """Keys are of type 'barcode42F' and 'barcode42R'"""
         return Counter(str(m) for pair in self.parse_barcodes() for m in pair.matches)
 
     @property_cached
