@@ -27,33 +27,17 @@ class Taxonomy(object):
         for graph in self.graphs: graph.plot()
 
     @property_cached
-    def otu_table(self):
-        return pandas.io.parsers.read_csv(self.otu_csv, sep='\t', index_col=0, encoding='utf-8')
-
-    @property
-    def otu_table_norm(self):
-        """The same thing as otu_table but normalized so that the sum of a sample is always one"""
-        return self.otu_table.apply(lambda x: x/x.sum(), axis=1).replace(numpy.inf, 0.0)
-
-    def resample_otu_table(self, down_to=5000):
-        # Eliminate samples that are under down_to #
-        are_high = self.otu_table.sum(axis=1) > down_to
-        old_frame = self.otu_table.loc[are_high,:]
-        # Make a new table #
-        new_frame = pandas.DataFrame()
-        for i, sample in old_frame.iterrows():
-            pop = flatten([[key]*val for key,val in freq.items()])
-            smaller_pop = random.sample(pop, down_to)
-            return Counter(smaller_pop)
-            new_frame[sample] = sample
-
-    def make_otu_table(self):
-        # Parse that custom output for the OTU table #
+    def cluster_counts_table(self):
+        """Parse that custom output for creating the unfiltered OTU table"""
         result = pandas.DataFrame(self.otu.readmap.otu_sample_counts)
         result = result.fillna(0)
         result = result.astype(int)
         result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
+        return result
+
+    def make_otu_table(self):
         # Remove unwanted #
+        result = self.cluster_counts_table.copy()
         unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
         for otu_name in result:
             species = self.assignments[otu_name]
@@ -73,10 +57,31 @@ class Taxonomy(object):
         result.to_csv(self.otu_csv, sep='\t')
         prepend_to_file(self.otu_csv, 'X')
 
+    @property_cached
+    def otu_table(self):
+        return pandas.io.parsers.read_csv(self.otu_csv, sep='\t', index_col=0, encoding='utf-8')
+
+    @property
+    def otu_table_norm(self):
+        """The same thing as otu_table but normalized so that the sum of a sample is always one"""
+        return self.otu_table.apply(lambda x: x/x.sum(), axis=1).replace(numpy.inf, 0.0)
+
     def make_otu_table_norm(self):
         # Convert to CSV #
         self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t', float_format='%.5g')
         prepend_to_file(self.otu_csv, 'X')
+
+    def resample_otu_table(self, down_to=5000):
+        # Eliminate samples that are under down_to #
+        are_high = self.otu_table.sum(axis=1) > down_to
+        old_frame = self.otu_table.loc[are_high,:]
+        # Make a new table #
+        new_frame = pandas.DataFrame()
+        for i, sample in old_frame.iterrows():
+            pop = flatten([[key]*val for key,val in freq.items()])
+            smaller_pop = random.sample(pop, down_to)
+            return Counter(smaller_pop)
+            new_frame[sample] = sample
 
 ###############################################################################
 class SimpleTaxonomy(object):
