@@ -10,7 +10,7 @@ from illumitag.graphs import Graph
 from illumitag.helper.freshwater import species_names, clade_names
 
 # Third party modules #
-from matplotlib import pyplot
+from matplotlib import pyplot, ticker
 import matplotlib.gridspec as gridspec
 import brewer2mpl, numpy, matplotlib, pandas
 
@@ -52,6 +52,7 @@ class TaxaBarstack(Graph):
         axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=5)
         # Save it #
         self.save_plot(fig, axes, width=24.0, height=14.0, bottom=0.20, top=0.97, left=0.04, right=0.98)
+        fig.savefig(self.svg_path)
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
 
@@ -72,17 +73,21 @@ class TaxaHeatmap(Graph):
     """Abundance of most abundant species for every sample"""
     short_name = 'taxa_heatmap'
     targets = ['LD12', 'acI-B1', 'acI-A7', 'acI-C2', 'Pnec', 'Luna1-A2', 'Algor', 'Iluma-A1', 'acI-A4', 'acSTL-A1', 'Iluma-C1']
+    tributary = None
 
     def plot(self):
         # Data #
         self.orig_frame = self.parent.taxa_table
         self.norm_frame = self.orig_frame.apply(lambda x: x/x.sum(), axis=1) # Try different normalization ?
         # Take only the right tributary kind #
-        self.samples = [s for s in self.parent.samples if s.info['Tributary'] == self.tributary]
+        if self.tributary:
+            self.samples = [s for s in self.parent.samples if s.info['Tributary'] == self.tributary]
+        else:
+            self.samples = [s for s in self.parent.samples]
         # Take only the ones we use #
         self.samples = [s for s in self.samples if s.short_name in self.orig_frame.index]
         # Sorting by fraction #
-        self.samples = sorted(self.samples, key = lambda s: (s.info['Filter_fraction'], s.short_name))
+        self.samples = sorted(self.samples, key = lambda s: (s.info['Tributary'], s.info['Filter_fraction'], s.short_name))
         # Filter the frame #
         sample_names = [s.short_name for s in self.samples]
         self.sort_frame = self.norm_frame.reindex(index=sample_names)
@@ -107,7 +112,7 @@ class TaxaHeatmap(Graph):
         axes.xaxis.tick_bottom()
         axes.yaxis.tick_left()
         axes.get_yaxis().set_tick_params(which='both', direction='out')
-        axes.set_title('Species relative abundances per sample (top 12 species-level only)')
+        axes.set_title('Tribe relative abundances per sample (top 11 species-level only)')
         # Extra barstack #
         categories = ['Freshwater taxa', 'Freshwater clade or lineage', 'Everything else']
         colors = [(1.0, 0.49, 0.0), (1.0, 1.0, 0.2), (0.4, 0.76, 0.64)]
@@ -144,6 +149,7 @@ class TaxaHeatmap(Graph):
         axes.set_axis_off()
         # Save it #
         fig.savefig(self.path)
+        fig.savefig(self.svg_path)
         self.targ_frame.to_csv(self.csv_path)
         pyplot.close(fig)
 
@@ -158,19 +164,73 @@ class TaxaHeatmapTributaries(TaxaHeatmap):
     short_name = 'taxa_heatmap_tributaries'
 
 ################################################################################
+class CumulativePresenceScaledSplit(Graph):
+    """The sample thing but scaled by the size of the OTU"""
+    short_name = 'cumulative_presence_scaled'
+
+    def make_values(self, samples):
+        """Return X,Y for a given subset of samples"""
+        # Remove the ones that were merged #
+        names_of_sample = [s.short_name for s in samples if s.short_name in self.parent.otu_table.index]
+        num_of_samples = len(names_of_sample)
+        samples_index = list(reversed(range(1,num_of_samples+1)))
+        # Fraction of samples is X #
+        x = [n/num_of_samples for n in samples_index]
+        # Cum sum of reads sum per sample count is Y #
+        subtable = self.parent.otu_table.loc[names_of_sample]
+        presences = subtable.astype(bool).sum(axis=0)
+        reads_per_otu = subtable.sum(axis=0)
+        counts = [reads_per_otu[presences[presences==n].index].sum() for n in samples_index]
+        y = pandas.Series(counts).cumsum()
+        # Return #
+        return x,y
+
+    def plot(self):
+        # Take only the right fraction kind #
+        self.atta_samples = [s for s in self.parent.samples if s.info['Filter_fraction'] == '3.0']
+        self.free_samples = [s for s in self.parent.samples if s.info['Filter_fraction'] == '0.2']
+        # Make data #
+        self.x_atta, self.y_atta = self.make_values(self.atta_samples)
+        self.x_free, self.y_free = self.make_values(self.free_samples)
+        # Make step plot #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.step(self.x_atta, self.y_atta, 'r', label="Attached fraction")
+        axes.step(self.x_free, self.y_free, 'b', label="Free fraction")
+        axes.set_title('Cumulative graph of OTU presence in samples scaled by number of reads separated by fraction')
+        axes.set_xlabel('Fraction of samples (100%% equates %i samples for free fraction)' % len(self.free_samples))
+        axes.set_ylabel('Number of reads in all OTUs that appear in these many samples or more')
+        axes.legend(loc='upper left')
+        axes.invert_xaxis()
+        axes.xaxis.grid(True)
+        axes.xaxis.set_major_locator(ticker.MultipleLocator(base=0.1))
+        # Set percentage #
+        percentage = lambda x, pos: '%1.0f%%' % (x*100.0)
+        axes.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(percentage))
+        # Save it #
+        self.save_plot(fig, axes, left=0.1, bottom=0.1, sep=('y'))
+        pyplot.close(fig)
+
+################################################################################
 # Make a cluster of samples #
 cluster = illumitag.clustering.favorites.danube
-phyla = cluster.otu_uparse.taxonomy_silva.comp_phyla
-river = MainRiver(phyla)
-tributaries = Tributaries(phyla)
-phyla.graphs += [river]
-phyla.graphs += [tributaries]
+silva = cluster.otu_uparse.taxonomy_silva
+river = MainRiver(silva.comp_phyla)
+tributaries = Tributaries(silva.comp_phyla)
+silva.comp_phyla.graphs += [river]
+silva.comp_phyla.graphs += [tributaries]
 
-tips = cluster.otu_uparse.taxonomy_fw.comp_tips
-heatmap_river = TaxaHeatmapMainRiver(tips)
-heatmap_tributaries = TaxaHeatmapTributaries(tips)
-tips.graphs += [heatmap_river]
-tips.graphs += [heatmap_tributaries]
+freshwater = cluster.otu_uparse.taxonomy_fw
+heatmap = TaxaHeatmap(freshwater.comp_tips)
+freshwater.comp_tips.graphs += [heatmap]
+#heatmap_river = TaxaHeatmapMainRiver(freshwater.comp_tips)
+#heatmap_tributaries = TaxaHeatmapTributaries(freshwater.comp_tips)
+#freshwater.comp_tips.graphs += [heatmap_river]
+#freshwater.comp_tips.graphs += [heatmap_tributaries]
+
+presence_split = CumulativePresenceScaledSplit(silva)
+silva.graphs += [presence_split]
 
 #cluster.otu_uparse.taxonomy_silva.comp_phyla.make_plots()
 #cluster.otu_uparse.taxonomy_fw.comp_tips.make_plots()
+#cluster.otu_uparse.taxonomy_silva.make_plots()

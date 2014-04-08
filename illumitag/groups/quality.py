@@ -65,7 +65,7 @@ class QualityReads(object):
         self.mothur_fasta.link_from(self.trimmed.path)
         # The groups file #
         self.mothur_groups.create()
-        for r in self.untrimmed.parse_barcodes():
+        for r in self.only_used.parse_barcodes():
             sample_name = r.first.sample.short_name
             read_name = '%s\t%s\n' % (r.read.id, sample_name)
             self.mothur_groups.handle.write(read_name)

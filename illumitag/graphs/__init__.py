@@ -26,6 +26,7 @@ class Graph(object):
         if short_name: self.short_name = short_name
         # Paths #
         self.path = self.base_dir + self.short_name + '.pdf'
+        self.svg_path = self.base_dir + self.short_name + '.svg'
         self.csv_path = self.base_dir + self.short_name + '.csv'
         self.json_path = self.base_dir + self.short_name + '.json'
         # Extra #
@@ -51,5 +52,7 @@ class Graph(object):
             locale.setlocale(locale.LC_ALL, '')
             seperate = lambda x,pos: locale.format("%d", x, grouping=True)
             axes.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(seperate))
-        # Save it #
+        # Save it as PDF #
         fig.savefig(self.path)
+        # An extra SVG export #
+        fig.savefig(self.svg_path)

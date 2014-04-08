@@ -6,6 +6,10 @@ __version__ = '0.2.0'
 # Built-in modules #
 import os, sys, glob
 
+# No need for an X display #
+import matplotlib
+matplotlib.use('Agg', warn=False)
+
 # Internal modules #
 from illumitag.groups.pools import Pool
 from illumitag.groups.runs import Runs, Run
@@ -17,10 +21,6 @@ from illumitag.common import dependencies
 
 # Constants #
 home = os.environ['HOME'] + '/'
-
-# No need for an X display #
-import matplotlib
-matplotlib.use('Agg', warn=False)
 
 ###############################################################################
 # Check dependencies #
