@@ -195,8 +195,8 @@ class CumulativePresenceScaledSplit(Graph):
         # Make step plot #
         fig = pyplot.figure()
         axes = fig.add_subplot(111)
-        axes.step(self.x_atta, self.y_atta, 'r', label="Attached fraction")
-        axes.step(self.x_free, self.y_free, 'b', label="Free fraction")
+        axes.step(self.x_atta, self.y_atta, 'b', label="Attached fraction")
+        axes.step(self.x_free, self.y_free, 'r', label="Free fraction")
         axes.set_title('Cumulative graph of OTU presence in samples scaled by number of reads separated by fraction')
         axes.set_xlabel('Fraction of samples (100%% equates %i samples for free fraction)' % len(self.free_samples))
         axes.set_ylabel('Number of reads in all OTUs that appear in these many samples or more')

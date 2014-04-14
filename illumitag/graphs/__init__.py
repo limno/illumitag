@@ -27,6 +27,7 @@ class Graph(object):
         # Paths #
         self.path = self.base_dir + self.short_name + '.pdf'
         self.svg_path = self.base_dir + self.short_name + '.svg'
+        self.eps_path = self.base_dir + self.short_name + '.svg'
         self.csv_path = self.base_dir + self.short_name + '.csv'
         self.json_path = self.base_dir + self.short_name + '.json'
         # Extra #
