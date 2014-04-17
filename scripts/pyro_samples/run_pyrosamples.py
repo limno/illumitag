@@ -15,11 +15,14 @@ import illumitag
 illumitag.demultiplexer.run()
 for sample in illumitag.pyrosamples: sample.extract()
 for sample in illumitag.pyrosamples: sample.clean()
+for sample in illumitag.pyrosamples: sample.report_loss()
 for sample in illumitag.pyrosamples: sample.process()
 for sample in illumitag.pyrosamples: sample.raw_fastq.fastqc()
 for sample in illumitag.pyrosamples: sample.fasta.graphs[-1].plot()
 
-execfile("/home/lucass/repos/illumitag/scripts/single_use/pyro_plots.py")
-cluster.otu_uparse.taxonomy_silva.comp_phyla.graphs[-1].plot()
+cluster = illumitag.clustering.favorites.pyro_comparison
+cluster.combine_reads()
 cluster.set_size(400)
+
+cluster.otu_uparse.taxonomy_silva.comp_phyla.graphs[-1].plot()
 cluster.reads.graphs[-1].plot()

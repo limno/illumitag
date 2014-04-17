@@ -92,14 +92,7 @@ class PyroSorted(Graph):
 
 ################################################################################
 # Make a cluster of samples #
-samples = [s for s in illumitag.pyrosamples]
-samples += illumitag.runs[1][0][0:8]
-samples += illumitag.runs[1][1][0:8]
-samples += illumitag.runs[2][0][0:8]
-samples += illumitag.runs[3][7][30:33]
-samples += illumitag.runs[3][7][13:16]
-samples += illumitag.runs[3][7][43:46]
-cluster = illumitag.clustering.Cluster(samples, 'pyro_comparison')
+cluster = illumitag.clustering.favorites.pyro_comparison
 
 # Get phyla #
 phyla = cluster.otu_uparse.taxonomy_silva.comp_phyla

@@ -27,7 +27,7 @@ class Graph(object):
         # Paths #
         self.path = self.base_dir + self.short_name + '.pdf'
         self.svg_path = self.base_dir + self.short_name + '.svg'
-        self.eps_path = self.base_dir + self.short_name + '.svg'
+        self.eps_path = self.base_dir + self.short_name + '.eps'
         self.csv_path = self.base_dir + self.short_name + '.csv'
         self.json_path = self.base_dir + self.short_name + '.json'
         # Extra #
@@ -56,4 +56,4 @@ class Graph(object):
         # Save it as PDF #
         fig.savefig(self.path)
         # An extra SVG export #
-        fig.savefig(self.svg_path)
+        fig.savefig(self.eps_path)

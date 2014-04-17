@@ -18,9 +18,8 @@ cluster = illumitag.clustering.Cluster(illumitag.runs[0][0].samples.children, 't
 
 # Run it #
 illumitag.runs[0][0].create_samples()
-for s in tqdm(cluster): s.process()
+cluster.process_samples()
 cluster.combine_reads()
-cluster.set_size(400)
 cluster.otu_uparse.run()
 cluster.otu_uparse.taxonomy_silva.assign()
 cluster.otu_uparse.taxonomy_silva.make_otu_table()

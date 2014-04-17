@@ -69,7 +69,7 @@ class Taxonomy(object):
     def make_otu_table_norm(self):
         # Convert to CSV #
         self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t', float_format='%.5g')
-        prepend_to_file(self.otu_csv, 'X')
+        prepend_to_file(self.otu_csv_norm, 'X')
 
     def resample_otu_table(self, down_to=5000):
         # Eliminate samples that are under down_to #

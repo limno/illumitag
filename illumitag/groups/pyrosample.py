@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 import os, json, glob, shutil, re
 from collections import OrderedDict
@@ -18,7 +21,7 @@ home = os.environ['HOME'] + '/'
 
 ###############################################################################
 class Pyrosample(object):
-    """A Pyrosample is a legacy object for the few 454 samples we still have and that we need to compare the new Illumina technology with."""
+    """A Pyrosample is a legacy object for the few 454 samples we still have and that we need to compare against the new Illumina technology."""
 
     all_paths = """
     /info.json
@@ -88,7 +91,7 @@ class Pyrosample(object):
         # Convert #
         sh.fasta_to_fastq(self.p.raw_fasta, self.p.raw_qual, self.p.raw_fastq)
 
-    def clean(self, minlength=150, threshold=21, windowsize=20):
+    def clean(self, minlength=400, threshold=21, windowsize=20):
         def clean_iterator(reads):
             for read in reads:
                 # Length #
@@ -110,14 +113,19 @@ class Pyrosample(object):
                 if 'N' in read: continue
                 # Remove primer #
                 read = read[match.end():]
-                # Flip them like pancakes #
+                # Flip them because 454 reads the other end #
                 read = read.reverse_complement()
                 # Return #
                 yield read
         self.reads.write(clean_iterator(self.raw_fastq))
 
+    def report_loss(self):
+        print "Before cleaning: %i" % len(self.raw_fastq)
+        print "After cleaning: %i" % len(self.reads)
+        print "Loss: %.2f%%" % (100 * (1 - (len(self.raw_fastq)/len(self.reads))))
+
     def process(self):
-        self.reads.rename_with_num(self.name + '_read', self.fasta)
+        self.reads.rename_with_num(self.name + '_read', new_path=self.fasta)
 
 ###############################################################################
 class Demultiplexer454(object):

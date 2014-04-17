@@ -39,3 +39,12 @@ class ClusterReporter(object):
     def otu_count(self):
         """Number of OTUs found after removing undesirables"""
         return self.cluster.otu_uparse.taxonomy_silva.otu_table.shape
+
+    @property
+    def min_max_before_assembly(self):
+        """The samples with max and min sequences before assembly"""
+        samples = [s for s in self]
+        samples.sort(key= lambda x: x.pool.good_barcodes.counter[x.bar_name + 'F'])
+        display = lambda x: (x.name, x.short_name, x.pool.good_barcodes.counter[x.bar_name + 'F'])
+        return {"Lowest": display(samples[0]),
+                "Highest": display(samples[-1])}

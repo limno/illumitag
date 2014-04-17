@@ -12,6 +12,7 @@ from illumitag.clustering.reporting import ClusterReporter
 
 # Third party modules #
 import pandas
+from tqdm import tqdm
 from shell_command import shell_output
 
 ###############################################################################
@@ -68,23 +69,25 @@ class Cluster(object):
     def run_slurm(self, *args, **kwargs):
         self.runner.run_slurm()
 
+    def process_samples(self):
+        for sample in tqdm(self): sample.process()
+
     def combine_reads(self):
         paths = [sample.fasta.path for sample in self]
         shell_output('cat %s > %s' % (' '.join(paths), self.reads))
 
-    def set_size(self, length=None):
-        """Trim all sequences to a specific length"""
-        if length is None: return
-        self.size_set = FASTA(new_temp_path())
-        def sized_iterator(reads):
+    def set_size(self, length):
+        """Trim all sequences to a specific length starting from the end"""
+        self.size_trimmed = FASTA(new_temp_path())
+        def trim_iterator(reads):
             for read in reads:
                 if len(read) < length: continue
-                yield read[:length]
-        self.size_set.write(sized_iterator(self.reads))
-        self.size_set.close()
+                yield read[-length:]
+        self.size_trimmed.write(trim_iterator(self.reads))
+        self.size_trimmed.close()
         # Replace it #
         self.reads.remove()
-        shutil.move(self.size_set, self.reads)
+        shutil.move(self.size_trimmed, self.reads)
 
     def run_uparse(self): self.otu_uparse.run()
 

@@ -21,7 +21,6 @@ class BarcodeStack(Graph):
 
     def plot(self):
         # Data #
-        rows = [p.long_name for p in reversed(self.parent.pools)]
         rows = ["Pool %i" % p.num for p in reversed(self.parent.pools)]
         columns = [o.doc for o in self.parent.first.outcomes]
         data = [[o.count for o in p.outcomes] for p in reversed(self.parent.pools)]
@@ -117,7 +116,7 @@ class LengthDistribution(Graph):
         silva_counts = amplified.lengths
         silvas_axes = axes.twinx()
         silvas_axes.plot(silva_counts.keys(), silva_counts.values(), 'r-',
-                         label='Reads from the silvamod database')
+                         label='Sequences from the silvamod database')
         silvas_axes.set_ylabel('Number of sequences from the silvamod database', color='r')
         for tick in silvas_axes.get_yticklabels(): tick.set_color('r')
         # Legends #
