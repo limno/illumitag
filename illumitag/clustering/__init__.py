@@ -9,6 +9,7 @@ from illumitag.fasta.single import FASTA
 from illumitag.running.cluster_runner import ClusterRunner
 from illumitag.clustering.otu.uparse import UparseOTUs
 from illumitag.clustering.otu.uclust import UclustOTUs
+from illumitag.clustering.otu.cdhit import CdhitOTUs
 from illumitag.clustering.reporting import ClusterReporter
 
 # Third party modules #
@@ -62,6 +63,7 @@ class Cluster(object):
         # OTU picking #
         self.otu_uparse = UparseOTUs(self)
         self.otu_uclust = UclustOTUs(self)
+        self.otu_cdhit = CdhitOTUs(self)
         # Reporting #
         self.reporter = ClusterReporter(self)
 

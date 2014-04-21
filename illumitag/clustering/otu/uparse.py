@@ -4,7 +4,9 @@ from collections import defaultdict
 
 # Internal modules #
 import illumitag
+from illumitag.common import natural_sort
 from illumitag.common.autopaths import AutoPaths, FilePath
+from illumitag.common.cache import property_cached
 from illumitag.fasta.single import FASTA, SizesFASTA
 from illumitag.clustering.otu import OTUs
 from illumitag.clustering.taxonomy.crest import CrestTaxonomy
@@ -12,7 +14,7 @@ from illumitag.clustering.taxonomy.rdp import RdpTaxonomy
 from illumitag.clustering.source.seqenv import Seqenv
 
 # Third party modules #
-import sh
+import sh, pandas
 
 ###############################################################################
 class UparseOTUs(OTUs):
@@ -60,10 +62,6 @@ class UparseOTUs(OTUs):
         # Source tracking #
         self.seqenv = Seqenv(self)
 
-    def checks(self):
-        assert len(self.reads) == len(self.derep)
-        assert len(self.reads) == len(self.readmap)
-
     def run(self):
         # Dereplicate #
         sh.usearch7("--derep_fulllength", self.reads, '-output', self.derep, '-sizeout')
@@ -75,6 +73,19 @@ class UparseOTUs(OTUs):
         self.centers.rename_with_num('OTU_')
         # Map the reads back to the centers #
         sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
+
+    def checks(self):
+        assert len(self.reads) == len(self.derep)
+        assert len(self.reads) == len(self.readmap)
+
+    @property_cached
+    def cluster_counts_table(self):
+        """Parse that custom output for creating the unfiltered OTU table"""
+        result = pandas.DataFrame(self.readmap.otu_sample_counts)
+        result = result.fillna(0)
+        result = result.astype(int)
+        result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
+        return result
 
 ###############################################################################
 class UClusterFile(FilePath):

@@ -6,7 +6,7 @@ from collections import Counter
 
 # Internal modules #
 import illumitag
-from illumitag.common import natural_sort, prepend_to_file, flatten
+from illumitag.common import prepend_to_file, flatten
 from illumitag.common.cache import property_cached
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
@@ -27,18 +27,9 @@ class Taxonomy(object):
     def make_plots(self):
         for graph in self.graphs: graph.plot()
 
-    @property_cached
-    def cluster_counts_table(self):
-        """Parse that custom output for creating the unfiltered OTU table"""
-        result = pandas.DataFrame(self.otu.readmap.otu_sample_counts)
-        result = result.fillna(0)
-        result = result.astype(int)
-        result = result.reindex_axis(sorted(result.columns, key=natural_sort), axis=1)
-        return result
-
     def make_otu_table(self):
         # Remove unwanted #
-        result = self.cluster_counts_table.copy()
+        result = self.otu.cluster_counts_table.copy()
         for otu_name in result:
             species = self.assignments[otu_name]
             if len(species) > 2 and species[2] in self.unwanted: result = result.drop(otu_name, 1)

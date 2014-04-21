@@ -7,6 +7,13 @@ from illumitag.clustering import Cluster
 # Third party modules #
 
 ###############################################################################
+# Test cluster #
+samples =  [s for s in illumitag.runs[0][0].samples]
+samples += [s for s in illumitag.runs[0][1].samples]
+samples += [s for s in illumitag.runs[0][2].samples]
+samples += [s for s in illumitag.runs[0][3].samples]
+test = Cluster(samples, 'test')
+
 # Evaluation with 2 undesirables #
 proj = illumitag.projects['evaluation']
 samples = [s for pool in proj for s in pool.samples]
