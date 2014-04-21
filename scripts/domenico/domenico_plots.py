@@ -210,6 +210,10 @@ class CumulativePresenceScaledSplit(Graph):
         # Save it #
         self.save_plot(fig, axes, left=0.1, bottom=0.1, sep=('y'))
         pyplot.close(fig)
+        # Export raw values #
+        atta_raw = zip(self.x_atta, self.y_atta)
+        free_raw = zip(self.x_free, self.y_free)
+        self.txt_path.write('Attached\n%s\n\nFree\n%s' % (atta_raw,free_raw))
 
 ################################################################################
 # Make a cluster of samples #

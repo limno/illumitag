@@ -248,6 +248,9 @@ class FilePath(str):
     def create(self):
         with open(self.path, 'w'): pass
 
+    def write(self, content):
+        with open(self.path, 'w') as handle: handle.write(content)
+
     def link_from(self, path, safe=False):
         # Standard #
         if not safe:

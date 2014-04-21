@@ -20,5 +20,10 @@ proj = illumitag.projects['evaluation']
 samples = [s for pool in proj for s in pool.samples]
 cluster = illumitag.clustering.favorites.evaluation
 
+# Check bad samples #
+s1 = illumitag.runs[1][3][31]
+s2 = illumitag.runs[1][2][33]
+
 # Create samples #
 for pool in proj: print pool
+

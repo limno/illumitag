@@ -53,3 +53,16 @@ ratio.to_csv(sys.stdout, sep='\t', float_format='%.5g')
 samples = [s.short_name for s in cluster.samples if s.info['Filter_fraction'] == '3.0']
 plastids = taxa[taxa.columns[cols]].loc[samples]
 for i,row in plastids.iterrows(): print '%s\t%s\t%s' % (row.name, row.idxmax(), row.max())
+
+
+# Uncensored OTU table #
+cluster.otu_uparse.taxonomy_silva.cluster_counts_table.to_csv(cluster.otu_uparse.taxonomy_silva.base_dir + "uncensored_otus.tsv", sep='\t')
+
+# Count cholorplasts et al. #
+silva = cluster.otu_uparse.taxonomy_silva
+result = 0
+for otu_name in silva.cluster_counts_table:
+    assignement = silva.assignments[otu_name]
+    if len(assignement) > 2 and assignement[2] in silva.unwanted:
+        result += silva.cluster_counts_table[otu_name].sum()
+print result

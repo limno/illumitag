@@ -7,9 +7,11 @@ from illumitag.clustering import Cluster
 # Third party modules #
 
 ###############################################################################
-# Evaluation #
+# Evaluation with 2 undesirables #
 proj = illumitag.projects['evaluation']
 samples = [s for pool in proj for s in pool.samples]
+samples.remove([s for s in samples if s.short_name == 'p3bc34'][0])
+samples.remove([s for s in samples if s.short_name == 'p4bc32'][0])
 evaluation = Cluster(samples, 'evaluation')
 
 # Pyro cluster #

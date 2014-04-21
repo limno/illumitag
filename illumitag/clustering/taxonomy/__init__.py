@@ -17,6 +17,7 @@ import pandas, numpy
 ###############################################################################
 class Taxonomy(object):
     """Can assign taxonomy to a FASTA file of 16S sequences."""
+    unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
 
@@ -38,10 +39,9 @@ class Taxonomy(object):
     def make_otu_table(self):
         # Remove unwanted #
         result = self.cluster_counts_table.copy()
-        unwanted = ['Plastid', 'Mitochondrion', 'Thaumarchaeota', 'Crenarchaeota', 'Euryarchaeota']
         for otu_name in result:
             species = self.assignments[otu_name]
-            if len(species) > 2 and species[2] in unwanted: result = result.drop(otu_name, 1)
+            if len(species) > 2 and species[2] in self.unwanted: result = result.drop(otu_name, 1)
         # Merge samples when reruns #
         for name, data in result.iterrows():
             sample = [s for s in self.samples if s.short_name == name][0]

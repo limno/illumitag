@@ -1,6 +1,9 @@
 # Built-in modules #
 import os, time, getpass, locale
 
+# Internal modules #
+from illumitag.common.autopaths import FilePath
+
 # Third party modules #
 import matplotlib, brewer2mpl
 
@@ -25,11 +28,12 @@ class Graph(object):
         # Short name #
         if short_name: self.short_name = short_name
         # Paths #
-        self.path = self.base_dir + self.short_name + '.pdf'
-        self.svg_path = self.base_dir + self.short_name + '.svg'
-        self.eps_path = self.base_dir + self.short_name + '.eps'
-        self.csv_path = self.base_dir + self.short_name + '.csv'
-        self.json_path = self.base_dir + self.short_name + '.json'
+        self.path =      FilePath(self.base_dir + self.short_name + '.pdf')
+        self.svg_path =  FilePath(self.base_dir + self.short_name + '.svg')
+        self.eps_path =  FilePath(self.base_dir + self.short_name + '.eps')
+        self.csv_path =  FilePath(self.base_dir + self.short_name + '.csv')
+        self.json_path = FilePath(self.base_dir + self.short_name + '.json')
+        self.txt_path  = FilePath(self.base_dir + self.short_name + '.txt')
         # Extra #
         self.dev_mode = False
 
@@ -55,5 +59,5 @@ class Graph(object):
             axes.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(seperate))
         # Save it as PDF #
         fig.savefig(self.path)
-        # An extra SVG export #
-        fig.savefig(self.eps_path)
+        # An extra export #
+        fig.savefig(self.svg_path)

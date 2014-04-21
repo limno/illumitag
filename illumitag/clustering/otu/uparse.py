@@ -16,7 +16,7 @@ import sh
 
 ###############################################################################
 class UparseOTUs(OTUs):
-    """Will use uparse to create an OTU clusters from a given FASTA file
+    """Will use uparse to create OTU clusters from a given FASTA file
     http://www.nature.com/doifinder/10.1038/nmeth.2604"""
 
     short_name = 'uparse'
@@ -52,8 +52,8 @@ class UparseOTUs(OTUs):
         self.centers = FASTA(self.p.centers)
         self.readmap = UClusterFile(self.p.readmap)
         # Taxonomy #
-        self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silvamod', self.p.silva)
-        self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'freshwater', self.p.fw)
+        self.taxonomy_silva = CrestTaxonomy(self.centers, self, 'silvamod', self.p.silva_dir)
+        self.taxonomy_fw = CrestTaxonomy(self.centers, self, 'freshwater', self.p.fw_dir)
         self.taxonomy_rpd = RdpTaxonomy(self.centers, self)
         # Preferred one #
         self.taxonomy = self.taxonomy_silva
@@ -93,6 +93,11 @@ class UClusterFile(FilePath):
     @property
     def count(self):
         return int(sh.wc('-l', self.path).stdout.split()[0])
+
+    @property
+    def count_mapped(self):
+        """Count only the reads that mapped to a center"""
+        return sum([1 for line in self if line.split()[-1] != '*'])
 
     @property
     def otu_sample_counts(self):

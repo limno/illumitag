@@ -74,6 +74,10 @@ class CrestTaxonomy(Taxonomy):
         shutil.move(self.p.crest_hits[:-4] + '_Composition.txt', self.p.crest_composition)
         shutil.move(self.p.crest_hits[:-4] + '_Tree.txt', self.p.crest_tree)
         shutil.move(self.p.crest_hits[:-4] + '_Assignments.txt', self.p.crest_assignments)
+        # Clean up #
+        comp_path = home + 'ILLUMITAG/All_Composition.txt'
+        if os.path.exists(comp_path): os.remove(comp_path)
+        if os.path.exists("error.log") and os.path.getsize("error.log") == 0: os.remove("error.log")
         # Return #
         return self
 
