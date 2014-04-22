@@ -87,7 +87,7 @@ class UclustOTUs(OTUs):
     @property_cached
     def cluster_counts_table(self):
         """Create the unfiltered OTU table"""
-        # Put results in a dict of dict #
+        # Put results in a dict of dicts #
         result = defaultdict(lambda: defaultdict(int))
         # Loop #
         for line in self.otus:

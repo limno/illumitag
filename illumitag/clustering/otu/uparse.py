@@ -112,7 +112,7 @@ class UClusterFile(FilePath):
 
     @property
     def otu_sample_counts(self):
-        # Put results in a dict of dict #
+        # Put results in a dict of dicts #
         result = defaultdict(lambda: defaultdict(int))
         # Loop #
         for line in self:
