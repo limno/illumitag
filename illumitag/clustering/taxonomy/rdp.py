@@ -8,7 +8,7 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.clustering.taxonomy import plots
 from illumitag.fasta.single import FASTA
 from illumitag.common.csv_tables import CSVTable
-from illumitag.clustering.statistics import StatsOnOTUs
+from illumitag.clustering.statistics import StatsOnTaxonomy
 
 # Third party modules #
 import sh
@@ -48,7 +48,7 @@ class RdpTaxonomy(Taxonomy):
         #self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
         #self.comp_tips = CompositionTips(self, self.p.comp_tips)
         # Stats #
-        self.stats = StatsOnOTUs(self)
+        self.stats = StatsOnTaxonomy(self)
 
     def assign(self):
         sh.rdp_multiclassifier('--conf=0.5','--hier_outfile='+self.p.composition, '--assign_outfile='+self.p.assignment)

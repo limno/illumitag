@@ -5,11 +5,14 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.clustering.statistics.nmds import NMDS
 from illumitag.clustering.statistics.permanova import PERMANOVA
 from illumitag.clustering.statistics.betadis import BetaDispersion
+from illumitag.clustering.statistics.unifrac import Unifrac
 
 # Third party modules #
 
 ###############################################################################
-class StatsOnOTUs(object):
+class StatsOnTaxonomy(object):
+    """All the statistics to perform on an OTU table that has taxonomy
+    associated to it."""
 
     all_paths = """
     /nmds/
@@ -19,13 +22,15 @@ class StatsOnOTUs(object):
 
     def __init__(self, parent):
         # Save parent #
-        self.otu, self.parent = parent, parent
+        self.tax, self.parent = parent, parent
         # Paths #
         self.p = AutoPaths(self.parent.p.stats_dir, self.all_paths)
-        # Children #
+        # R stuff #
         self.nmds = NMDS(self, self.parent.otu_csv)
         self.permanova = PERMANOVA(self)
         self.betadis = BetaDispersion(self)
+        # Other #
+        self.unifrac = Unifrac(self)
 
     def run(self):
         self.nmds.run()

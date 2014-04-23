@@ -16,7 +16,7 @@ class BetaDispersion(object):
     def __init__(self, parent):
         # Save parent #
         self.stat, self.parent = parent, parent
-        self.otu = parent.otu
+        self.tax = parent.tax
         # Paths #
         self.p = AutoPaths(self.parent.p.betadis_dir, self.all_paths)
 

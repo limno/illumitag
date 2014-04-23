@@ -12,7 +12,7 @@ from illumitag.common.color import Color
 
 # Constants #
 home = os.environ['HOME'] + '/'
-chimera_ref_path = home + 'glob/16s/microbiomeutil-r20110519.fasta'
+chimera_ref_path = home + 'glob/lucass/16s/microbiomeutil-r20110519.fasta'
 
 ###############################################################################
 class PrimerGroup(object):

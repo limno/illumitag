@@ -41,7 +41,7 @@ class LengthDistribution(Graph):
     """Simple length distribution"""
     short_name = 'length_distribution'
 
-    def plot(self):
+    def plot(self, loglog=False):
         # Data #
         counts = self.parent.lengths
         # Plot #
@@ -53,6 +53,10 @@ class LengthDistribution(Graph):
         axes.set_xlabel('Length of sequence in nucleotides')
         axes.set_ylabel('Number of sequences with this length')
         axes.yaxis.grid(True)
+        # Log log #
+        if loglog:
+            axes.set_xscale('symlog')
+            axes.set_yscale('symlog')
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
         pyplot.close(fig)

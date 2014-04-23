@@ -27,5 +27,9 @@ proj.load()
 s1 = illumitag.runs[1][3][31]
 s2 = illumitag.runs[1][2][33]
 
+# Compute Unifrac dist #
+illumitag.helper.silvamod.amplify()
+illumitag.helper.silvamod.amplified.graphs[1].plot(loglog=True)
+
 # Make fraction graph #
 proj.graphs[-1].plot()

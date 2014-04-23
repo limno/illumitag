@@ -7,7 +7,7 @@ from illumitag.common.autopaths import AutoPaths
 from illumitag.common.slurm import nr_threads
 from illumitag.common.cache import property_cached
 from illumitag.common.csv_tables import CSVTable
-from illumitag.clustering.statistics import StatsOnOTUs
+from illumitag.clustering.statistics import StatsOnTaxonomy
 from illumitag.clustering.taxonomy import Taxonomy, SimpleTaxonomy
 from illumitag.clustering.taxonomy import plots
 from illumitag.clustering.composition.phyla import CompositionPhyla
@@ -63,7 +63,7 @@ class CrestTaxonomy(Taxonomy):
         self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
         self.comp_tips = CompositionTips(self, self.p.comp_tips)
         # Stats #
-        self.stats = StatsOnOTUs(self)
+        self.stats = StatsOnTaxonomy(self)
 
     def assign(self):
         # Run #

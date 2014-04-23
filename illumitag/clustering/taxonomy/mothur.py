@@ -13,8 +13,8 @@ import sh
 home = os.environ['HOME'] + '/'
 
 # Databases #
-train_db_path = home + 'glob/16s/trainset/trainset9_032012.pds.fasta'
-train_tax_path = home + 'glob/16s/trainset/trainset9_032012.pds.tax'
+train_db_path = home + 'glob/lucass/16s/trainset/trainset9_032012.pds.fasta'
+train_tax_path = home + 'glob/lucass/16s/trainset/trainset9_032012.pds.tax'
 
 ###############################################################################
 class MothurTaxonomy(Taxonomy):
