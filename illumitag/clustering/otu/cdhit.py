@@ -22,8 +22,8 @@ cdhit_script = home + 'share/cd-hit-otu-illumina/cd-hit-otu-all-single.pl'
 
 ###############################################################################
 class CdhitOTUs(OTUs):
-    """Will use cd-hit to create OTU clusters from a given FASTA file
-    http://qiime.org/scripts/pick_otus.html"""
+    """Will use cd-hit to create OTU clusters from a given FASTQ file
+    http://weizhong-lab.ucsd.edu/cd-hit-otu/"""
 
     short_name = 'cdhit'
     title = 'CD-HIT Illumina OTU picking'

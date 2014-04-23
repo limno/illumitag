@@ -32,6 +32,7 @@ class Pyrosample(object):
     /raw/raw.fasta
     /raw/raw.qual
     /raw/manifest.txt
+    /fastq/reads.fastq
     """
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.id_name)
@@ -70,11 +71,16 @@ class Pyrosample(object):
         self.used = True
         # Primer #
         self.primer_regex = re.compile(self.info['primer'])
-        # FASTQ #
-        self.reads = FASTA(self.p.reads_fasta)
-        self.fasta = FASTA(self.p.renamed)
+        # Raw files #
         self.raw_fasta = FASTA(self.p.raw_fasta)
         self.raw_fastq = FASTQ(self.p.raw_fastq)
+        # Standard FASTA #
+        self.reads = FASTA(self.p.reads_fasta)
+        self.fasta = FASTA(self.p.renamed)
+        # Special FASTQ #
+        self.fastq = FASTQ(self.p.reads_fastq)
+        # A shameless hack for cdhit to work #
+        self.renamed = self.fastq
         # Pre-denoised special case #
         if self.info['predenoised'] and False:
             self.sff_files_info = []
@@ -91,33 +97,34 @@ class Pyrosample(object):
         # Convert #
         sh.fasta_to_fastq(self.p.raw_fasta, self.p.raw_qual, self.p.raw_fastq)
 
-    def clean(self, minlength=400, threshold=21, windowsize=20):
-        def clean_iterator(reads):
-            for read in reads:
-                # Length #
-                if len(read) < minlength: continue
-                # Primer #
-                match = self.primer_regex.search(str(read.seq))
-                if not match: continue
-                # PHRED score #
-                scores = read.letter_annotations["phred_quality"]
-                averaged = moving_average(scores, windowsize)
-                discard = False
-                for i,value in enumerate(averaged):
-                    if value < threshold:
-                        read = read[:i+windowsize-1]
-                        if len(read) < minlength: discard = True
-                        break
-                if discard: continue
-                # Undetermined bases #
-                if 'N' in read: continue
-                # Remove primer #
-                read = read[match.end():]
-                # Flip them because 454 reads the other end #
-                read = read.reverse_complement()
-                # Return #
-                yield read
-        self.reads.write(clean_iterator(self.raw_fastq))
+    def clean_iterator(self, reads, minlength=400, threshold=21, windowsize=20):
+        for read in reads:
+            # Length #
+            if len(read) < minlength: continue
+            # Primer #
+            match = self.primer_regex.search(str(read.seq))
+            if not match: continue
+            # PHRED score #
+            scores = read.letter_annotations["phred_quality"]
+            averaged = moving_average(scores, windowsize)
+            discard = False
+            for i,value in enumerate(averaged):
+                if value < threshold:
+                    read = read[:i+windowsize-1]
+                    if len(read) < minlength: discard = True
+                    break
+            if discard: continue
+            # Undetermined bases #
+            if 'N' in read: continue
+            # Remove primer #
+            read = read[match.end():]
+            # Flip them because 454 reads the other end #
+            read = read.reverse_complement()
+            # Return #
+            yield read
+
+    def clean(self, **kwargs):
+        self.reads.write(self.clean_iterator(self.raw_fastq, **kwargs))
 
     def report_loss(self):
         print "Before cleaning: %i" % len(self.raw_fastq)
@@ -126,6 +133,12 @@ class Pyrosample(object):
 
     def process(self):
         self.reads.rename_with_num(self.name + '_read', new_path=self.fasta)
+
+    def make_fastq(self, **kwargs):
+        """In some special cases we want the FASTQ"""
+        self.fastq.write(self.clean_iterator(self.raw_fastq, **kwargs))
+        self.fastq.rename_with_num(self.name + '_read')
+        print "make_fastq for sample %s completed" % self.id_name
 
 ###############################################################################
 class Demultiplexer454(object):
