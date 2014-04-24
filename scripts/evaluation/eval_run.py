@@ -30,6 +30,8 @@ s2 = illumitag.runs[1][2][33]
 # Compute Unifrac dist #
 illumitag.helper.silvamod.amplify()
 illumitag.helper.silvamod.amplified.graphs[1].plot(loglog=True)
+cluster.otu_uparse.taxonomy_silva.make_filtered_centers()
+cluster.otu_uparse.taxonomy_silva.stats.unifrac.run()
 
 # Make fraction graph #
 proj.graphs[-1].plot()

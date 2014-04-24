@@ -10,9 +10,9 @@ import sh
 
 # Constants #
 home = os.environ['HOME'] + '/'
-silvamod_path = home + 'glob/lucass/16s/silvamod.fasta'
-amplified_path = home + 'glob/lucass/16s/silvamod_v3_v4.fasta'
-aligned_path = home + 'glob/lucass/16s/silvamod_v3_v4.align'
+silvamod_path = home + 'glob/16s/silvamod.fasta'
+amplified_path = home + 'glob/16s/silvamod_v3_v4.fasta'
+aligned_path = home + 'glob/16s/silvamod_v3_v4.align'
 
 # Objects #
 silvamod = FASTA(silvamod_path)
@@ -33,10 +33,10 @@ def amplify():
             rev_match = primers.rev_regex_uracil.search(str(r.seq))
             fwd_pos = fwd_match.start() if fwd_match else None
             rev_pos = rev_match.end() if rev_match else None
-            if fwd_pos==0 or rev_pos==len(r):
-                counts['on-the-edge'] += 1
-                continue
             if fwd_pos is not None and rev_pos is not None:
+                if fwd_pos<bar_len or rev_pos>len(r)-bar_len:
+                    counts['on-the-edge'] += 1
+                    continue
                 counts['success'] += 1
                 yield r[fwd_pos-bar_len:bar_len+rev_pos]
             elif fwd_pos: counts['only_fwd'] += 1
@@ -48,4 +48,4 @@ def amplify():
 ###############################################################################
 def align():
     """A function to align the silvamod 16S database"""
-    sh.clustalo()
+    sh.clustalo('-i', amplified, '-o', aligned)

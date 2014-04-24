@@ -62,6 +62,15 @@ class Taxonomy(object):
         self.otu_table_norm.to_csv(self.otu_csv_norm, sep='\t', float_format='%.5g')
         prepend_to_file(self.otu_csv_norm, 'X')
 
+    def make_filtered_centers(self):
+        """Regenerate the centers file with only the OTUs that haven't been
+        filtered out previously."""
+        self.otus_to_keep = [otu for otu in self.otu_table]
+        def filter_otus(f):
+            for seq in f:
+                if seq.id in self.otus_to_keep: yield seq
+        self.centers.write(filter_otus(self.otu.centers))
+
     def resample_otu_table(self, down_to=5000):
         # Eliminate samples that are under down_to #
         are_high = self.otu_table.sum(axis=1) > down_to

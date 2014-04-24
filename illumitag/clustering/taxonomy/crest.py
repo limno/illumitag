@@ -30,6 +30,7 @@ class CrestTaxonomy(Taxonomy):
     all_paths = """
     /otu_table.csv
     /otu_table_norm.csv
+    /centers.fasta
     /graphs/
     /stats/
     /comp_phyla/
@@ -59,6 +60,8 @@ class CrestTaxonomy(Taxonomy):
         # OTU table #
         self.otu_csv = CSVTable(self.p.otu_csv)
         self.otu_csv_norm = CSVTable(self.p.otu_csv_norm)
+        # Filtered centers file #
+        self.centers = FASTA(self.p.centers)
         # Composition tables #
         self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
         self.comp_tips = CompositionTips(self, self.p.comp_tips)

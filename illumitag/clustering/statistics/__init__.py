@@ -18,6 +18,7 @@ class StatsOnTaxonomy(object):
     /nmds/
     /permanova/
     /betadis/
+    /unifrac/
     """
 
     def __init__(self, parent):
