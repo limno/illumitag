@@ -8,7 +8,6 @@ import os, shutil, re
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common import slurm
 from illumitag.graphs import aggregate_plots
-from illumitag.analysis import Analysis
 from illumitag.clustering import Cluster
 from illumitag.reporting import Reporter
 from illumitag.fasta.other import CollectionPairedFASTQ
@@ -86,8 +85,6 @@ class Aggregate(object):
         self.bad_barcodes  = CollectionPairedFASTQ(p.bad_barcodes for p in self)
         self.good_barcodes = CollectionPairedFASTQ(p.good_barcodes for p in self)
         self.outcomes = (self.good_barcodes, self.no_barcodes, self.one_barcodes, self.same_barcodes, self.bad_barcodes)
-        # Analysis #
-        self.analysis = Analysis(self)
         # Cluster #
         self.samples = [s for p in self.pools for s in p.samples]
         self.cluster = Cluster(self.samples, self.name, self.p.cluster_dir)

@@ -32,7 +32,3 @@ class Project(Aggregate):
         self.p = AutoPaths(self.base_dir, self.all_paths)
         # Extra #
         self.meta_data_path = illumitag.repos_dir + 'projects/' + self.name + '.csv'
-
-    def run_analysis_slurm(self, *args, **kwargs):
-        if not self.loaded: self.load()
-        self.analysis.run_slurm(*args, **kwargs)

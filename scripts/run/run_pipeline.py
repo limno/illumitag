@@ -61,12 +61,6 @@ for p in run: p.graphs[0].plot()
 # All run graphs #
 [r.make_plots() for r in illumitag.runs]
 
-# Just one analysis #
-pj = illumitag.projects['test']; pj.load(); pj.analysis.run()
-pj = illumitag.projects['evaluation']; pj.load(); pj.analysis.run()
-# Just one analysis via slurm #
-job_id = illumitag.projects['evaluation'].run_analysis_slurm()
-
 # SLURM Report #
 illumitag.aggregate.make_slurm_report()
 
