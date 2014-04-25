@@ -6,7 +6,7 @@ from collections import Counter
 
 # Internal modules #
 import illumitag
-from illumitag.common import prepend_to_file, flatten
+from illumitag.common import prepend_to_file
 from illumitag.common.cache import property_cached
 from illumitag.common.autopaths import AutoPaths
 from illumitag.fasta.single import FASTA
@@ -75,13 +75,23 @@ class Taxonomy(object):
         # Eliminate samples that are under down_to #
         are_high = self.otu_table.sum(axis=1) > down_to
         old_frame = self.otu_table.loc[are_high,:]
-        # Make a new table #
-        new_frame = pandas.DataFrame()
-        for i, sample in old_frame.iterrows():
-            pop = flatten([[key]*val for key,val in freq.items()])
-            smaller_pop = random.sample(pop, down_to)
-            return Counter(smaller_pop)
-            new_frame[sample] = sample
+        # Determine down_to #
+        sums = otus.sum(axis=1)
+        if not down_to: self.down_to = min(sums)
+        else:
+            self.down_to = down_to
+            otus = otus.drop(sums[sums < self.down_to].keys())
+        # Empty frame #
+        subotus = pandas.DataFrame(columns=otus.columns, index=otus.index, dtype=int)
+        # Do it #
+        for sample_name in otus.index:
+            row = otus.loc[sample_name]
+            weighted_choices = list(row[row != 0].iteritems())
+            population = [val for val, count in weighted_choices for i in range(count)]
+            sub_pop = random.sample(population, self.down_to)
+            frequencies = Counter(sub_pop)
+            new_row = pandas.Series(frequencies.values(), index=frequencies.keys(), dtype=int)
+            subotus.loc[sample_name] = new_row
 
 ###############################################################################
 class SimpleTaxonomy(object):

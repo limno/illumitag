@@ -61,8 +61,8 @@ cluster.otu_uparse.taxonomy_silva.cluster_counts_table.to_csv(cluster.otu_uparse
 # Count cholorplasts et al. #
 silva = cluster.otu_uparse.taxonomy_silva
 result = 0
-for otu_name in silva.cluster_counts_table:
+for otu_name in cluster.otu_uparse.cluster_counts_table:
     assignement = silva.assignments[otu_name]
     if len(assignement) > 2 and assignement[2] in silva.unwanted:
-        result += silva.cluster_counts_table[otu_name].sum()
+        result += cluster.otu_uparse.cluster_counts_table[otu_name].sum()
 print result
