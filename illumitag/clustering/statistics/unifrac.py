@@ -5,6 +5,7 @@ import os, shutil, glob
 from illumitag.common.autopaths import AutoPaths, FilePath
 from illumitag.common.cache import property_cached
 from illumitag.common.csv_tables import CSVTable
+from illumitag.clustering.statistics.nmds import NMDS
 
 # Third party modules #
 import sh, pandas
@@ -50,6 +51,7 @@ class Unifrac(object):
     /raxml/output.tree
     /fasttree/output.tree
     /distances.csv
+    /nmds/
     """
 
     def __init__(self, parent):
@@ -66,7 +68,7 @@ class Unifrac(object):
         self.fasttree_tree = FilePath(self.p.fasttree_tree)
         self.distances_csv = CSVTable(self.p.distances_csv)
         # Graphs #
-        #self.graphs =
+        self.nmds = NMDS(self, self.distances_csv, calc_distance=False)
 
     def run(self):
         # Step 1 #

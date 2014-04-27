@@ -32,6 +32,7 @@ illumitag.helper.silvamod.amplify()
 illumitag.helper.silvamod.amplified.graphs[1].plot(loglog=True)
 cluster.otu_uparse.taxonomy_silva.make_filtered_centers()
 cluster.otu_uparse.taxonomy_silva.stats.unifrac.run()
+cluster.otu_uparse.taxonomy_silva.stats.unifrac.nmds.run()
 
 # Make fraction graph #
 proj.graphs[-1].plot()
