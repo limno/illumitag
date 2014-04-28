@@ -121,7 +121,7 @@ class CumulativePresence(Graph):
         axes.set_title('Cumulative graph of OTU presence in samples for %s OTUs' % num_of_otus)
         fig.suptitle('Clustering method: %s' % self.parent.otu.title)
         axes.set_xlabel('Fraction of samples (100%% equates %i samples)' % num_of_samples)
-        axes.set_ylabel('Number of OTUs that appear in this fraction of samples or more.')
+        axes.set_ylabel('Number of OTUs that appear in this fraction of samples or more')
         axes.invert_xaxis()
         axes.set_xticks([min(self.x) + (max(self.x)-min(self.x))* n / 9 for n in range(10)])
         axes.set_yscale('log')

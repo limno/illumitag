@@ -164,6 +164,44 @@ class TaxaHeatmapTributaries(TaxaHeatmap):
     short_name = 'taxa_heatmap_tributaries'
 
 ################################################################################
+class CumulativePresence(Graph):
+    """Reboot for domenico's publication"""
+    short_name = 'cumulative_presence'
+
+    def plot(self):
+        # Number of samples #
+        num_of_samples = self.parent.otu_table.shape[0]
+        samples_index = list(reversed(range(1,num_of_samples+1)))
+        # Get value frequencies #
+        counts = self.parent.otu_table.astype(bool).sum(axis=0).value_counts()
+        # Add missing values #
+        for n in samples_index:
+            if n not in counts:
+                counts = counts.set_value(n,0)
+        # Sort it #
+        counts = counts.sort_index(ascending=False)
+        # Cumulative sum #
+        self.y = list(counts.cumsum())
+        # Percentage of samples #
+        self.x = [n/num_of_samples for n in samples_index]
+        # Make step plot #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.step(self.x, self.y, fillstyle='bottom')
+        axes.set_xlabel('Fraction of samples (100%% equates %i samples)' % num_of_samples)
+        axes.set_ylabel('Number of OTUs that appear in this fraction of samples or more')
+        axes.invert_xaxis()
+        axes.set_xticks([min(self.x) + (max(self.x)-min(self.x))* n / 9 for n in range(10)])
+        axes.set_yscale('log')
+        axes.xaxis.grid(True)
+        # Set percentage #
+        percentage = lambda x, pos: '%1.0f%%' % (x*100.0)
+        axes.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(percentage))
+        # Save it #
+        self.save_plot(fig, axes)
+        pyplot.close(fig)
+
+################################################################################
 class CumulativePresenceScaledSplit(Graph):
     """The sample thing but scaled by the size of the OTU"""
     short_name = 'cumulative_presence_scaled'
@@ -232,8 +270,9 @@ freshwater.comp_tips.graphs += [heatmap]
 #freshwater.comp_tips.graphs += [heatmap_river]
 #freshwater.comp_tips.graphs += [heatmap_tributaries]
 
+cum_presence = CumulativePresence(silva)
 presence_split = CumulativePresenceScaledSplit(silva)
-silva.graphs += [presence_split]
+silva.graphs += [cum_presence, presence_split]
 
 #cluster.otu_uparse.taxonomy_silva.comp_phyla.make_plots()
 #cluster.otu_uparse.taxonomy_fw.comp_tips.make_plots()

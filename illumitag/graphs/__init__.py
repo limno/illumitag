@@ -60,4 +60,4 @@ class Graph(object):
         # Save it as PDF #
         fig.savefig(self.path)
         # An extra export #
-        fig.savefig(self.eps_path)
+        fig.savefig(self.svg_path)

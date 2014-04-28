@@ -28,6 +28,7 @@ class Taxonomy(object):
         for graph in self.graphs: graph.plot()
 
     def make_otu_table(self):
+        """Asks the counts form the OTU class and does some modifications."""
         # Remove unwanted #
         result = self.otu.cluster_counts_table.copy()
         for otu_name in result:
@@ -72,6 +73,7 @@ class Taxonomy(object):
         self.centers.write(filter_otus(self.otu.centers))
 
     def resample_otu_table(self, down_to=5000):
+        """This code does not work yet"""
         # Eliminate samples that are under down_to #
         are_high = self.otu_table.sum(axis=1) > down_to
         old_frame = self.otu_table.loc[are_high,:]
