@@ -95,6 +95,7 @@ class CrestTaxonomy(Taxonomy):
 
 ###############################################################################
 class SimpleCrestTaxonomy(SimpleTaxonomy, CrestTaxonomy):
+    short_name = 'crest'
 
     def __init__(self, fasta, base_dir, database='silvamod'):
         SimpleTaxonomy.__init__(self, fasta, base_dir)

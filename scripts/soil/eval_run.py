@@ -13,10 +13,15 @@ sys.exit("Copy paste the commands you want in ipython, don't run this script.")
 
 # Modules #
 import illumitag
+from illumitag.fasta.single import FASTA
+from illumitag.common.autopaths import DirectoryPath
+from illumitag.clustering.taxonomy.crest import SimpleCrestTaxonomy
+from illumitag.clustering.taxonomy.rdp import SimpleRdpTaxonomy
 
 ###############################################################################
 # Get vars #
 proj = illumitag.projects['evaluation']
+pools = proj.pools
 samples = [s for pool in proj for s in pool.samples]
 cluster = illumitag.clustering.favorites.evaluation
 
@@ -36,3 +41,20 @@ cluster.otu_uparse.taxonomy_silva.stats.unifrac.nmds.run()
 
 # Make fraction graph #
 proj.graphs[-1].plot()
+
+# Check below 400 bp sequences #
+folder = DirectoryPath(illumitag.projects['evaluation'].base_dir + "below_400/")
+over = FASTA(folder + "reads.fasta")
+def over_iterator(reads, max_length=400):
+    for read in reads:
+        if len(read) <= max_length: yield read
+over.create()
+for pool in pools: over.add_iterator(over_iterator(pool.good_barcodes.assembled.good_primers.qual_filtered))
+over.close()
+over.graphs[-1].plot()
+crest = SimpleCrestTaxonomy(over, folder)
+crest.assign()
+crest.composition.graph.plot()
+rdp = SimpleRdpTaxonomy(over, folder)
+rdp.assign()
+rdp.composition.graph.plot()

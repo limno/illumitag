@@ -74,7 +74,7 @@ class PrimerGroup(object):
 
     def len_filter(self):
         """Called from Assemble.length_filter"""
-        def good_len_iterator(reads, min_length=300):
+        def good_len_iterator(reads, min_length=400):
             for read in reads:
                 if len(read) < min_length: continue
                 yield read

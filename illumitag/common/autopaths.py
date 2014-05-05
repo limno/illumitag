@@ -275,8 +275,12 @@ class FilePath(str):
     def execute(self):
         return subprocess.call([self.path])
 
+    def replace_extension(self, new_extension='txt'):
+        """Return a new path with the extension swapped out"""
+        return FilePath(os.path.splitext(self.path)[0] + '.' + new_extension)
+
     def new_name_insert(self, string):
-        """Make a new name by appending a string before the extension"""
+        """Return a new name by appending a string before the extension"""
         return self.prefix_path + "." + string + self.extension
 
 ################################################################################

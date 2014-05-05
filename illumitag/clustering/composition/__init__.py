@@ -2,6 +2,7 @@
 from collections import defaultdict
 
 # Internal modules #
+import illumitag
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.csv_tables import CSVTable
 from illumitag.common.cache import property_cached
@@ -63,3 +64,23 @@ class Composition(object):
     def make_taxa_table(self):
         """Convert to CSV"""
         self.taxa_table.to_csv(self.taxa_csv, sep='\t')
+
+###############################################################################
+class SimpleComposition(Composition):
+    def __init__(self, parent, base_dir):
+        self.parent, self.taxonomy = parent, parent
+        self.base_dir = base_dir
+        self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Simple graph #
+        self.graph = illumitag.clustering.composition.plots.TaxaBarstack(self)
+        self.graph.bottom = 0.40
+        self.graph.legend_anchor = -0.3
+        self.formats = ('pdf',)
+
+    @property_cached
+    def taxa_table(self):
+        result = defaultdict(int)
+        for taxa in self.parent.assignments.values():
+            phyla = taxa[2] if len(taxa) > 2 else taxa[-1]
+            result[phyla] += 1
+        return pandas.DataFrame(result, index=["simple"])

@@ -105,6 +105,25 @@ def salt_graph():
     #axes.set_xlabel('Salinity')
     fig.savefig("sals.pdf")
 
+def ph_temp_graph():
+    with_ph = [s for s in samples if 'pH' in s.info and s.info['pH']]
+    x = [s.info['pH'][0] for s in with_ph]
+    y = [s.info['temperature'][0] for s in with_ph]
+    fig, axes = pyplot.subplots()
+    fig.set_figwidth(8)
+    fig.set_figheight(8)
+    fig.subplots_adjust(bottom=0.3, top=0.98, left=0.06, right=0.98)
+    axes.plot(x, y, 'ko')
+    axes.set_xlabel('pH')
+    axes.set_ylabel('Temp')
+    # Add annotations #
+    for i in range(len(with_ph)):
+        pyplot.annotate(with_ph[i].short_name, size=9, xy = (x[i], y[i]), xytext = (10, 0),
+                        textcoords = 'offset points', ha = 'left', va = 'center',
+                        bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
+    # Save #
+    fig.savefig("ph_against_temp.pdf")
+
 ###############################################################################
 def temporal_taxa_barstack():
     # Data #
@@ -133,37 +152,37 @@ def temporal_taxa_barstack():
 
 ###############################################################################
 def spatial_taxa_barstack():
-        # Data #
-        frame = cluster.otu_uparse.taxonomy_silva.comp_phyla.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
-        # Sorting by fraction #
-        march = [s for s in spatial if not 'rerun' in s.info]
-        march = sorted(march, key = lambda s: (s.info['pH']))
-        frame = frame.reindex(index=[s.short_name for s in march])
-        # Plot #
-        fig = pyplot.figure()
-        axes = frame.plot(kind='bar', stacked=True, color=colors)
-        fig = pyplot.gcf()
-        # Other #
-        axes.set_title('Species relative abundances per sample')
-        axes.set_ylabel('Relative abundances in percent')
-        axes.xaxis.grid(False)
-        axes.yaxis.grid(False)
-        axes.set_ylim([0,100])
-        # Put a legend below current axis
-        axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=5)
-        # Save it #
-        fig.set_figwidth(16)
-        fig.set_figheight(8)
-        fig.subplots_adjust(bottom=0.30, top=0.97, left=0.04, right=0.98)
-        fig.savefig("spatial_taxa_barstack.pdf")
-        pyplot.close(fig)
+    # Data #
+    frame = cluster.otu_uparse.taxonomy_silva.comp_phyla.taxa_table.apply(lambda x: 100*x/x.sum(), axis=1)
+    # Sorting by fraction #
+    march = [s for s in spatial if not 'rerun' in s.info]
+    march = sorted(march, key = lambda s: (s.info['pH']))
+    frame = frame.reindex(index=[s.short_name for s in march])
+    # Plot #
+    fig = pyplot.figure()
+    axes = frame.plot(kind='bar', stacked=True, color=colors)
+    fig = pyplot.gcf()
+    # Other #
+    axes.set_title('Species relative abundances per sample')
+    axes.set_ylabel('Relative abundances in percent')
+    axes.xaxis.grid(False)
+    axes.yaxis.grid(False)
+    axes.set_ylim([0,100])
+    # Put a legend below current axis
+    axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.10), fancybox=True, shadow=True, ncol=5)
+    # Save it #
+    fig.set_figwidth(16)
+    fig.set_figheight(8)
+    fig.subplots_adjust(bottom=0.30, top=0.97, left=0.04, right=0.98)
+    fig.savefig("spatial_taxa_barstack.pdf")
+    pyplot.close(fig)
 
 ###############################################################################
 def richness():
     # Taxa table #
     otu_table = cluster.otu_uparse.taxonomy_silva.otu_table
     # Compute richness #
-    ro.r.library("vegan")
-    R_otu_table = convert_to_r_dataframe(otu_table)
-    R_result = ro.r.qvalue(R_frame.rx2('pvalues'))
-    qvalues = list(R_result.rx2('qvalues'))
+    #ro.r.library("vegan")
+    #R_otu_table = convert_to_r_dataframe(otu_table)
+    #R_result = ro.r.qvalue(R_frame.rx2('pvalues'))
+    #qvalues = list(R_result.rx2('qvalues'))

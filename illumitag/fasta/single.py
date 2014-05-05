@@ -80,6 +80,12 @@ class FASTA(FilePath):
         self.buf_count += 1
         if self.buf_count % self.buffer_size == 0: self.flush()
 
+    def add_iterator(self, reads):
+        for read in reads:
+            self.buffer.append(read)
+            self.buf_count += 1
+            if self.buf_count % self.buffer_size == 0: self.flush()
+
     def flush(self):
         for read in self.buffer: SeqIO.write(read, self.handle, self.extension)
         self.buffer = []
