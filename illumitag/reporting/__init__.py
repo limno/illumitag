@@ -27,19 +27,23 @@ class Reporter(object):
     @property
     def count(self):
         """The read counts per pool"""
-        return sum(map(lambda p: p.count, self.pools))
-        return sum(playdoh.map(lambda p: p.count, self.pools, cpu=len(self)))
+        return sum(map(lambda p: len(p), self.pools))
+        return sum(playdoh.map(lambda p: len(p), self.pools, cpu=len(self)))
+
+    @property
+    def count_qced(self):
+        """The read counts after quality control"""
+        return sum(playdoh.map(lambda p: len(p.quality_reads), self.pools, cpu=len(self)))
+        return sum(map(lambda p: len(p.quality_reads), self.pools))
 
     @property
     def avg_quality(self):
         return map(lambda p: p.avg_quality, self.pools)
-        return playdoh.map(lambda p: p.avg_quality, self.pools, cpu=len(self))
 
     @property
     def outcome_percentage(self):
         for o in self.aggregate.outcomes:
             print o.first.doc + ': ' + str(int(round(100*len(o)/self.aggregate.count))) + '%'
-        #assert sum(map(len, p.outcomes)) == p.count
 
     @property
     def avg_assembly_stat(self):
