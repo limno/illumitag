@@ -24,7 +24,7 @@ class Graph(object):
     top = 0.93
     left = 0.06
     right = 0.98
-    formats = ('pdf', 'eps')
+    formats = ('pdf')
 
     def __init__(self, parent, base_dir=None, short_name=None):
         # Save parent #
