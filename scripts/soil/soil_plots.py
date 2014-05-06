@@ -13,6 +13,7 @@ from illumitag.common import split_thousands
 # Third party modules #
 import pandas, matplotlib
 from matplotlib import pyplot
+from scipy.cluster.hierarchy import linkage, dendrogram
 
 ################################################################################
 class BarcodeStack(Graph):
@@ -153,17 +154,132 @@ class FractionTaxaBarStack(Graph):
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
 
+################################################################################
+class Dendogram(Graph):
+    """Compare the pyro and illumina samples in a tree using Unifrac distance"""
+    short_name = 'unifrac_dendogram'
+    width = 10.0
+    height = 3.5
+    bottom = 0.4
+    top = 0.95
+    left = 0.1
+    right = 0.95
+    formats = ('pdf', 'eps')
+
+    def plot(self):
+        # The redundant distance matrix #
+        self.frame = self.parent.distances.copy()
+        assert (self.frame.index==self.frame.columns).all()
+        # Rename #
+        new_names = {
+            "SS15":          "Soda ILL SS15",
+            "SS16":          "Soda ILL SS16",
+            "SS17":          "Soda ILL SS17",
+            "US15":          "Soda ILL US15",
+            "US16":          "Soda ILL US16",
+            "US17":          "Soda ILL US17",
+            "ZL15":          "Soda ILL ZL15",
+            "ZL16":          "Soda ILL ZL16",
+            "ZL17":          "Soda ILL ZL17",
+            "soda_454_SS15": "Soda 454 SS15",
+            "soda_454_SS16": "Soda 454 SS16",
+            "soda_454_SS17": "Soda 454 SS17",
+            "soda_454_US15": "Soda 454 US15",
+            "soda_454_US16": "Soda 454 US16",
+            "soda_454_US17": "Soda 454 US17",
+            "soda_454_ZL15": "Soda 454 ZL15",
+            "soda_454_ZL16": "Soda 454 ZL16",
+            "soda_454_ZL17": "Soda 454 ZL17",
+            "p1bc01":        "Soil ILL 01",
+            "p1bc02":        "Soil ILL 02",
+            "p1bc03":        "Soil ILL 03",
+            "p1bc04":        "Soil ILL 04",
+            "p1bc05":        "Soil ILL 05",
+            "p1bc06":        "Soil ILL 06",
+            "p1bc07":        "Soil ILL 07",
+            "p1bc08":        "Soil ILL 08",
+            "p2bc01":        "Soil ILL 09",
+            "p2bc02":        "Soil ILL 10",
+            "p2bc03":        "Soil ILL 11",
+            "p2bc04":        "Soil ILL 12",
+            "p2bc05":        "Soil ILL 13",
+            "p2bc06":        "Soil ILL 14",
+            "p2bc07":        "Soil ILL 15",
+            "p2bc08":        "Soil ILL 16",
+            "p5bc01":        "Soil ILL 17",
+            "p5bc02":        "Soil ILL 18",
+            "p5bc03":        "Soil ILL 19",
+            "p5bc04":        "Soil ILL 20",
+            "p5bc05":        "Soil ILL 21",
+            "p5bc06":        "Soil ILL 22",
+            "p5bc07":        "Soil ILL 23",
+            "p5bc08":        "Soil ILL 24",
+            "soil_454":      "Soil 454 00",
+        }
+        self.frame.rename(columns=new_names, index=new_names, inplace=True)
+        # Hierarchical clustering UPGMA #
+        clusters = linkage(self.frame, method='average')
+        dendrogram(clusters, labels=self.frame.index)
+        axes = pyplot.gca()
+        fig = pyplot.gcf()
+        # Other #
+        axes.set_ylabel('Cophenetic distance')
+        # Change font #
+        mono = matplotlib.font_manager.FontProperties(family='monospace', size=9)
+        for label in axes.get_xticklabels(): label.set_fontproperties(mono)
+        # Save it #
+        self.save_plot(fig, axes)
+        pyplot.close(fig)
+
+################################################################################
+class UnifracNMDS(Graph):
+    short_name = 'nmds'
+    width = 8.0
+    height = 8.0
+    bottom = 0.10
+    top = 0.95
+    left = 0.12
+    right = 0.95
+    formats = ('pdf', 'eps')
+
+    def plot(self):
+        # Coord #
+        x = self.parent.coords['NMDS1'].values
+        y = self.parent.coords['NMDS2'].values
+        names = self.parent.coords['NMDS1'].keys()
+        # Make scatter #
+        fig = pyplot.figure()
+        axes = fig.add_subplot(111)
+        axes.plot(x, y, 'ro')
+        axes.set_xlabel('Dimension 1')
+        axes.set_ylabel('Dimension 2')
+        # Add annotations #
+        for i in range(len(names)):
+            pyplot.annotate(names[i], size=9, xy = (x[i], y[i]), xytext = (10, 0),
+                            textcoords = 'offset points', ha = 'left', va = 'center',
+                            bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
+        # Save it #
+        self.save_plot(fig, axes)
+        pyplot.close(fig)
 
 ################################################################################
 # Get the projects #
 #proj = illumitag.projects['evaluation']
 #proj.load()
-proj.graphs += [BarcodeStack(proj)]
-proj.graphs += [LengthDistribution(proj)]
-proj.graphs += [FractionTaxaBarStack(proj)]
-print "proj.graphs[-1].plot()"
-print "proj.graphs[-2].plot()"
-print "proj.graphs[-3].plot()"
+#proj.graphs += [BarcodeStack(proj)]
+#proj.graphs += [LengthDistribution(proj)]
+#proj.graphs += [FractionTaxaBarStack(proj)]
+#print "proj.graphs[-1].plot()"
+#print "proj.graphs[-2].plot()"
+#print "proj.graphs[-3].plot()"
 
 # Get the cluster #
-cluster = illumitag.clustering.favorites.evaluation
+cluster = illumitag.clustering.favorites.pyro_comparison
+unifrac = cluster.otu_uparse.taxonomy_silva.stats.unifrac
+unifrac.tree = Dendogram(unifrac)
+print "unifrac.tree.plot()"
+
+# Supplementary NMDS #
+unifrac.nmds.graph = UnifracNMDS(unifrac.nmds, base_dir=unifrac.nmds.base_dir)
+print "unifrac.nmds.run()"
+print "unifrac.nmds.graph.plot()"

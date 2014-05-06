@@ -52,6 +52,7 @@ class Unifrac(object):
     /fasttree/output.tree
     /distances.csv
     /nmds/
+    /graphs/
     """
 
     def __init__(self, parent):
