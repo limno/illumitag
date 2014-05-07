@@ -34,6 +34,11 @@ class Reporter(object):
         return sum(map(lambda p: len(p.quality_reads), self.pools))
 
     @property
+    def fraction_discarded(self):
+        """The fraction of reads lost to quality control"""
+        return self.count_qced / self.count
+
+    @property
     def avg_quality(self):
         return map(lambda p: p.avg_quality, self.pools)
 

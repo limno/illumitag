@@ -15,6 +15,53 @@ import pandas, matplotlib
 from matplotlib import pyplot
 from scipy.cluster.hierarchy import linkage, dendrogram
 
+# Constants #
+sediment_new_names = OrderedDict([
+    ("SS15",          "Soda ILL SS15"),
+    ("soda_454_SS15", "Soda 454 SS15"),
+    ("SS16",          "Soda ILL SS16"),
+    ("soda_454_SS16", "Soda 454 SS16"),
+    ("SS17",          "Soda ILL SS17"),
+    ("soda_454_SS17", "Soda 454 SS17"),
+    ("US15",          "Soda ILL US15"),
+    ("soda_454_US15", "Soda 454 US15"),
+    ("US16",          "Soda ILL US16"),
+    ("soda_454_US16", "Soda 454 US16"),
+    ("US17",          "Soda ILL US17"),
+    ("soda_454_US17", "Soda 454 US17"),
+    ("ZL15",          "Soda ILL ZL15"),
+    ("soda_454_ZL15", "Soda 454 ZL15"),
+    ("ZL16",          "Soda ILL ZL16"),
+    ("soda_454_ZL16", "Soda 454 ZL16"),
+    ("ZL17",          "Soda ILL ZL17"),
+    ("soda_454_ZL17", "Soda 454 ZL17"),
+    ("p1bc01",        "Sediment ILL 01"),
+    ("p1bc02",        "Sediment ILL 02"),
+    ("p1bc03",        "Sediment ILL 03"),
+    ("p1bc04",        "Sediment ILL 04"),
+    ("p1bc05",        "Sediment ILL 05"),
+    ("p1bc06",        "Sediment ILL 06"),
+    ("p1bc07",        "Sediment ILL 07"),
+    ("p1bc08",        "Sediment ILL 08"),
+    ("p2bc01",        "Sediment ILL 09"),
+    ("p2bc02",        "Sediment ILL 10"),
+    ("p2bc03",        "Sediment ILL 11"),
+    ("p2bc04",        "Sediment ILL 12"),
+    ("p2bc05",        "Sediment ILL 13"),
+    ("p2bc06",        "Sediment ILL 14"),
+    ("p2bc07",        "Sediment ILL 15"),
+    ("p2bc08",        "Sediment ILL 16"),
+    ("p5bc01",        "Sediment ILL 17"),
+    ("p5bc02",        "Sediment ILL 18"),
+    ("p5bc03",        "Sediment ILL 19"),
+    ("p5bc04",        "Sediment ILL 20"),
+    ("p5bc05",        "Sediment ILL 21"),
+    ("p5bc06",        "Sediment ILL 22"),
+    ("p5bc07",        "Sediment ILL 23"),
+    ("p5bc08",        "Sediment ILL 24"),
+    ("sediment_454",  "Sediment 454 00")
+])
+
 ################################################################################
 class BarcodeStack(Graph):
     short_name = 'barcode_stack'
@@ -61,7 +108,7 @@ class LengthDistribution(Graph):
         counts = sum((p.quality_reads.only_used.lengths for p in self.parent), Counter())
         # Plot #
         fig = pyplot.figure()
-        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray', align='center', label='Reads from soil sample')
+        pyplot.bar(counts.keys(), counts.values(), 1.0, color='gray', align='center', label='Reads from sediment sample')
         axes = pyplot.gca()
         axes.set_xlabel('Length of sequence in nucleotides')
         axes.set_ylabel('Number of sequences with this length')
@@ -171,52 +218,7 @@ class Dendogram(Graph):
         self.frame = self.parent.distances.copy()
         assert (self.frame.index==self.frame.columns).all()
         # Rename #
-        new_names = {
-            "SS15":          "Soda ILL SS15",
-            "SS16":          "Soda ILL SS16",
-            "SS17":          "Soda ILL SS17",
-            "US15":          "Soda ILL US15",
-            "US16":          "Soda ILL US16",
-            "US17":          "Soda ILL US17",
-            "ZL15":          "Soda ILL ZL15",
-            "ZL16":          "Soda ILL ZL16",
-            "ZL17":          "Soda ILL ZL17",
-            "soda_454_SS15": "Soda 454 SS15",
-            "soda_454_SS16": "Soda 454 SS16",
-            "soda_454_SS17": "Soda 454 SS17",
-            "soda_454_US15": "Soda 454 US15",
-            "soda_454_US16": "Soda 454 US16",
-            "soda_454_US17": "Soda 454 US17",
-            "soda_454_ZL15": "Soda 454 ZL15",
-            "soda_454_ZL16": "Soda 454 ZL16",
-            "soda_454_ZL17": "Soda 454 ZL17",
-            "p1bc01":        "Soil ILL 01",
-            "p1bc02":        "Soil ILL 02",
-            "p1bc03":        "Soil ILL 03",
-            "p1bc04":        "Soil ILL 04",
-            "p1bc05":        "Soil ILL 05",
-            "p1bc06":        "Soil ILL 06",
-            "p1bc07":        "Soil ILL 07",
-            "p1bc08":        "Soil ILL 08",
-            "p2bc01":        "Soil ILL 09",
-            "p2bc02":        "Soil ILL 10",
-            "p2bc03":        "Soil ILL 11",
-            "p2bc04":        "Soil ILL 12",
-            "p2bc05":        "Soil ILL 13",
-            "p2bc06":        "Soil ILL 14",
-            "p2bc07":        "Soil ILL 15",
-            "p2bc08":        "Soil ILL 16",
-            "p5bc01":        "Soil ILL 17",
-            "p5bc02":        "Soil ILL 18",
-            "p5bc03":        "Soil ILL 19",
-            "p5bc04":        "Soil ILL 20",
-            "p5bc05":        "Soil ILL 21",
-            "p5bc06":        "Soil ILL 22",
-            "p5bc07":        "Soil ILL 23",
-            "p5bc08":        "Soil ILL 24",
-            "soil_454":      "Soil 454 00",
-        }
-        self.frame.rename(columns=new_names, index=new_names, inplace=True)
+        self.frame.rename(columns=sediment_new_names, index=sediment_new_names, inplace=True)
         # Hierarchical clustering UPGMA #
         clusters = linkage(self.frame, method='average')
         dendrogram(clusters, labels=self.frame.index)
@@ -250,36 +252,53 @@ class UnifracNMDS(Graph):
         # Make scatter #
         fig = pyplot.figure()
         axes = fig.add_subplot(111)
-        axes.plot(x, y, 'ro')
         axes.set_xlabel('Dimension 1')
         axes.set_ylabel('Dimension 2')
-        # Add annotations #
-        for i in range(len(names)):
-            pyplot.annotate(names[i], size=9, xy = (x[i], y[i]), xytext = (10, 0),
-                            textcoords = 'offset points', ha = 'left', va = 'center',
+        # Plot every point #
+        for i, name in enumerate(names):
+            x = self.parent.coords['NMDS1'][name]
+            y = self.parent.coords['NMDS2'][name]
+            label = sediment_new_names[name]
+            xytext = (10, 0)
+            ha = 'left'
+            if label.startswith('Sediment ILL'):
+                axes.plot(x, y, 'ro')
+                continue
+            if label.startswith('Sediment 454'):
+                axes.plot(x, y, 'bo')
+                label = 'Sediment 454'
+            if label.startswith('Soda ILL'):
+                axes.plot(x, y, 'o', color='darkgreen')
+            if label.startswith('Soda 454'):
+                axes.plot(x, y, 'o', color='lightgreen')
+                xytext = (-10, 0)
+                ha = 'right'
+            pyplot.annotate(label, size=9, xy = (x, y), xytext = xytext,
+                            textcoords = 'offset points', ha = ha, va = 'center',
                             bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
         # Save it #
         self.save_plot(fig, axes)
         pyplot.close(fig)
 
 ################################################################################
-# Get the projects #
-#proj = illumitag.projects['evaluation']
-#proj.load()
-#proj.graphs += [BarcodeStack(proj)]
-#proj.graphs += [LengthDistribution(proj)]
-#proj.graphs += [FractionTaxaBarStack(proj)]
-#print "proj.graphs[-1].plot()"
-#print "proj.graphs[-2].plot()"
-#print "proj.graphs[-3].plot()"
+if __name__ == '__main__':
+    # Get the projects #
+    #proj = illumitag.projects['evaluation']
+    #proj.load()
+    #proj.graphs += [BarcodeStack(proj)]
+    #proj.graphs += [LengthDistribution(proj)]
+    #proj.graphs += [FractionTaxaBarStack(proj)]
+    #print "proj.graphs[-1].plot()"
+    #print "proj.graphs[-2].plot()"
+    #print "proj.graphs[-3].plot()"
 
-# Get the cluster #
-cluster = illumitag.clustering.favorites.pyro_comparison
-unifrac = cluster.otu_uparse.taxonomy_silva.stats.unifrac
-unifrac.tree = Dendogram(unifrac)
-print "unifrac.tree.plot()"
+    # Get the cluster #
+    cluster = illumitag.clustering.favorites.pyro_comparison
+    unifrac = cluster.otu_uparse.taxonomy_silva.stats.unifrac
+    unifrac.tree = Dendogram(unifrac)
+    print "unifrac.tree.plot()"
 
-# Supplementary NMDS #
-unifrac.nmds.graph = UnifracNMDS(unifrac.nmds, base_dir=unifrac.nmds.base_dir)
-print "unifrac.nmds.run()"
-print "unifrac.nmds.graph.plot()"
+    # Supplementary NMDS #
+    unifrac.nmds.graph = UnifracNMDS(unifrac.nmds, base_dir=unifrac.nmds.base_dir)
+    print "unifrac.nmds.run()"
+    print "unifrac.nmds.graph.plot()"

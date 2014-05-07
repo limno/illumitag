@@ -42,6 +42,16 @@ cluster.otu_uparse.taxonomy_silva.stats.unifrac.nmds.run()
 # Make fraction graph #
 proj.graphs[-1].plot()
 
+# Get statistics #
+proj.reporter.fraction_discarded
+
+# Get clustering values #
+r1, r2 = list(set([p.run for p in proj]))
+r1.parse_report_xml()
+r2.parse_report_xml()
+print float(r1.report_stats['fwd']['DensityPF']) / float(r1.report_stats['fwd']['DensityRaw'])
+print float(r2.report_stats['fwd']['DensityPF']) / float(r2.report_stats['fwd']['DensityRaw'])
+
 # Check below 400 bp sequences #
 folder = DirectoryPath(illumitag.projects['evaluation'].base_dir + "below_400/")
 over = FASTA(folder + "reads.fasta")
