@@ -1,4 +1,5 @@
-Pipeline for 16S Illumina paired-end sequencing used in the Limnology department at the Evolution Biology Center of Uppsala University. Publication pending. In the meantime, no detailed documentation has been written but the code is commented and two descriptive files can help you:
+Pipeline for 16S rRNA Illumina paired-end amplicon sequencing used in the Limnology department at the Evolution Biology Center of Uppsala University. Publication submitted and pending review. In the meantime, no detailed other documentation has been written but the code is commented and three descriptive files might help you:
 
-* documentation/flowchart.pdf
-* documentation/diagram.pdf
+* documentation/experiment_outline.pdf
+* documentation/objects_diagram.pdf
+* documentation/pipeline_outline.pdf
