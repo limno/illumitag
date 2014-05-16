@@ -5,6 +5,7 @@ library(lmPerm)
 library(ggplot2)
 library(RSvgDevice)
 library(gridExtra)
+library(qvalue)
 
 
 mdata<-read.csv(file="meta.data.csv", row.names=1, sep="\t")   ### sample data
@@ -55,6 +56,24 @@ am<-lm(a.ill~a.454)
 summary(am)
 pt
 
+#wilcoxn test
+
+dim(d.ill)
+dim(d.454)
+
+pvalues <- numeric(5111)
+for (i in 1:5111) {
+    pvalues[i] <- wilcox.test(x = d.ill[, i], y = d.454[, i],paired=TRUE, alternative="two.sided")$p.value
+}
+
+pvalues<-pvalues[!is.na(pvalues)]
+
+qobj <- qvalue(pvalues)
+q<-cbind(qobj$pvalue,qobj$qvalue)
+
+l<-which(pvalues<0.05)
+q[c(l),]
+
 # nmds sediment
 nmds2<-metaMDS(d1[c(10:33,43),],distance="bray", trymax=200)
 plot(nmds2, type="t")
@@ -73,29 +92,54 @@ eR.ill<-eR[c(1:5,7,8),]
 eR.454<-eR[c(32,33,35:38,40),]
 chao1.lm<-lm(eR.ill$S.chao1~eR.454$S.chao1)
 summary(chao1.lm)
-plot(eR.ill$S.chao1,eR.454$S.chao1)
+
+devSVG("ill_454_chao1.svg")
+plot(eR.454$S.chao1,eR.ill$S.chao1,cex=2)
+abline(chao1.lm)
+dev.off()
+
 
 J.ill<-J[c(1:5,7,8)]
 J.454<-J[c(32,33,35:38,40)]
 J.lm<-lm(J.ill~J.454)
 summary(J.lm)
-plot(J.ill,J.454)
+
+devSVG("ill_454_J.svg")
+plot(J.454,J.ill,cex=2)
+abline(J.lm)
+dev.off()
+
 
 ACE.lm<-lm(eR.ill$S.ACE~eR.454$S.ACE)
 summary(ACE.lm)
-plot(eR.ill$S.ACE,eR.454$S.ACE)
+
+devSVG("ill_454_ACE.svg")
+plot(eR.454$S.ACE,eR.ill$S.ACE,cex=2)
+abline(ACE.lm)
+dev.off()
+
 
 sh.ill<-sh[c(1:5,7,8)]
 sh.454<-sh[c(32,33,35:38,40)]
 sh.lm<-lm(sh.ill~sh.454)
 summary(sh.lm)
-plot(sh.ill,sh.454)
+
+devSVG("ill_454_sh.svg")
+plot(sh.454,sh.ill,cex=2)
+abline(sh.lm)
+dev.off()
+
 
 si.ill<-si[c(1:5,7,8)]
 si.454<-si[c(32,33,35:38,40)]
 si.lm<-lm(si.ill~si.454)
 summary(si.lm)
-plot(si.ill,si.454)
+
+devSVG("ill_454_si.svg")
+plot(si.454,si.ill,cex=2)
+abline(si.lm)
+dev.off()
+
 
 ### 250 sedminent samples ###
 
@@ -119,7 +163,7 @@ res5000<-merge(mdata,e5000,by.x="row.names", by.y="row.names")
 adonis(formula = e5000 ~ pool * barcode, data = res5000, permutations = 1000, method = "bray")
 
 res1500<-merge(mdata,e1500,by.x="row.names", by.y="row.names")
-adonis(formula = e1500 ~ pool * barcode, data = res1500, permutations = 1000, method = "bray")
+adonis(formula = e1500 ~ as.factor(pool) * as.factor(barcode), data = res1500, permutations = 1000, method = "bray")
 
 eR250<-as.data.frame(t(estimateR(e5000)))  #chao1 and ACE
 res5000<-cbind(res5000,eR250)
@@ -156,7 +200,31 @@ an.si<-aovp(si250 ~ as.factor(pool),data=res5000)
 TukeyHSD(an.si)
 
 ### pool 4 is different!
+# comparing pools
+e.1<-e1500[1:50,]
+e.2<-e1500[51:100,]
+e.3<-e1500[101:149,]
+e.4<-e1500[150:198,]
+e.5<-e1500[199:248,]
+dist1<-metaMDSdist(e1500, distance="bray")
+source<-c(rep(1,50),rep(2,50),rep(3,49),rep(4,49),rep(5,50))
 
+mod1 <- betadisper(dist1, source)
+mod1
+permutest(mod1, control = permControl(nperm = 1000))
+anova(mod1)
+plot(mod1)
+
+TukeyHSD(mod1)
+plot(TukeyHSD(mod1))
+
+boxplot(mod1)
+
+adonis(formula = e.1 ~ c(1:50), permutations = 1000, method = "bray")
+adonis(formula = e.2 ~ c(1:50), permutations = 1000, method = "bray")
+adonis(formula = e.3 ~ c(1:49), permutations = 1000, method = "bray")
+adonis(formula = e.4 ~ c(1:49), permutations = 1000, method = "bray")
+adonis(formula = e.5 ~ c(1:50), permutations = 1000, method = "bray")
 
 ### clustering methods comparison
 
@@ -185,6 +253,31 @@ mean(rowSums(r.cdhit>0))
 p1<-procrustes(a.uparse,a.uclust)
 p2<-procrustes(a.uparse,a.cdhit)
 p3<-procrustes(a.uclust,a.cdhit)
+
+# absolute diversity
+uparse1<-colSums(uparse)
+uclust1<-colSums(uclust)
+cdhit1<-colSums(cdhit)
+
+uparse1.eR<-as.data.frame(estimateR(uparse1))
+H <- diversity(uparse1)
+S <- specnumber(uparse1)
+uparse1.J <- H/log(S)  #Pielou's
+uparse1.sh<-diversity(uparse1, index = "shannon", MARGIN = 1, base = exp(1)) #Shannon-Wiener
+uparse1.si<-diversity(uparse1, index = "simpson", MARGIN = 1, base = exp(1)) #Simpson
+
+source("rarefaction.txt")
+uparse.rare<-rarefaction(uparse1, col=F)
+
+
+uclust1.eR<-as.data.frame(estimateR(uclust1))
+H <- diversity(uclust1)
+S <- specnumber(uclust1)
+uclust1.J <- H/log(S)  #Pielou's
+uclust1.sh<-diversity(uclust1, index = "shannon", MARGIN = 1, base = exp(1)) #Shannon-Wiener
+uclust1.si<-diversity(uclust1, index = "simpson", MARGIN = 1, base = exp(1)) #Simpson
+
+
 
 #summary(p1)
 pt1<-protest(a.uparse,a.uclust)
