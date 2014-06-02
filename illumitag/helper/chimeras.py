@@ -16,7 +16,7 @@ import sh
 home = os.environ['HOME'] + '/'
 
 # The microbiome database #
-chimera_ref_path = os.envrion('MICROBIOME_DB')
+chimera_ref_path = os.environ['MICROBIOME_DB']
 
 ################################################################################
 class ChimerasChecker(object):
