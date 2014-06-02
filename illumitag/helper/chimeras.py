@@ -14,7 +14,9 @@ import sh
 
 # Constants #
 home = os.environ['HOME'] + '/'
-chimera_ref_path = home + 'glob/lucass/16s/microbiomeutil-r20110519.fasta'
+
+# The microbiome database #
+chimera_ref_path = os.envrion('MICROBIOME_DB')
 
 ################################################################################
 class ChimerasChecker(object):
