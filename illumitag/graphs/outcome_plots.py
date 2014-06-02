@@ -67,6 +67,7 @@ class AssemblyPrimerPos(Graph):
         axes.legend()
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
+        self.json_path = self.path.replace_extension('json')
         json.dump({'fwd':fwd_pos, 'rev':rev_pos}, open(self.json_path, 'w'))
         pyplot.close(fig)
 
@@ -97,5 +98,6 @@ class UnassemblyPrimerPos(Graph):
         axes.legend()
         # Save it #
         self.save_plot(fig, axes, sep=('y'))
+        self.json_path = self.path.replace_extension('json')
         json.dump({'fwd':fwd_pos, 'rev':rev_pos}, open(self.json_path, 'w'))
         pyplot.close(fig)
