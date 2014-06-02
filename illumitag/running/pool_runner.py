@@ -35,8 +35,8 @@ class PoolRunner(Runner):
         {'make_qiime_output':         {}},
         ### Samples ###
         {'create_samples':            {}},
-        ### Chimeras ###
-        {'check_chimeras':            {}},
+        ### Chimeras (only statistics ) ###
+        #{'check_chimeras':            {}},
         ### FastQC ###
         {'barcode_fastqc':            {}},
         {'assembly_fastqc':           {}},

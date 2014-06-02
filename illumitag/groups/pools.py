@@ -152,7 +152,7 @@ class Pool(object):
         (if they have one)"""
         if not self.loaded: self.load()
         for sample in self.samples: sample.create()
-        for r in tqdm(self.good_barcodes.assembled.good_primers.len_filtered.parse_barcodes()):
+        for r in tqdm(self.quality_reads.untrimmed.parse_barcodes()):
             r.first.sample.add_read(r.read)
         for sample in self.samples: sample.close()
 

@@ -20,7 +20,7 @@ from statsmodels.formula.api import ols
 import statsmodels.graphics as smgraphics
 
 # Constants #
-__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MissmatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter', 'UchimeRefBar', 'UchimeDenovoBar', 'LengthHist']
+__all__ = ['BarcodeHist', 'ReadsThatPassHist', 'SalvageHist', 'MismatchReg', 'PrimerCounts', 'ReadsWithN', 'QualityFilter', 'LenFilter', 'UchimeRefBar', 'UchimeDenovoBar', 'LengthHist']
 
 ################################################################################
 class BarcodeHist(Graph):
@@ -89,14 +89,14 @@ class SalvageHist(Graph):
         pyplot.close(fig)
 
 ################################################################################
-class MissmatchReg(Graph):
+class MismatchReg(Graph):
     """Regression of mismatches per barcode proportions"""
-    short_name = 'missmatch_reg'
+    short_name = 'mismatch_reg'
 
     def plot(self):
         # Data #
         matched = []
-        missmatched = []
+        mismatched = []
         names = []
         for first_bar, second_bar in self.parent.samples.all_bar_pairs:
             if frozenset((first_bar, second_bar)) not in self.parent.bad_barcodes.set_counter: continue
@@ -104,9 +104,9 @@ class MissmatchReg(Graph):
             matched.append(self.parent.good_barcodes.counter[first_bar] / len(self.parent.good_barcodes))
             amount_miss = self.parent.bad_barcodes.set_counter[frozenset((first_bar, second_bar))]
             total_miss = self.parent.bad_barcodes.counter[second_bar]
-            missmatched.append(amount_miss / total_miss)
+            mismatched.append(amount_miss / total_miss)
         # Regression #
-        self.reg = ols("data ~ x", data=dict(data=missmatched, x=matched)).fit()
+        self.reg = ols("data ~ x", data=dict(data=mismatched, x=matched)).fit()
         # Plot #
         fig = smgraphics.regressionplots.plot_fit(self.reg, 1)
         axes = pyplot.gca()
@@ -127,7 +127,7 @@ class MissmatchReg(Graph):
         axes.add_artist(anchor)
         # Find outliers #
         outliers = (idx for idx,t in enumerate(self.reg.outlier_test().icol(2)) if t < 0.5)
-        outliers = [(matched[i], missmatched[i], names[i]) for i in outliers]
+        outliers = [(matched[i], mismatched[i], names[i]) for i in outliers]
         for x,y,name in outliers: axes.annotate(name, xy = (x,y), size=9, xytext = (-5, 5),
                                                 textcoords = 'offset points', ha = 'center', va = 'bottom',
                                                 bbox = dict(boxstyle = 'round,pad=0.2', fc = 'yellow', alpha = 0.3))
@@ -181,7 +181,7 @@ class PrimerCounts(Graph):
         axes = self.frame.plot(kind='barh', stacked=True, color=colors)
         fig = pyplot.gcf()
         # Other #
-        axes.set_title('Primer presence check results for pool %i (0 base pairs missmatches are allowed)' % self.parent.num)
+        axes.set_title('Primer presence check results for pool %i (0 base pairs mismatches are allowed)' % self.parent.num)
         axes.set_xlabel('Number of paired reads')
         axes.xaxis.grid(True)
         # Save it #

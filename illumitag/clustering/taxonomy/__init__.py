@@ -101,9 +101,13 @@ class SimpleTaxonomy(object):
     def __repr__(self): return '<%s object on %s>' % (self.__class__.__name__, self.fasta)
 
     def __init__(self, fasta, base_dir):
+        # Base params #
         self.fasta = fasta if isinstance(fasta, FASTA) else FASTA(fasta)
         self.base_dir = base_dir
         self.p = AutoPaths(self.base_dir, self.all_paths)
+        # Extra simple composition #
+        from illumitag.clustering.composition import SimpleComposition
+        self.composition = SimpleComposition(self, self.base_dir + 'comp_' + self.short_name + '/')
 
     @property_cached
     def phyla(self):

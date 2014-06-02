@@ -157,22 +157,26 @@ def natural_sort(item):
 def split_thousands(s, tSep='\'', dSep='.'):
     """
     Splits a number on thousands.
+    http://code.activestate.com/recipes/498181-add-thousands-separator-commas-to-formatted-number/
 
     >>> split_thousands(1000012)
     "1'000'012"
     """
+    # Check input #
     if s is None: return 0
+    # Check for int #
+    if round(s, 13) == s: s = int(s)
+    # Make string #
     if not isinstance(s, str): s = str(s)
-    cnt=0
-    numChars=dSep+'0123456789'
+    # Unreadable code #
+    cnt = 0
+    numChars = dSep + '0123456789'
     ls = len(s)
     while cnt < ls and s[cnt] not in numChars: cnt += 1
     lhs = s[0:cnt]
     s = s[cnt:]
-    if dSep == '':
-        cnt = -1
-    else:
-        cnt = s.rfind(dSep)
+    if dSep == '': cnt = -1
+    else: cnt = s.rfind(dSep)
     if cnt > 0:
         rhs = dSep + s[cnt+1:]
         s = s[:cnt]

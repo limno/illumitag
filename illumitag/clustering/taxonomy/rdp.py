@@ -59,6 +59,9 @@ class RdpTaxonomy(Taxonomy):
 
 ###############################################################################
 class SimpleRdpTaxonomy(SimpleTaxonomy):
+    short_name = 'rdp'
+    database = 'rdp'
+
     all_paths = """
     /composition.txt
     /assignments.txt

@@ -14,8 +14,8 @@
     "sample_num":    1,
     "project":       "454",
     "project_name":  "454 sequencing",
-    "sample":        "soil_454",
-    "sample_name":   "454 sequencing of the soil sample",
+    "sample":        "sediment_454",
+    "sample_name":   "454 sequencing of the sediment sample from lake Vallentunasjön",
     "group":         "pyro",
 
     "files": [

@@ -109,8 +109,8 @@ class SameBarcode(BarcodeGroup):
 class BadBarcode(BarcodeGroup):
     """When the barcodes have an index discrepancy"""
     short_name = "bad_barcodes"
-    long_name = "missmatching barcodes"
-    doc = "The two barcodes missmatch"
+    long_name = "mismatching barcodes"
+    doc = "The two barcodes mismatch"
 
     @property_cached
     def set_counter(self):

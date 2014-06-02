@@ -64,8 +64,8 @@ class HiearchicalHeatmap(Graph):
     column_metric  = 'braycurtis' # Can be: see scipy documentation
     gradient_span  = 'only_max'   # Can be: min_to_max, min_to_max_centered, only_max, only_min
     color_gradient = 'yellow_black_blue'   # Can be: see color_gradients dictionary
-    fig_weight = 12
-    fig_height = 8.5
+    weight = 12
+    height = 8.5
 
     def plot(self):
         # Names #
@@ -86,7 +86,7 @@ class HiearchicalHeatmap(Graph):
         norm = matplotlib.colors.Normalize(value_min, value_max)
 
         # Scale the figure window size #
-        fig = pyplot.figure(figsize=(self.fig_weight, self.fig_height))
+        fig = pyplot.figure(figsize=(self.weight, self.height))
 
         # Calculate positions for all elements #
         # ax1, placement of dendrogram 1, on the left of the heatmap

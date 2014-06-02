@@ -18,6 +18,8 @@ __all__ = ['BarcodeStack', 'AssemblyCounts', 'ChimerasSummary', 'LengthDistribut
 class BarcodeStack(Graph):
     """General distribution of barcodes for all pools"""
     short_name = 'barcode_stack'
+    left = 0.1
+    right = 0.96
 
     def plot(self):
         # Data #
@@ -35,7 +37,7 @@ class BarcodeStack(Graph):
         axes.xaxis.grid(True)
         axes.yaxis.grid(False)
         # Save it #
-        self.save_plot(fig, axes, sep=('x'), left=0.1, right=0.96)
+        self.save_plot(fig, axes, sep=('x'))
         self.frame.to_csv(self.csv_path)
         pyplot.close(fig)
 

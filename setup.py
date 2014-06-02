@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
       name             = 'illumitag',
-      version          = '0.2.0',
+      version          = '1.0.0',
       description      = 'Pipeline for 16S Illumina paired-end sequencing',
       long_description = open('README.txt').read(),
       license          = 'MIT',

@@ -25,7 +25,7 @@ class QualityReads(object):
     """
 
     def __repr__(self): return '<%s object of %s>' % (self.__class__.__name__, self.parent)
-    def __len__(self): return len(self.orig_reads)
+    def __len__(self): return len(self.trimmed)
 
     def __init__(self, path, parent):
         # Save parent #

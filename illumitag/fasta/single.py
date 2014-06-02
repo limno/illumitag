@@ -80,6 +80,12 @@ class FASTA(FilePath):
         self.buf_count += 1
         if self.buf_count % self.buffer_size == 0: self.flush()
 
+    def add_iterator(self, reads):
+        for read in reads:
+            self.buffer.append(read)
+            self.buf_count += 1
+            if self.buf_count % self.buffer_size == 0: self.flush()
+
     def flush(self):
         for read in self.buffer: SeqIO.write(read, self.handle, self.extension)
         self.buffer = []
@@ -121,7 +127,7 @@ class FASTA(FilePath):
 
     def subsample(self, down_to, new_path=None):
         # Auto path #
-        if not new_path: new_path = self.p.subsample
+        if new_path is None: new_path = self.p.subsample
         # Check size #
         if down_to > len(self):
             message = "Can't subsample %s down to %i. Only down to %i."
@@ -129,7 +135,8 @@ class FASTA(FilePath):
             self.copy(new_path)
             return
         # Make new file #
-        self.subsampled = self.__class__(new_path)
+        cls = FASTQ if self.extension == 'fastq' else FASTA
+        self.subsampled = cls(new_path)
         self.subsampled.create()
         # Do it #
         for seq in isubsample(self, down_to):
@@ -186,6 +193,10 @@ class FASTQ(FASTA):
     def to_fasta(self, path):
         with open(path, 'w') as handle:
             for r in self: SeqIO.write(r, handle, 'fasta')
+
+    def to_qual(self, path):
+        with open(path, 'w') as handle:
+            for r in self: SeqIO.write(r, handle, 'qual')
 
     def fastqc(self):
         # Call #
