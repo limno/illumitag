@@ -12,3 +12,6 @@
 *.sublime-project
 *.sublime-workspace
 .idea
+
+# personal files #
+.gitignore

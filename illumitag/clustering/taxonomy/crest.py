@@ -12,6 +12,8 @@ from illumitag.clustering.taxonomy import Taxonomy, SimpleTaxonomy
 from illumitag.clustering.taxonomy import plots
 from illumitag.clustering.composition.phyla import CompositionPhyla
 from illumitag.clustering.composition.tips import CompositionTips
+from illumitag.clustering.composition.order import CompositionOrder
+from illumitag.clustering.composition.clss import CompositionClass
 
 # Third party modules #
 import sh
@@ -35,6 +37,8 @@ class CrestTaxonomy(Taxonomy):
     /stats/
     /comp_phyla/
     /comp_tips/
+    /comp_order/
+    /comp_class/
     /crest_hits.xml
     /crest_composition.txt
     /crest_tree.txt
@@ -65,6 +69,9 @@ class CrestTaxonomy(Taxonomy):
         # Composition tables #
         self.comp_phyla = CompositionPhyla(self, self.p.comp_phyla)
         self.comp_tips = CompositionTips(self, self.p.comp_tips)
+        self.comp_order = CompositionOrder(self, self.p.comp_order)
+        self.comp_class = CompositionClass(self, self.p.comp_class)
+
         # Stats #
         self.stats = StatsOnTaxonomy(self)
 
