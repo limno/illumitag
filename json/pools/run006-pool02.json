@@ -1,0 +1,85 @@
+{
+    "contacts": {
+        "main": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        },
+        "pi": {
+            "name": "Stefan Bertilsson",
+            "email": "stebe@ebc.uu.se"
+        }
+    },
+
+    "uppmax_id":     "b2011035",
+    "run_num":       6,
+    "run_id":        "140324_M00485_0114_000000000-A7K5P",
+    "pool_num":      2,
+    "pool_id":       "Sample_Wim1",
+    "forward_reads": "Wim1_TGACCA_L001_R1_001.fastq.gz",
+    "reverse_reads": "Wim1_TGACCA_L001_R2_001.fastq.gz",
+
+    "project":       "wim", 
+    "project_name":  "wim",
+    "pool":          "wim1",
+    "pool_name":     "wim1",
+
+    "samples": [
+        {"name": "nz01",       "used": 1, "group": "nz",           "num": 1,  "fwd": "TATCACG", "rev": "ACTGAGA"},
+        {"name": "nz02",       "used": 1, "group": "nz",           "num": 2,  "fwd": "TACGTCA", "rev": "ACTGACT"},
+        {"name": "nz03",       "used": 1, "group": "nz",           "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
+        {"name": "nz04",       "used": 1, "group": "nz",           "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
+        {"name": "nz05",       "used": 1, "group": "nz",           "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
+        {"name": "nz06",       "used": 1, "group": "nz",           "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "nz07",       "used": 1, "group": "nz",           "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
+        {"name": "nz08",       "used": 1, "group": "nz",           "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
+        {"name": "nz09",       "used": 1, "group": "nz",           "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
+        {"name": "nz10",       "used": 1, "group": "nz",           "num": 10, "fwd": "TACGAGT", "rev": "TACTGCA"},
+        {"name": "nz11",       "used": 1, "group": "nz",           "num": 11, "fwd": "ACGCTAT", "rev": "ACTACGT"},
+        {"name": "nz12",       "used": 0, "group": "empty",        "num": 12, "fwd": "AGTCTCA", "rev": "ACTACAC"},
+        {"name": "nz13",       "used": 1, "group": "nz",           "num": 13, "fwd": "AGTCACT", "rev": "ACTATGC"},
+        {"name": "empty",      "used": 0, "group": "empty",        "num": 14, "fwd": "AGTCAGA", "rev": "ATGCGAT"},
+        {"name": "nz15",       "used": 1, "group": "nz",           "num": 15, "fwd": "AGTGAGT", "rev": "ATGCACT"},
+        {"name": "nz16",       "used": 1, "group": "nz",           "num": 16, "fwd": "AGATGCT", "rev": "ATGCTGT"},
+        {"name": "nz17",       "used": 1, "group": "nz",           "num": 17, "fwd": "TACGCTA", "rev": "ATGAGCA"},
+        {"name": "nz18",       "used": 1, "group": "nz",           "num": 18, "fwd": "AGACTCT", "rev": "ATGAGTC"},
+        {"name": "nz19",       "used": 1, "group": "nz",           "num": 19, "fwd": "AGACTGA", "rev": "ATGTGCT"},
+        {"name": "nz20",       "used": 1, "group": "nz",           "num": 20, "fwd": "AGACACA", "rev": "TACTGAC"},
+        {"name": "nz21",       "used": 1, "group": "nz",           "num": 21, "fwd": "AGACGAT", "rev": "ATGTCGT"},
+        {"name": "nz22",       "used": 1, "group": "nz",           "num": 22, "fwd": "AGAGTCA", "rev": "ATCGCAT"},
+        {"name": "nz23",       "used": 1, "group": "nz",           "num": 23, "fwd": "AGAGATG", "rev": "ATCGACT"},
+        {"name": "nz24",       "used": 1, "group": "nz",           "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
+        {"name": "empty",      "used": 0, "group": "empty",        "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
+        {"name": "empty",      "used": 0, "group": "empty",        "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
+        {"name": "nz27",       "used": 1, "group": "nz",           "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
+        {"name": "nz28",       "used": 1, "group": "nz",           "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
+        {"name": "nz29",       "used": 1, "group": "nz",           "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
+        {"name": "nz30",       "used": 1, "group": "nz",           "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},
+        {"name": "nz31",       "used": 1, "group": "nz",           "num": 31, "fwd": "TAGACTG", "rev": "ATACGCT"},
+        {"name": "nz32",       "used": 1, "group": "nz",           "num": 32, "fwd": "GTCATAG", "rev": "ATACTGC"},
+        {"name": "CH2010_01",  "used": 1, "group": "CH",           "num": 33, "fwd": "GTCATCT", "rev": "TGCGATA"},
+        {"name": "CH2010_02",  "used": 1, "group": "CH",           "num": 34, "fwd": "GTCACTA", "rev": "TGCTGTA"},
+        {"name": "CH2010_05",  "used": 1, "group": "CH",  	       "num": 35, "fwd": "GATACTG", "rev": "TGCTAGA"},
+        {"name": "CH2010_07",  "used": 1, "group": "CH",  	       "num": 36, "fwd": "TAGACGA", "rev": "TGAGCAT"},
+        {"name": "CH2010_10",  "used": 1, "group": "CH",  	       "num": 37, "fwd": "GATGAGT", "rev": "TGAGTGA"},
+        {"name": "CH2010_16",  "used": 1, "group": "CH",  	       "num": 38, "fwd": "GACTATG", "rev": "TACTCTC"},
+        {"name": "CH2010_22",  "used": 1, "group": "CH",           "num": 39, "fwd": "GACTCTA", "rev": "TGAGTAC"},
+        {"name": "CH2010_28",  "used": 1, "group": "CH",           "num": 40, "fwd": "GACTGAT", "rev": "TGACACT"},
+        {"name": "CH2010_34",  "used": 1, "group": "CH",           "num": 41, "fwd": "GACATCA", "rev": "TGACTCA"},
+        {"name": "CH2010_40",  "used": 1, "group": "CH",           "num": 42, "fwd": "TAGAGAG", "rev": "TGTGCTA"},
+        {"name": "CH2010_46",  "used": 1, "group": "CH",           "num": 43, "fwd": "GAGTCAT", "rev": "TGTGTCA"},
+        {"name": "CH2010_52",  "used": 1, "group": "CH",           "num": 44, "fwd": "GAGAGAT", "rev": "TGTCGTA"},
+        {"name": "CH2010_58",  "used": 1, "group": "CH",           "num": 45, "fwd": "GCTATCA", "rev": "TGTCACA"},
+        {"name": "CH2010_64",  "used": 1, "group": "CH",           "num": 46, "fwd": "GCTACTA", "rev": "TACTAGC"},
+        {"name": "CH2010_70",  "used": 1, "group": "CH",           "num": 47, "fwd": "GCTCATA", "rev": "TCGCATA"},
+        {"name": "CH2010_82",  "used": 1, "group": "CH",           "num": 48, "fwd": "GCATACT", "rev": "TCGTAGA"},
+        {"name": "CH2010_85",  "used": 1, "group": "CH",           "num": 49, "fwd": "GCATCAT", "rev": "TCAGCTA"},
+        {"name": "CH2010_87",  "used": 1, "group": "CH",           "num": 50, "fwd": "TAGAGCA", "rev": "TCAGAGA"}
+      ],
+
+    "primers": {
+            "name":    "General bacteria primers",
+            "sense":   "5' to 3'",
+            "forward": {"name": "341F", "sequence": "CCTACGGGNGGCWGCAG"},
+            "reverse": {"name": "805R", "sequence": "GACTACHVGGGTATCTAATCC"}
+    }
+}
