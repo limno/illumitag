@@ -27,9 +27,9 @@
     "reverse_reads": "MiSeq_pool_5_ATGTCA_L001_R2_001.fastq.gz",
 
     "project":       "louise",
-    "project_name":  "Louise’s study",
+    "project_name":  "Louise's study",
     "pool":          "louise5",
-    "pool_name":     "Fifth of Louise’s pools",
+    "pool_name":     "Fifth of Louise's pools",
 
     "comments": "Theme: bacteria associated with malaria mosquitoes and their breeding waters",
 

@@ -20,16 +20,16 @@
 
     "uppmax_id":     "b2013086",
     "run_num":       8,
-    "run_id":        "140214_M00485_0099_000000000-A7F3A", 
+    "run_id":        "140214_M00485_0099_000000000-A7F3A",
     "pool_num":      6,
     "pool_id":       "Sample_MiSeq_pool_6",
     "forward_reads": "MiSeq_pool_6_CCGTCC_L001_R1_001.fastq.gz",
     "reverse_reads": "MiSeq_pool_6_CCGTCC_L001_R2_001.fastq.gz",
 
     "project":       "louise",
-    "project_name":  "Louise’s study",
+    "project_name":  "Louise's study",
     "pool":          "louise6",
-    "pool_name":     "Sixth of Louise’s pools",
+    "pool_name":     "Sixth of Louise's pools",
 
     "comments": "Theme: bacteria associated with malaria mosquitoes and their breeding waters",
 

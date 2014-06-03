@@ -17,8 +17,8 @@
     "pool_id":       "Sample_Biodiversa_1",
     "forward_reads": "Biodiversa_1_GCCAAT_L001_R1_001.fastq.gz",
     "reverse_reads": "Biodiversa_1_GCCAAT_L001_R2_001.fastq.gz",
- 
-    "project":       "biodiversa", 
+
+    "project":       "biodiversa",
     "project_name":  "biodiversa",
     "pool":          "biodiversa_1",
     "pool_name":     "biodiversa_1",
@@ -29,7 +29,7 @@
         {"name": "ekhh1d2",       "used": 1, "group": "meso1",     "num": 3,  "fwd": "ACATCAG", "rev": "ACTGATC"},
         {"name": "hahh2d32",      "used": 1, "group": "meso2",     "num": 4,  "fwd": "ACACTGT", "rev": "ACTGTGT"},
         {"name": "eklh1d8",       "used": 1, "group": "meso1",     "num": 5,  "fwd": "ACACACT", "rev": "ACTCGAT"},
-        {"name": "ryssjoen",       "used": 1, "group": "lake",      "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
+        {"name": "ryssjoen",      "used": 1, "group": "lake",      "num": 6,  "fwd": "ACACAGA", "rev": "ACTCAGT"},
         {"name": "halh2d32",      "used": 1, "group": "meso2",     "num": 7,  "fwd": "ACGATGT", "rev": "ACTCTGA"},
         {"name": "hac3d2",        "used": 1, "group": "meso2",     "num": 8,  "fwd": "ACGAGTA", "rev": "ACTCTCT"},
         {"name": "edlh1d8",       "used": 1, "group": "meso3",     "num": 9,  "fwd": "ACGAGAT", "rev": "ACTCTAC"},
