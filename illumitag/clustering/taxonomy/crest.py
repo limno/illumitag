@@ -62,8 +62,8 @@ class CrestTaxonomy(Taxonomy):
         # Graphs #
         self.graphs = [getattr(plots, cls_name)(self) for cls_name in plots.__all__]
         # OTU table #
-        self.otu_csv = CSVTable(self.p.otu_csv)
-        self.otu_csv_norm = CSVTable(self.p.otu_csv_norm)
+        self.otu_csv = CSVTable(self.p.otu_csv, d='\t')
+        self.otu_csv_norm = CSVTable(self.p.otu_csv_norm, d='\t')
         # Filtered centers file #
         self.centers = FASTA(self.p.centers)
         # Composition tables #

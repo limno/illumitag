@@ -13,8 +13,9 @@ import sh
 class CSVTable(FilePath):
     d = ','
 
-    def __init__(self, path):
+    def __init__(self, path, d=None):
         self.path = path
+        if d is not None: self.d = d
 
     def remove_first_line(self):
         sh.sed('-i', '1d', self.path)
@@ -47,11 +48,11 @@ class CSVTable(FilePath):
     def filter_line_sum(self, minimum, path=None):
         self.rewrite_lines(self.min_sum_lines(minimum), path)
 
-    def transposed_lines(self):
+    def transposed_lines(self, d):
         rows = izip(*csv.reader(open(self.path), delimiter=self.d))
-        for row in rows: yield self.d.join(row) + '\n'
-    def transpose(self, path=None):
-        self.rewrite_lines(self.transposed_lines(), path)
+        for row in rows: yield d.join(row) + '\n'
+    def transpose(self, path=None, d=None):
+        self.rewrite_lines(self.transposed_lines(self.d if d is None else d), path)
 
 ################################################################################
 class TSVTable(CSVTable):

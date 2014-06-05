@@ -35,6 +35,12 @@ class Runner(object):
         print "Success. Results are in %s" % self.parent.base_dir
 
     def find_fns(self, name):
+        # Special case #
+        if '.' in name:
+            target = self.parent
+            for attribute in name.split('.'):
+                target = getattr(target, attribute)
+            return [target]
         # Functions #
         def get_children(obj, name, level):
             if level == 0:

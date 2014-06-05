@@ -1,5 +1,5 @@
 # Built-in modules #
-import os, stat, time, shutil, re, getpass
+import os, stat, re, getpass, time, shutil
 import base64, hashlib, socket
 from collections import OrderedDict
 
@@ -15,15 +15,19 @@ import sh
 
 # Constant #
 hostname = socket.gethostname()
+user = getpass.getuser()
 
 ################################################################################
 class ExistingJobs(object):
-    """Parses the output of '$ jobinfo -u $USER'"""
+    """Parses the output of `squeue` calls"""
 
-    queued_params = ['jobid','pos','partition','name','user','account','state',
+    queued_command = ["--array", "--format='%.8A %.9P %.25j %.8u %.14a %.2t %.19S %.10L %.8Q %.4C %.16R %.12f %E'", "--sort=-p,i", "-t", "PENDING", "-u", user]
+    running_command = ["-t", "r,cg", "--array", "--format='%.8A %.9P %.25j %.8u %.14a %.2t %.19S %.10L %.6D %.4C %R'", "-S", "e", "-u", user]
+
+    queued_params = ['jobid','partition','name','user','account','state',
                      'start_time','time_left','priority','cpus','nodelist',
                      'features','dependency']
-    runing_params = ['jobid','partition','name','user','account','state',
+    running_params = ['jobid','partition','name','user','account','state',
                      'start_time','time_left','nodes','cpus','nodelist']
 
     def __iter__(self): return iter(self.status)
@@ -37,17 +41,12 @@ class ExistingJobs(object):
     @property
     @expiry_every(seconds=30)
     def status(self):
-        # Special case #
-        if 'sisu' in hostname: return []
-        # Call command #
-        text = sh.jobinfo('-u', getpass.getuser()).stdout
         # Parse #
-        self.queued = [line for line in text.split('\n') if re.search("\(Priority\)", line) or
-                                                            re.search("\(null\)", line)]
-        self.running = [line for line in text.split('\n') if re.search("q[0-9]+$", line)]
+        self.queued = [line for line in sh.squeue(self.queued_command) if not line.startswith("'   JOBID")]
+        self.running = [line for line in sh.squeue(self.running_command) if not line.startswith("'   JOBID")]
         # Structure #
-        self.queued = [dict(zip(self.queued_params, line.split())) for line in self.queued if line]
-        self.running = [dict(zip(self.runing_params, line.split())) for line in self.running if line]
+        self.queued = [dict(zip(self.queued_params, line.strip("'\n").split())) for line in self.queued if line]
+        self.running = [dict(zip(self.running_params, line.strip("'\n").split())) for line in self.running if line]
         # Add info #
         for job in self.queued: job['type'] = 'queued'
         for job in self.running: job['type'] = 'running'
@@ -62,6 +61,30 @@ class ExistingJobs(object):
         return [job['name'] for job in self.status]
 
 ################################################################################
+class ExistingProjects(object):
+    """Parses the output of `projinfo`"""
+    params = ['name', 'used', 'allowed']
+
+    def __iter__(self): return iter(self.status)
+    def __getitem__(self, key):
+        if isinstance(key, slice): return self.status[key]
+        elif isinstance(key, int): return self.status[key]
+        elif isinstance(key, str): return [s for s in self if s['name'] == key][0]
+        else: raise TypeError("Invalid argument type.")
+    def __contains__(self, key): return key in [s['name'] for s in self]
+
+    @property
+    @expiry_every(seconds=3600)
+    def status(self):
+        self.output = sh.projinfo()
+        self.lines = [line.strip("'\n") for line in self.output if line.startswith('b') or line.startswith('g')]
+        cast = lambda x: (str(x[0]), float(x[1]), float(x[2]))
+        self.items = [cast(line.split()) for line in self.lines]
+        self.result = [dict(zip(self.params, item)) for item in self.items]
+        self.result.sort(key = lambda x: x['used'])
+        return self.result
+
+################################################################################
 class SLURMCommand(object):
     """Makes launching SLURM commands easy to write and easy to use. Here is an example way to use this class:
 
@@ -74,10 +97,7 @@ class SLURMCommand(object):
             command = 'import sh\n'
             command += 'script = sh.Command("analyze.py")\n'
             command += 'script(%s)' % path
-            job = SLURMCommand(command,
-                               time='00:01:00',
-                               qos='short',
-                               job_name=path[-25:])
+            job = SLURMCommand(command, time='00:01:00', qos='short', job_name=path[-25:])
             job.run()
             print "Job %i is running !" % job.id
     """
@@ -92,7 +112,7 @@ class SLURMCommand(object):
         ('job_name'  , {'needed': False, 'tag': '#SBATCH -J %s',          'default': 'test_slurm'}),
         ('out_file'  , {'needed': True,  'tag': '#SBATCH -o %s',          'default': '/dev/null'}),
         ('project'   , {'needed': False, 'tag': '#SBATCH -A %s',          'default': os.environ.get('SLURM_ACCOUNT')}),
-        ('time'      , {'needed': True,  'tag': '#SBATCH -t %s',          'default': '0:15:00'}),
+        ('time'      , {'needed': True,  'tag': '#SBATCH -t %s',          'default': '7-00:00:00'}),
         ('machines'  , {'needed': True,  'tag': '#SBATCH -N %s',          'default': '1'}),
         ('cores'     , {'needed': True,  'tag': '#SBATCH -n %s',          'default': '16'}),
         ('partition' , {'needed': True,  'tag': '#SBATCH -p %s',          'default': 'node'}),
@@ -101,7 +121,7 @@ class SLURMCommand(object):
         ('qos'       , {'needed': False, 'tag': '#SBATCH --qos=%s',       'default': 'short'}),
         ('dependency', {'needed': False, 'tag': '#SBATCH -d %s',          'default': 'afterok:1'}),
         ('constraint', {'needed': False, 'tag': '#SBATCH -C %s',          'default': 'mem72GB'}),
-        ('cluster'   , {'needed': False, 'tag': '#SBATCH -M %s',          'default': 'kalkyl'}),
+        ('cluster'   , {'needed': False, 'tag': '#SBATCH -M %s',          'default': 'milou'}),
     ))
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
@@ -111,16 +131,21 @@ class SLURMCommand(object):
         self.command = command
         self.save_script = save_script
         self.language = language
-        # Check command is a list #
-        if not isinstance(self.command, list): self.command = [self.command]
-        # Check everything is a string #
-        self.command = map(str, self.command)
+        # Absolute paths #
+        if self.save_script: self.save_script = os.path.abspath(save_script)
+        if 'change_dir' in kwargs: kwargs['change_dir'] = os.path.abspath(kwargs['change_dir'])
+        if 'out_file' in kwargs: kwargs['out_file'] = os.path.abspath(kwargs['out_file'])
+        # Check command #
+        if isinstance(self.command, list): self.command = ' '.join(map(str, self.command))
         # Check name #
         self.name = kwargs.get('job_name', self.slurm_headers['job_name']['default'])
         # Hash the name if it doesn't fit in the limit #
         if len(self.name) <= 25: self.short_name = self.name
         else: self.short_name = base64.urlsafe_b64encode(hashlib.md5(self.name).digest())
         kwargs['job_name'] = self.short_name
+        # Check we have a project #
+        if 'project' not in kwargs and 'SBATCH_ACCOUNT' not in os.environ:
+            kwargs['project'] = projects[0]['name']
         # Script header #
         self.script_header = [self.script_headers[language]]
         # Slurm parameters #
@@ -278,3 +303,4 @@ else:
 
 ################################################################################
 jobs = ExistingJobs()
+projects = ExistingProjects()
