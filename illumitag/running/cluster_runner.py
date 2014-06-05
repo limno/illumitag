@@ -41,8 +41,7 @@ class ClusterRunner(Runner):
     def run_slurm(self, steps=None, **kwargs):
         # Test case #
         if self.cluster.name == 'test':
-            kwargs['time'] = '00:15:00'
-            kwargs['qos'] = False
+            kwargs['time'] = '01:00:00'
             kwargs['email'] = '/dev/null'
         # Make script #
         command =  ["steps = %s" % steps]
@@ -53,6 +52,6 @@ class ClusterRunner(Runner):
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None
         if 'dependency' not in kwargs: kwargs['dependency'] = 'singleton'
-        job_name = "illumitag_%s" % self.cluster.name
+        job_name = "cluster_%s" % self.cluster.name
         self.parent.slurm_job = SLURMJob(command, self.parent.p.logs_dir, job_name=job_name, **kwargs)
         return self.parent.slurm_job.run()

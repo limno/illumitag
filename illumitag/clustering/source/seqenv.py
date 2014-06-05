@@ -5,6 +5,7 @@ import os, shutil
 from illumitag.common.autopaths import AutoPaths
 from illumitag.common.slurm import nr_threads
 from illumitag.common.csv_tables import CSVTable
+from illumitag.common.tmpstuff import TmpFile
 
 # Third party modules #
 import pandas, sh
@@ -57,9 +58,12 @@ class Seqenv(object):
             highest_otus = otus[0:self.N]
             sequences = (seq for seq in SeqIO.parse(self.taxonomy.centers, 'fasta') if seq.id in highest_otus)
             with open(path, 'w') as handle: SeqIO.write(sequences, handle, 'fasta')
-        # Run the Quince pipeline #
-        seqenv = sh.Command(seqenv_script)
-        seqenv('-f', self.taxonomy.centers, '-s', self.abundances, '-n', self.N, '-p', '-c', nr_threads, _out=str(self.p.out))
+        # Run the Quince pipeline with a special version of R #
+        module = "module load R/3.0.1"
+        params = ['-f', self.taxonomy.centers, '-s', self.abundances, '-n', self.N, '-p', '-c', nr_threads]
+        command = "bash -x " + seqenv_script + ' ' + ' '.join(map(str,params))
+        sh_file = TmpFile.from_string(module + '\n' + command)
+        sh.bash(sh_file, _out=str(self.p.out))
         # Move things into place #
         shutil.move("centers_N1000_blast_F_ENVO_OTUs.csv", "../")
         shutil.move("centers_N1000_blast_F_ENVO_OTUs_labels.csv", "../")
