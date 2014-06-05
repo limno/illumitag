@@ -45,10 +45,10 @@ class ClusterRunner(Runner):
             kwargs['qos'] = False
             kwargs['email'] = '/dev/null'
         # Make script #
-        command = """steps = %s
-                     name = %s
-                     cluster = getattr(illumitag.clustering.favorites, name)
-                     cluster.run(steps)""" % (steps, self.cluster.name)
+        command =  ["steps = %s" % steps]
+        command += ["name = '%s'" % self.cluster.name]
+        command += ["cluster = getattr(illumitag.clustering.favorites, name)"]
+        command += ["cluster.run(steps)"]
         # Send it #
         if 'time' not in kwargs: kwargs['time'] = self.default_time
         if 'email' not in kwargs: kwargs['email'] = None

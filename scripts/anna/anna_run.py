@@ -24,4 +24,4 @@ cluster.otu_uparse.taxonomy_silva.make_filtered_centers()
 
 # Run seqenv #
 cluster.run(steps=[{'otu_uparse.seqenv.run': dict(threads=False)}])
-cluster.run_slurm(steps=[{'otu_uparse.seqenv.run': dict(threads=False)}])
+cluster.run_slurm(steps=[{'otu_uparse.seqenv.run': dict(threads=False)}], time="1-00:00:00")

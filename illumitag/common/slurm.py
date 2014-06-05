@@ -77,7 +77,7 @@ class ExistingProjects(object):
     @expiry_every(seconds=3600)
     def status(self):
         self.output = sh.projinfo()
-        self.lines = [line.strip("'\n") for line in self.output if line.startswith('b') or line.startswith('g')]
+        self.lines = [line.strip("'\n") for line in self.output if line.startswith('b')]
         cast = lambda x: (str(x[0]), float(x[1]), float(x[2]))
         self.items = [cast(line.split()) for line in self.lines]
         self.result = [dict(zip(self.params, item)) for item in self.items]
@@ -102,7 +102,7 @@ class SLURMCommand(object):
             print "Job %i is running !" % job.id
     """
 
-    script_headers = {
+    shebang_headers = {
         'bash':   "#!/bin/bash -l",
         'python': "#!/usr/bin/env python"
     }
@@ -135,8 +135,8 @@ class SLURMCommand(object):
         if self.save_script: self.save_script = os.path.abspath(save_script)
         if 'change_dir' in kwargs: kwargs['change_dir'] = os.path.abspath(kwargs['change_dir'])
         if 'out_file' in kwargs: kwargs['out_file'] = os.path.abspath(kwargs['out_file'])
-        # Check command #
-        if isinstance(self.command, list): self.command = ' '.join(map(str, self.command))
+        # Check command type #
+        if not isinstance(self.command, list): self.command = [self.command]
         # Check name #
         self.name = kwargs.get('job_name', self.slurm_headers['job_name']['default'])
         # Hash the name if it doesn't fit in the limit #
@@ -147,7 +147,7 @@ class SLURMCommand(object):
         if 'project' not in kwargs and 'SBATCH_ACCOUNT' not in os.environ:
             kwargs['project'] = projects[0]['name']
         # Script header #
-        self.script_header = [self.script_headers[language]]
+        self.shebang_header = [self.shebang_headers[language]]
         # Slurm parameters #
         self.slurm_params = OrderedDict()
         for param, info in self.slurm_headers.items():
@@ -160,14 +160,14 @@ class SLURMCommand(object):
         self.slurm_header = [self.slurm_headers[k]['tag'] % v for k,v in self.slurm_params.items()]
         # Extra command #
         if language == 'bash':
-            self.command_header = ['echo "SLURM: start at $(date) on $(hostname)"']
-            self.command_footer = ['echo "SLURM: end at $(date)"']
+            self.script_header = ['echo "SLURM: start at $(date) on $(hostname)"']
+            self.script_footer = ['echo "SLURM: end at $(date)"']
         if language == 'python':
-            self.command_header = ['import time, platform',
+            self.script_header = ['import time, platform',
                                    'print "SLURM: start at {0} on {1}".format(time.asctime(), platform.node())']
-            self.command_footer = ['print "SLURM: end at {0}".format(time.asctime())']
+            self.script_footer = ['print "SLURM: end at {0}".format(time.asctime())']
         # Script #
-        self.script = (self.script_header, self.slurm_header, self.command_header, self.command, self.command_footer)
+        self.script = (self.shebang_header, self.slurm_header, self.script_header, self.command, self.script_footer)
         self.script = '\n'.join(flatten(self.script))
 
     @property
@@ -270,16 +270,13 @@ class SLURMJob(object):
         # Archive version #
         self.module_version = module.__version__ + ' ' + get_git_tag(repos_dir)
         # Make script #
-        script = """
-            import os, sys
-            sys.path.insert(0, "%s")
-            import %s
-            print "Using version from {0}".format(os.path.abspath(%s.__file__))
-            %s"""
-        script = script % (static_module_dir, module_name, module_name, command)
-        script = [l.lstrip(' ') for l in script.split('\n') if l]
-        script_path = self.log_dir + "run.py"
+        script =  ["import os, sys"]
+        script += ["sys.path.insert(0, '%s')" % static_module_dir]
+        script += ["import %s" % module_name]
+        script += ["print 'Using version from {0}'.format(os.path.abspath(%s.__file__))" % module_name]
+        script += command
         # Output #
+        script_path = self.log_dir + "run.py"
         output_path = self.log_dir + "run.out"
         # Change directory #
         if 'change_dir' not in kwargs: kwargs['change_dir'] = self.log_dir
