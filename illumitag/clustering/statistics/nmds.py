@@ -4,7 +4,6 @@ from illumitag.common.conversion import r_matrix_to_dataframe, pandas_df_to_r_df
 from illumitag.graphs import Graph
 
 # Third party modules #
-from rpy2 import robjects as ro
 from matplotlib import pyplot
 
 ################################################################################
@@ -53,6 +52,8 @@ class NMDS(object):
         self.graph = GraphNMDS(self, base_dir=self.base_dir)
 
     def run(self):
+        # Module on demand #
+        from rpy2 import robjects as ro
         # Load dataframe #
         ro.r("library(vegan)")
         ro.r("table = read.table('%s', sep='\t', header=TRUE, row.names='X')" % (self.csv))
@@ -72,6 +73,8 @@ class NMDS(object):
 
     def run_df(self):
         """Unfortunately this doesn't seem to work (yet)"""
+        # Module on demand #
+        from rpy2 import robjects as ro
         # Get frame #
         self.frame = self.parent.parent.frame
         # Call R #

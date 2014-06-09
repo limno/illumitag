@@ -45,8 +45,6 @@ class Seqenv(object):
         # Files #
         self.abundances = CSVTable(self.p.abundances)
 
-    def tr(self): self.taxonomy.otu_csv_norm.transpose(self.abundances, d=',')
-
     def run(self, cleanup=True):
         # Clean up #
         if cleanup:
@@ -60,10 +58,10 @@ class Seqenv(object):
         # Make the most abundant OTU file (launching one perl command per OTU sequence takes forever) #
         path = "centers_N%i.fa" % self.N
         if len(self.taxonomy.centers) <= self.N: self.taxonomy.centers.copy(path)
-        else: # Untested
+        else:
             otus = self.taxonomy.otu_table_norm.sum()
             otus.sort()
-            highest_otus = otus[0:self.N]
+            highest_otus = otus[-self.N:]
             sequences = (seq for seq in SeqIO.parse(self.taxonomy.centers, 'fasta') if seq.id in highest_otus)
             with open(path, 'w') as handle: SeqIO.write(sequences, handle, 'fasta')
         # Run the Quince pipeline with a special version of R #
