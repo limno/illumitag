@@ -62,7 +62,9 @@ class Runner(object):
             level += 1
         return fns
 
-    def run_step(self, name, fns, threads=True):
+    def run_step(self, name, fns, *args, **kwargs):
+        # Default threads #
+        threads = kwargs.pop('threads', True)
         # Start timer #
         start_time = time.time()
         # Message #
@@ -77,7 +79,7 @@ class Runner(object):
             self.thpool.dismissWorkers(8)
             del self.thpool
         else:
-            for fn in fns: fn()
+            for fn in fns: fn(*args, **kwargs)
         # Stop timer #
         run_time = datetime.timedelta(seconds=round(time.time() - start_time))
         if self.color: print Color.ylw + "Run time: '%s'" % (run_time) + Color.end

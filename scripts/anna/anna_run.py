@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-A script to run the clustering analyses.
+A script to run the clustering analyses for Silke's experiment.
 """
 
 # Future #

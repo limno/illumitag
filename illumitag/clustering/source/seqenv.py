@@ -22,11 +22,15 @@ class Seqenv(object):
 
     all_paths = """
     /working_dir/
+    /working_dir/seqenv.out
+    /working_dir/seqenv.err
     /abundances.csv
-    /seqenv.out
-    /
-    /centers_N1000_blast_F_ENVO_OTUs_labels.csv
     """
+
+    files_to_keep = [
+        "centers_N%i_blast_F_ENVO_OTUs.csv" % N,
+        "centers_N%i_blast_F_ENVO_OTUs_labels.csv" % N,
+    ]
 
     def __init__(self, parent, base_dir=None):
         # Parent #
@@ -43,7 +47,11 @@ class Seqenv(object):
 
     def tr(self): self.taxonomy.otu_csv_norm.transpose(self.abundances, d=',')
 
-    def run(self):
+    def run(self, cleanup=True):
+        # Clean up #
+        if cleanup:
+            shutil.rmtree(self.p.working_dir)
+            for f in self.files_to_keep: os.remove(self.base_dir + f) if os.path.exists(self.base_dir + f) else None
         # Move to the working dir #
         self.saved_cwd = os.getcwd()
         os.chdir(self.p.working_dir)
@@ -59,17 +67,19 @@ class Seqenv(object):
             sequences = (seq for seq in SeqIO.parse(self.taxonomy.centers, 'fasta') if seq.id in highest_otus)
             with open(path, 'w') as handle: SeqIO.write(sequences, handle, 'fasta')
         # Run the Quince pipeline with a special version of R #
-        module = "module load R/3.0.1"
+        header = 'module load R/3.0.1' + '\n'
+        header += 'export R_LIBS="$HOME/R/x86_64-unknown-linux-gnu-library/3.0/"' + '\n'
+        header += 'unset R_HOME' + '\n'
+        tee = "((%s | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log) &> stdboth.log"
         params = ['-f', self.taxonomy.centers, '-s', self.abundances, '-n', self.N, '-p', '-c', nr_threads]
-        command = "bash -x " + seqenv_script + ' ' + ' '.join(map(str,params))
-        sh_file = TmpFile.from_string(module + '\n' + command)
-        sh.bash(sh_file, _out=str(self.p.out))
+        command = "bash -x " + seqenv_script + ' ' + ' '.join(map(str, params))
+        self.script = header + tee % command
+        sh.bash(TmpFile.from_string(self.script), _out=self.p.out, _err=self.p.err)
         # Move things into place #
-        shutil.move("centers_N1000_blast_F_ENVO_OTUs.csv", "../")
-        shutil.move("centers_N1000_blast_F_ENVO_OTUs_labels.csv", "../")
-        # Cleanup #
+        if cleanup:
+            for f in self.files_to_keep: shutil.move(f, "../")
+        # Go back #
         os.chdir(self.saved_cwd)
-        #shutil.rmtree(self.p.working_dir)
 
     @property
     def frame(self):

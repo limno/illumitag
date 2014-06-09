@@ -108,20 +108,22 @@ class SLURMCommand(object):
     }
 
     slurm_headers = OrderedDict((
-        ('change_dir', {'needed': True,  'tag': '#SBATCH -D %s',          'default': os.path.abspath(os.getcwd())}),
-        ('job_name'  , {'needed': False, 'tag': '#SBATCH -J %s',          'default': 'test_slurm'}),
-        ('out_file'  , {'needed': True,  'tag': '#SBATCH -o %s',          'default': '/dev/null'}),
-        ('project'   , {'needed': False, 'tag': '#SBATCH -A %s',          'default': os.environ.get('SLURM_ACCOUNT')}),
-        ('time'      , {'needed': True,  'tag': '#SBATCH -t %s',          'default': '7-00:00:00'}),
-        ('machines'  , {'needed': True,  'tag': '#SBATCH -N %s',          'default': '1'}),
-        ('cores'     , {'needed': True,  'tag': '#SBATCH -n %s',          'default': '16'}),
-        ('partition' , {'needed': True,  'tag': '#SBATCH -p %s',          'default': 'node'}),
-        ('email'     , {'needed': False, 'tag': '#SBATCH --mail-user %s', 'default': os.environ.get('EMAIL')}),
-        ('email-when', {'needed': True,  'tag': '#SBATCH --mail-type=%s', 'default': 'END'}),
-        ('qos'       , {'needed': False, 'tag': '#SBATCH --qos=%s',       'default': 'short'}),
-        ('dependency', {'needed': False, 'tag': '#SBATCH -d %s',          'default': 'afterok:1'}),
-        ('constraint', {'needed': False, 'tag': '#SBATCH -C %s',          'default': 'mem72GB'}),
-        ('cluster'   , {'needed': False, 'tag': '#SBATCH -M %s',          'default': 'milou'}),
+        ('change_dir', {'needed': True,  'tag': '#SBATCH -D %s',            'default': os.path.abspath(os.getcwd())}),
+        ('job_name'  , {'needed': False, 'tag': '#SBATCH -J %s',            'default': 'test_slurm'}),
+        ('out_file'  , {'needed': True,  'tag': '#SBATCH -o %s',            'default': '/dev/null'}),
+        ('project'   , {'needed': False, 'tag': '#SBATCH -A %s',            'default': "b2011035"}),
+        ('time'      , {'needed': True,  'tag': '#SBATCH -t %s',            'default': '7-00:00:00'}),
+        ('machines'  , {'needed': True,  'tag': '#SBATCH -N %s',            'default': '1'}),
+        ('cores'     , {'needed': True,  'tag': '#SBATCH -n %s',            'default': '16'}),
+        ('partition' , {'needed': True,  'tag': '#SBATCH -p %s',            'default': 'node'}),
+        ('email'     , {'needed': False, 'tag': '#SBATCH --mail-user %s',   'default': os.environ.get('EMAIL')}),
+        ('email-when', {'needed': True,  'tag': '#SBATCH --mail-type=%s',   'default': 'END'}),
+        ('qos'       , {'needed': False, 'tag': '#SBATCH --qos=%s',         'default': 'short'}),
+        ('dependency', {'needed': False, 'tag': '#SBATCH -d %s',            'default': 'afterok:1'}),
+        ('constraint', {'needed': False, 'tag': '#SBATCH -C %s',            'default': 'mem72GB'}),
+        ('cluster'   , {'needed': False, 'tag': '#SBATCH -M %s',            'default': 'milou'}),
+        ('alloc'     , {'needed': False, 'tag': '#SBATCH --reservation=%s', 'default': 'miiiiiine'}),
+        ('jobid'     , {'needed': False, 'tag': '#SBATCH --jobid=%i',       'default': 2173455}),
     ))
 
     def __repr__(self): return '<%s object "%s">' % (self.__class__.__name__, self.name)
@@ -143,7 +145,7 @@ class SLURMCommand(object):
         if len(self.name) <= 25: self.short_name = self.name
         else: self.short_name = base64.urlsafe_b64encode(hashlib.md5(self.name).digest())
         kwargs['job_name'] = self.short_name
-        # Check we have a project #
+        # Check we have a project otherwise choose the one with less hours #
         if 'project' not in kwargs and 'SBATCH_ACCOUNT' not in os.environ:
             kwargs['project'] = projects[0]['name']
         # Script header #
