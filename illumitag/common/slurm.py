@@ -40,7 +40,7 @@ class ExistingJobs(object):
         # Special case #
         if 'sisu' in hostname: return []
         # Call command #
-        text = sh.jobinfo('-u', getpass.getuser()).stdout
+#        text = sh.jobinfo('-u', getpass.getuser()).stdout
         # Parse #
         self.queued = [line for line in text.split('\n') if re.search("\(Priority\)", line) or
                                                             re.search("\(null\)", line)]
