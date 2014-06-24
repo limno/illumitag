@@ -10,7 +10,7 @@
         }
     },
 
-    "uppmax_id":     "b2011035",
+    "uppmax_id":     "b2011032",
     "run_num":       6,
     "run_id":        "140324_M00485_0114_000000000-A7K5P",
     "pool_num":      2,
@@ -18,7 +18,7 @@
     "forward_reads": "Wim1_TGACCA_L001_R1_001.fastq.gz",
     "reverse_reads": "Wim1_TGACCA_L001_R2_001.fastq.gz",
 
-    "project":       "wim", 
+    "project":       "wim",
     "project_name":  "wim",
     "pool":          "wim1",
     "pool_name":     "wim1",

@@ -10,7 +10,7 @@
         }
     },
 
-    "uppmax_id":     "b2011035",
+    "uppmax_id":     "b2011032",
     "run_num":       6,
     "run_id":        "140324_M00485_0114_000000000-A7K5P",
     "pool_num":      1,
@@ -18,7 +18,7 @@
     "forward_reads": "Stebe53_TTAGGC_L001_R1_001.fastq.gz",
     "reverse_reads": "Stebe53_TTAGGC_L001_R2_001.fastq.gz",
 
-    "project":       "deepbio", 
+    "project":       "deepbio",
     "project_name":  "Deep Biosphere Metagenome",
     "pool":          "deep",
     "pool_name":     "Deep Bio Pool",
