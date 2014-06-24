@@ -1,3 +1,6 @@
+# Futures #
+from __future__ import division
+
 # Built-in modules #
 import os, re
 from collections import defaultdict
@@ -62,17 +65,18 @@ class UparseOTUs(OTUs):
         # Source tracking #
         self.seqenv = Seqenv(self)
 
-    def run(self):
+    def run(self, threshold=3.0):
         # Dereplicate #
         sh.usearch7("--derep_fulllength", self.reads, '-output', self.derep, '-sizeout')
         # Order by size and kill singeltons #
         sh.usearch7("--sortbysize", self.derep, '-output', self.sorted, '-minsize', 2)
         # Compute the centers #
-        sh.usearch7("--cluster_otus", self.sorted, '-otus', self.centers)
+        sh.usearch7("--cluster_otus", self.sorted, '-otus', self.centers, '-otu_radius_pct', threshold)
         # Rename the centers #
         self.centers.rename_with_num('OTU_')
         # Map the reads back to the centers #
-        sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', 0.97, '-uc', self.readmap)
+        identity = (100 - threshold) / 100
+        sh.usearch7("-usearch_global", self.reads, '-db', self.centers, '-strand', 'plus', '-id', identity, '-uc', self.readmap)
 
     def checks(self):
         assert len(self.reads) == len(self.derep)

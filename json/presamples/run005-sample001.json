@@ -18,11 +18,11 @@
     "forward_reads": "Alex_1_TCGCCTTA-TAGATCGC_L001_R1_001.fastq.gz",
     "reverse_reads": "Alex_1_TCGCCTTA-TAGATCGC_L001_R2_001.fastq.gz",
 
-    "project":       "test",
-    "project_name":  "Test data",
-    "sample":        "new_lab_test_1",
+    "project":       "mid_test",
+    "project_name":  "Testing the new MID protocol",
+    "sample":        "new_mid_test_1",
     "sample_name":   "First sample testing the new lab protocol",
-    "group":         "new_lab_test",
+    "group":         "new_mid_test",
 
     "forward_mid": "TCGCCTTA",
     "reverse_mid": "TAGATCGC",

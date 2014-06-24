@@ -23,6 +23,7 @@ class Collection(object):
     def __repr__(self): return 'Collection: %s' % (self.children)
     def __iter__(self): return iter(self.children)
     def __len__(self): return len(self.children)
+    def __add__(self, other): return self.__class__(self.children + other.children)
 
     def __init__(self, children):
         self.children = children
@@ -37,6 +38,7 @@ class Collection(object):
             if hasattr(self.first, 'num'): return [c for c in self.children if c.num == key][0]
             else: return self.children[key]
         else: raise TypeError('key')
+
 
 ###############################################################################
 class Aggregate(object):

@@ -45,7 +45,7 @@ class Seqenv(object):
         # Files #
         self.abundances = CSVTable(self.p.abundances)
 
-    def run(self, cleanup=True):
+    def run(self, threshold=3.0, cleanup=True):
         # Clean up #
         if cleanup:
             shutil.rmtree(self.p.working_dir)
@@ -68,9 +68,14 @@ class Seqenv(object):
         header = 'module load R/3.0.1' + '\n'
         header += 'export R_LIBS="$HOME/R/x86_64-unknown-linux-gnu-library/3.0/"' + '\n'
         header += 'unset R_HOME' + '\n'
+        # Log standard out and standard error as well as both together #
         tee = "((%s | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log) &> stdboth.log"
-        params = ['-f', self.taxonomy.centers, '-s', self.abundances, '-n', self.N, '-p', '-c', nr_threads]
+        # See seqenv documentation for parameters #
+        identity = 100 - threshold
+        params = ['-f', self.taxonomy.centers, '-s', self.abundances, '-n', self.N, '-m', identity, '-p', '-c', nr_threads]
+        # Activate bash debug mode #
         command = "bash -x " + seqenv_script + ' ' + ' '.join(map(str, params))
+        # Launch the whole thing with sh #
         self.script = header + tee % command
         sh.bash(TmpFile.from_string(self.script), _out=self.p.out, _err=self.p.err)
         # Move things into place #
