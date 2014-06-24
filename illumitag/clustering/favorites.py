@@ -65,12 +65,12 @@ danube = Cluster(samples, 'danube')
 samples = [s for s in illumitag.runs[3][6].samples if s.used]
 inga = Cluster(samples, 'inga')
 
-# Anna's cluster #
+# Anna's cluster (Silke) #
 samples = [s for s in illumitag.runs[4][4].samples if s.used]
 samples += [s for s in illumitag.runs[4][5].samples if s.used]
 anna = Cluster(samples, 'anna')
 
-# Jerome's cluster #
+# Jerome's cluster (Eva) #
 samples = [s for s in illumitag.runs[4][6].samples if s.used]
 samples += [s for s in illumitag.runs[4][7].samples if s.used]
 jerome = Cluster(samples, 'jerome')

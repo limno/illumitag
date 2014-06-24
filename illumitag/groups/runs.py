@@ -18,13 +18,10 @@ class Runs(Collection):
 
 ###############################################################################
 class Run(Aggregate):
-    """An illumina run containing several pools."""
+    """An Illumina run containing several pools."""
 
     def __repr__(self): return '<%s object number %i with %i pools>' % \
                                (self.__class__.__name__, self.num, len(self))
-
-    @property
-    def label(self): return self.first.run_label
 
     def __init__(self, num, pools, out_dir):
         # Attributes #
@@ -35,10 +32,19 @@ class Run(Aggregate):
         # Dir #
         self.base_dir = out_dir + self.name + '/'
         self.p = AutoPaths(self.base_dir, self.all_paths)
-        # Extra #
-        self.meta_data_path = None
         # Illumina report #
-        self.xml_report_path = home + "ILLUMITAG/INBOX/%s/report.xml" % self.label
+        self.xml_report_path = self.directory + "report.xml"
+
+    @property
+    def label(self): return self.first.run_label
+
+    @property
+    def account(self): return self.first.account
+
+    @property
+    def directory(self):
+        """The directory of the run"""
+        return home + "proj/%s/INBOX/%s/" % (self.account, self.label)
 
     def parse_report_xml(self):
         tree = etree.parse(self.xml_report_path)

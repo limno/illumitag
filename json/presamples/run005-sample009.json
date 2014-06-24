@@ -18,8 +18,8 @@
     "forward_reads": "lane1_Undetermined_L001_R1_001.fastq.gz",
     "reverse_reads": "lane1_Undetermined_L001_R2_001.fastq",
 
-    "project":       "test",
-    "project_name":  "Test data",
+    "project":       "mid_test",
+    "project_name":  "Testing the new MID protocol",
     "sample":        "discarded",
     "sample_name":   "Discarded reads from run 5",
     "group":         "discarded",

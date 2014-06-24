@@ -25,11 +25,13 @@ cluster.otu_uparse.taxonomy_silva.make_otu_table()
 cluster.otu_uparse.taxonomy_silva.make_otu_table_norm()
 cluster.otu_uparse.taxonomy_silva.make_plots()
 cluster.otu_uparse.taxonomy_silva.stats.nmds.run()
+cluster.otu_uparse.taxonomy_silva.make_filtered_centers()
 cluster.otu_uparse.taxonomy_silva.comp_phyla.make_taxa_table()
 cluster.otu_uparse.taxonomy_silva.comp_phyla.make_plots()
 cluster.otu_uparse.taxonomy_silva.comp_phyla.stats.nmds.run()
 cluster.otu_uparse.taxonomy_silva.comp_tips.make_taxa_table()
 cluster.otu_uparse.taxonomy_silva.comp_tips.make_plots()
+cluster.otu_uparse.seqenv.run()
 
 # Run it with UCLUST #
 cluster.otu_uclust.run()

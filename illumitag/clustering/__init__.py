@@ -71,7 +71,7 @@ class Cluster(object):
         self.runner.run(*args, **kwargs)
 
     def run_slurm(self, *args, **kwargs):
-        self.runner.run_slurm()
+        self.runner.run_slurm(*args, **kwargs)
 
     def process_samples(self):
         for sample in tqdm(self): sample.process()

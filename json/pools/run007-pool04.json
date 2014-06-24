@@ -50,7 +50,7 @@
         {"name": "hahh3d16",      "used": 1, "group": "meso2",     "num": 24, "fwd": "AGAGACT", "rev": "ATCGTGT"},
         {"name": "eklh3d2",       "used": 1, "group": "meso1",     "num": 25, "fwd": "AGCATGT", "rev": "ATCAGAC"},
         {"name": "US4",           "used": 1, "group": "US",        "num": 26, "fwd": "TAGTCAG", "rev": "ATCACTC"},
-	    {"name": "halh2d16",      "used": 1, "group": "meso2",     "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
+        {"name": "halh2d16",      "used": 1, "group": "meso2",     "num": 27, "fwd": "AGCAGAT", "rev": "ATCATGC"},
         {"name": "hahh3d32",      "used": 1, "group": "meso2",     "num": 28, "fwd": "GTATCAC", "rev": "ATCTCAC"},
         {"name": "eklh1d2",       "used": 1, "group": "meso1",     "num": 29, "fwd": "GTCTACT", "rev": "TACTCGA"},
         {"name": "edlaked32",     "used": 1, "group": "meso3",     "num": 30, "fwd": "GTCTCAT", "rev": "ATAGCGT"},

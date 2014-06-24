@@ -2,7 +2,6 @@
 from illumitag.common.autopaths import AutoPaths
 
 # Third party modules #
-from rpy2 import robjects as ro
 
 ###############################################################################
 class BetaDispersion(object):
@@ -21,6 +20,8 @@ class BetaDispersion(object):
         self.p = AutoPaths(self.parent.p.betadis_dir, self.all_paths)
 
     def run(self):
+        # Module on demand #
+        from rpy2 import robjects as ro
         # Prepare #
         ro.r("library(vegan)")
         ro.r("data = read.table('%s', header=TRUE, sep='\t', row.names='OTUID')" % (self.table.path))
