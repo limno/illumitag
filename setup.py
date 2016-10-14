@@ -4,7 +4,7 @@ setup(
       name             = 'illumitag',
       version          = '1.0.0',
       description      = 'Pipeline for 16S Illumina paired-end sequencing',
-      long_description = open('README.txt').read(),
+      long_description = open('README.md').read(),
       license          = 'MIT',
       url              = 'http://github.com/limno/illumitag/',
       author           = 'Lucas Sinclair',
